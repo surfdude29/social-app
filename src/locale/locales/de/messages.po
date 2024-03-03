@@ -669,7 +669,7 @@ msgstr "hier klicken"
 #: src/components/RichText.tsx:189
 #: src/components/TagMenu/index.web.tsx:125
 msgid "Click here to open tag menu for {tag}"
-msgstr "Klicke hier, um das Tag-Menü für {tag} zu öffnen."
+msgstr "Klicke hier, um das Tag-Menü für {tag} zu öffnen"
 
 #: src/screens/Onboarding/index.tsx:35
 msgid "Climate"
@@ -4125,7 +4125,7 @@ msgstr "Stummschaltung aufheben"
 
 #: src/components/TagMenu/index.web.tsx:90
 msgid "Unmute {truncatedTag}"
-msgstr "Stummschaltung aufheben"
+msgstr "Stummschaltung von {truncatedTag} aufheben"
 
 #: src/view/com/profile/ProfileHeader.tsx:326
 msgid "Unmute Account"
