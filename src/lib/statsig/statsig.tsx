@@ -1,11 +1,16 @@
 import React from 'react'
+import {Platform} from 'react-native'
 import {
   Statsig,
   StatsigProvider,
   useGate as useStatsigGate,
 } from 'statsig-react-native-expo'
+import {AppState, AppStateStatus} from 'react-native'
 import {useSession} from '../../state/session'
 import {sha256} from 'js-sha256'
+import {LogEvents} from './events'
+
+export type {LogEvents}
 
 const statsigOptions = {
   environment: {
@@ -17,12 +22,28 @@ const statsigOptions = {
   initTimeoutMs: 1,
 }
 
-export function logEvent(
-  eventName: string,
-  value?: string | number | null,
-  metadata?: Record<string, string> | null,
+type FlatJSONRecord = Record<
+  string,
+  string | number | boolean | null | undefined
+>
+
+let getCurrentRouteName: () => string | null | undefined = () => null
+
+export function attachRouteToLogEvents(
+  getRouteName: () => string | null | undefined,
 ) {
-  Statsig.logEvent(eventName, value, metadata)
+  getCurrentRouteName = getRouteName
+}
+
+export function logEvent<E extends keyof LogEvents>(
+  eventName: E & string,
+  rawMetadata: LogEvents[E] & FlatJSONRecord,
+) {
+  const fullMetadata = {
+    ...rawMetadata,
+  } as Record<string, string> // Statsig typings are unnecessarily strict here.
+  fullMetadata.routeName = getCurrentRouteName() ?? '(Uninitialized)'
+  Statsig.logEvent(eventName, null, fullMetadata)
 }
 
 export function useGate(gateName: string) {
@@ -39,8 +60,24 @@ function toStatsigUser(did: string | undefined) {
   if (did) {
     userID = sha256(did)
   }
-  return {userID}
+  return {
+    userID,
+    platform: Platform.OS,
+  }
 }
+
+let lastState: AppStateStatus = AppState.currentState
+AppState.addEventListener('change', (state: AppStateStatus) => {
+  if (state === lastState) {
+    return
+  }
+  lastState = state
+  if (state === 'active') {
+    logEvent('state:foreground', {})
+  } else {
+    logEvent('state:background', {})
+  }
+})
 
 export function Provider({children}: {children: React.ReactNode}) {
   const {currentAccount} = useSession()
