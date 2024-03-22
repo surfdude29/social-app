@@ -3818,7 +3818,7 @@ msgstr "Handle-Änderung speichern"
 
 #: src/view/com/modals/crop-image/CropImage.web.tsx:144
 msgid "Save image crop"
-msgstr "Bildausschnitt speichern"
+msgstr "Bildbeschneidung speichern"
 
 #: src/view/screens/ProfileFeed.tsx:335
 #: src/view/screens/ProfileFeed.tsx:341
@@ -3847,7 +3847,7 @@ msgstr "Speichert Handle-Änderung in {handle}"
 
 #: src/view/com/modals/crop-image/CropImage.web.tsx:145
 msgid "Saves image crop settings"
-msgstr "Speichert die Einstellungen für den Bildausschnitt"
+msgstr "Speichert die Einstellungen für den Bildbeschneidung"
 
 #: src/screens/Onboarding/index.tsx:36
 msgid "Science"
@@ -3931,11 +3931,11 @@ msgstr "Von einem bestehenden Konto auswählen"
 
 #: src/view/screens/LanguageSettings.tsx:299
 msgid "Select languages"
-msgstr ""
+msgstr "Sprachen auswählen"
 
 #: src/components/ReportDialog/SelectLabelerView.tsx:32
 msgid "Select moderator"
-msgstr ""
+msgstr "Moderator auswählen"
 
 #: src/view/com/util/Selector.tsx:107
 msgid "Select option {i} of {numItems}"
@@ -3952,7 +3952,7 @@ msgstr "Wähle unten einige Konten aus, denen du folgen möchtest"
 
 #: src/components/ReportDialog/SubmitView.tsx:135
 msgid "Select the moderation service(s) to report to"
-msgstr ""
+msgstr "Wählen den/die Moderationsdienst(e) aus, an den/die berichten möchten"
 
 #: src/view/com/auth/server-input/index.tsx:82
 msgid "Select the service that hosts your data."
@@ -3976,7 +3976,7 @@ msgstr "Wähle aus, welche Sprachen deine abonnierten Feeds enthalten sollen. We
 
 #: src/view/screens/LanguageSettings.tsx:98
 msgid "Select your app language for the default text to display in the app."
-msgstr ""
+msgstr "Wählen deine App-Sprache für den Standardtext aus, der in der App angezeigt werden soll."
 
 #: src/screens/Onboarding/StepInterests/index.tsx:196
 msgid "Select your interests from the options below"
@@ -4016,7 +4016,7 @@ msgstr "Feedback senden"
 #: src/components/ReportDialog/SubmitView.tsx:214
 #: src/components/ReportDialog/SubmitView.tsx:218
 msgid "Send report"
-msgstr ""
+msgstr "Bericht senden"
 
 #: src/view/com/modals/report/SendReportButton.tsx:45
 #~ msgid "Send Report"
@@ -4024,7 +4024,7 @@ msgstr ""
 
 #: src/components/ReportDialog/SelectLabelerView.tsx:46
 msgid "Send report to {0}"
-msgstr ""
+msgstr "Bericht an {0} senden"
 
 #: src/view/com/modals/DeleteAccount.tsx:133
 msgid "Sends email with confirmation code for account deletion"
@@ -4046,7 +4046,7 @@ msgstr "Server-Adresse"
 
 #: src/screens/Moderation/index.tsx:306
 msgid "Set birthdate"
-msgstr ""
+msgstr "Geburtsdatum einstellen"
 
 #: src/view/screens/Settings/index.tsx:488
 #~ msgid "Set color theme to dark"
@@ -4106,23 +4106,23 @@ msgstr "Legt deinen Bluesky-Benutzernamen fest"
 
 #: src/view/screens/Settings/index.tsx:507
 msgid "Sets color theme to dark"
-msgstr ""
+msgstr "Setzt das Farbthema auf dunkel einstellen"
 
 #: src/view/screens/Settings/index.tsx:500
 msgid "Sets color theme to light"
-msgstr ""
+msgstr "Setzt das Farbthema auf hell einstellen"
 
 #: src/view/screens/Settings/index.tsx:494
 msgid "Sets color theme to system setting"
-msgstr ""
+msgstr "Setzt das Farbthema auf die Systemeinstellung"
 
 #: src/view/screens/Settings/index.tsx:533
 msgid "Sets dark theme to the dark theme"
-msgstr ""
+msgstr "Setzt das dunkle Thema auf das dunkle Thema einstellen"
 
 #: src/view/screens/Settings/index.tsx:526
 msgid "Sets dark theme to the dim theme"
-msgstr ""
+msgstr "Setzt das dunkle Thema auf das gedämpfte Thema einstellen"
 
 #: src/view/com/auth/login/ForgotPasswordForm.tsx:157
 msgid "Sets email for password reset"
@@ -4138,11 +4138,11 @@ msgstr ""
 
 #: src/view/com/modals/crop-image/CropImage.web.tsx:113
 msgid "Sets image aspect ratio to tall"
-msgstr ""
+msgstr "Setzt das Bildseitenverhältnis auf quadratisch"
 
 #: src/view/com/modals/crop-image/CropImage.web.tsx:103
 msgid "Sets image aspect ratio to wide"
-msgstr ""
+msgstr "Setzt das Bildseitenverhältnis auf breit"
 
 #: src/view/com/auth/create/Step1.tsx:97
 #: src/view/com/auth/login/LoginForm.tsx:154
@@ -4163,7 +4163,7 @@ msgstr "Sexuelle Aktivitäten oder erotische Nacktheit."
 
 #: src/lib/moderation/useGlobalLabelStrings.ts:38
 msgid "Sexually Suggestive"
-msgstr ""
+msgstr "Sexuell suggestiv"
 
 #: src/view/com/lightbox/Lightbox.tsx:141
 msgctxt "action"
@@ -4182,7 +4182,7 @@ msgstr "Teilen"
 #: src/view/com/profile/ProfileMenu.tsx:373
 #: src/view/com/util/forms/PostDropdownBtn.tsx:347
 msgid "Share anyway"
-msgstr ""
+msgstr "Trotzdem teilen"
 
 #: src/view/screens/ProfileFeed.tsx:361
 #: src/view/screens/ProfileFeed.tsx:363
@@ -4209,11 +4209,11 @@ msgstr "Trotzdem anzeigen"
 #: src/lib/moderation/useLabelBehaviorDescription.ts:27
 #: src/lib/moderation/useLabelBehaviorDescription.ts:63
 msgid "Show badge"
-msgstr ""
+msgstr "Abzeichen anzeigen"
 
 #: src/lib/moderation/useLabelBehaviorDescription.ts:61
 msgid "Show badge and filter from feeds"
-msgstr ""
+msgstr "Abzeichen anzeigen und aus Feeds filtern"
 
 #: src/view/com/modals/EmbedConsent.tsx:87
 msgid "Show embeds from {0}"
@@ -4288,11 +4288,11 @@ msgstr "Nutzer anzeigen"
 
 #: src/lib/moderation/useLabelBehaviorDescription.ts:58
 msgid "Show warning"
-msgstr ""
+msgstr "Warnung anzeigen"
 
 #: src/lib/moderation/useLabelBehaviorDescription.ts:56
 msgid "Show warning and filter from feeds"
-msgstr ""
+msgstr "Warnung anzeigen und aus Feeds filtern"
 
 #: src/view/com/profile/ProfileHeader.tsx:462
 #~ msgid "Shows a list of users similar to this user."
@@ -4394,7 +4394,7 @@ msgstr "Software-Entwicklung"
 #: src/screens/Moderation/index.tsx:116
 #: src/screens/Profile/Sections/Labels.tsx:77
 msgid "Something went wrong, please try again."
-msgstr ""
+msgstr "Es ist ein Fehler aufgetreten, bitte versuche es erneut."
 
 #: src/components/Lists.tsx:203
 #~ msgid "Something went wrong!"
@@ -4414,15 +4414,15 @@ msgstr "Antworten auf denselben Beitrag sortieren nach:"
 
 #: src/components/moderation/LabelsOnMeDialog.tsx:147
 msgid "Source:"
-msgstr ""
+msgstr "Quelle:"
 
 #: src/lib/moderation/useReportOptions.ts:65
 msgid "Spam"
-msgstr ""
+msgstr "Spam"
 
 #: src/lib/moderation/useReportOptions.ts:53
 msgid "Spam; excessive mentions or replies"
-msgstr ""
+msgstr "Spam; übermäßige Erwähnungen oder Antworten"
 
 #: src/screens/Onboarding/index.tsx:30
 msgid "Sports"
@@ -4460,11 +4460,11 @@ msgstr "Abonnieren"
 
 #: src/screens/Profile/Sections/Labels.tsx:181
 msgid "Subscribe to @{0} to use these labels:"
-msgstr ""
+msgstr "Abonnieren Sie @{0}, um diese Etiketten zu verwenden:"
 
 #: src/screens/Profile/Header/ProfileHeaderLabeler.tsx:222
 msgid "Subscribe to Labeler"
-msgstr ""
+msgstr "Labeler abonnieren"
 
 #: src/screens/Onboarding/StepAlgoFeeds/FeedCard.tsx:173
 #: src/screens/Onboarding/StepAlgoFeeds/FeedCard.tsx:308
@@ -4473,7 +4473,7 @@ msgstr "Abonniere den {0} Feed"
 
 #: src/screens/Profile/Header/ProfileHeaderLabeler.tsx:185
 msgid "Subscribe to this labeler"
-msgstr ""
+msgstr "Diesen Labeler abonnieren"
 
 #: src/view/screens/ProfileList.tsx:586
 msgid "Subscribe to this list"
@@ -4555,7 +4555,7 @@ msgstr "Nutzungsbedingungen"
 #: src/lib/moderation/useReportOptions.ts:79
 #: src/lib/moderation/useReportOptions.ts:87
 msgid "Terms used violate community standards"
-msgstr ""
+msgstr "Verwendete Begriffe verstoßen gegen Gemeinschaftsstandards"
 
 #: src/components/dialogs/MutedWords.tsx:324
 msgid "text"
@@ -4567,11 +4567,11 @@ msgstr "Text-Eingabefeld"
 
 #: src/components/ReportDialog/SubmitView.tsx:78
 msgid "Thank you. Your report has been sent."
-msgstr ""
+msgstr "Wir danken Ihnen. Ihr Bericht wurde abgeschickt."
 
 #: src/view/com/modals/ChangeHandle.tsx:466
 msgid "That contains the following:"
-msgstr ""
+msgstr "Dieser enthält Folgendes:"
 
 #: src/view/com/auth/create/CreateAccount.tsx:94
 msgid "That handle is already taken."
@@ -4584,7 +4584,7 @@ msgstr "Das Konto kann nach der Entblockiert mit dir interagieren."
 
 #: src/components/moderation/ModerationDetailsDialog.tsx:128
 msgid "the author"
-msgstr ""
+msgstr "der Autor"
 
 #: src/view/screens/CommunityGuidelines.tsx:36
 msgid "The Community Guidelines have been moved to <0/>"
@@ -4596,11 +4596,11 @@ msgstr "Die Copyright-Richtlinie wurde nach <0/> verschoben"
 
 #: src/components/moderation/LabelsOnMeDialog.tsx:49
 msgid "The following labels were applied to your account."
-msgstr ""
+msgstr "Die folgenden Etiketten wurden auf Ihr Konto angewendet."
 
 #: src/components/moderation/LabelsOnMeDialog.tsx:50
 msgid "The following labels were applied to your content."
-msgstr ""
+msgstr "Die folgenden Labels wurden auf Ihren Inhalt angewendet."
 
 #: src/screens/Onboarding/Layout.tsx:60
 msgid "The following steps will help customize your Bluesky experience."
@@ -4674,7 +4674,7 @@ msgstr "Es gab ein Problem beim Abrufen deiner Listen. Tippe hier, um es erneut 
 
 #: src/components/ReportDialog/SubmitView.tsx:83
 msgid "There was an issue sending your report. Please check your internet connection."
-msgstr ""
+msgstr "Es gab ein Problem beim Senden Ihres Berichts. Bitte überprüfe deine Internetverbindung."
 
 #: src/screens/Onboarding/StepModeration/AdultContentEnabledPref.tsx:65
 msgid "There was an issue syncing your preferences with the server"
@@ -4727,7 +4727,7 @@ msgstr "Dieses Konto hat die Benutzer aufgefordert, sich anzumelden, um dein Pro
 
 #: src/components/moderation/LabelsOnMeDialog.tsx:205
 msgid "This appeal will be sent to <0>{0}</0>."
-msgstr ""
+msgstr "Dieser Aufruf wird an <0>{0}</0> gesendet."
 
 #: src/lib/moderation/useGlobalLabelStrings.ts:19
 msgid "This content has been hidden by the moderators."
