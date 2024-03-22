@@ -3093,7 +3093,7 @@ msgstr "Öffnet ein Modal für die Auswahl eines neuen Bluesky-Handles"
 
 #: src/view/screens/Settings/index.tsx:779
 msgid "Opens modal for downloading your Bluesky account data (repository)"
-msgstr "Öffnet ein Modal zum Herunterladen deiner Bluesky-Kontodaten (Repository)"
+msgstr "Öffnet ein Modal zum Herunterladen deiner Bluesky-Kontodaten (Kontodepot)"
 
 #: src/view/screens/Settings/index.tsx:970
 msgid "Opens modal for email verification"
