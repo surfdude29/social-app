@@ -10,7 +10,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "PO-Revision-Date: 2024-03-12 13:00+0000\n"
 "Last-Translator: \n"
-"Language-Team: Translators in PR 2319, PythooonUser, cdfzo\n"
+"Language-Team: Translators in PR 2319, PythooonUser, cdfzo, imbstt\n"
 "Plural-Forms: \n"
 
 #: src/view/com/modals/VerifyEmail.tsx:142
@@ -58,14 +58,6 @@ msgstr "<0>Willkommen bei</0><1>Bluesky</1>"
 #: src/screens/Profile/Header/Handle.tsx:43
 msgid "⚠Invalid Handle"
 msgstr "⚠Ungültiger Handle"
-
-#: src/view/com/util/moderation/LabelInfo.tsx:45
-#~ msgid "A content warning has been applied to this {0}."
-#~ msgstr "Diese Seite wurde mit einer Inhaltswarnung versehen {0}."
-
-#: src/lib/hooks/useOTAUpdate.ts:16
-#~ msgid "A new version of the app is available. Please update to continue using the app."
-#~ msgstr "Eine neue Version der App ist verfügbar. Bitte aktualisiere die App, um sie weiter nutzen zu können."
 
 #: src/view/com/util/ViewHeader.tsx:89
 #: src/view/screens/Search/Search.tsx:796
