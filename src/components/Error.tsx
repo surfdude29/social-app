@@ -1,30 +1,41 @@
 import React from 'react'
+import {View} from 'react-native'
+import {msg, Trans} from '@lingui/macro'
+import {useLingui} from '@lingui/react'
+import {useNavigation} from '@react-navigation/core'
+import {StackActions} from '@react-navigation/native'
 
+import {NavigationProp} from 'lib/routes/types'
 import {CenteredView} from 'view/com/util/Views'
 import {atoms as a, useBreakpoints, useTheme} from '#/alf'
+import {Button, ButtonText} from '#/components/Button'
 import {Text} from '#/components/Typography'
-import {View} from 'react-native'
-import {Button} from '#/components/Button'
-import {useNavigation} from '@react-navigation/core'
-import {NavigationProp} from 'lib/routes/types'
-import {StackActions} from '@react-navigation/native'
 import {router} from '#/routes'
 
 export function Error({
   title,
   message,
   onRetry,
+  onGoBack: onGoBackProp,
+  sideBorders = true,
 }: {
   title?: string
   message?: string
   onRetry?: () => unknown
+  onGoBack?: () => unknown
+  sideBorders?: boolean
 }) {
   const navigation = useNavigation<NavigationProp>()
+  const {_} = useLingui()
   const t = useTheme()
   const {gtMobile} = useBreakpoints()
 
   const canGoBack = navigation.canGoBack()
   const onGoBack = React.useCallback(() => {
+    if (onGoBackProp) {
+      onGoBackProp()
+      return
+    }
     if (canGoBack) {
       navigation.goBack()
     } else {
@@ -38,18 +49,19 @@ export function Error({
         navigation.dispatch(StackActions.popToTop())
       }
     }
-  }, [navigation, canGoBack])
+  }, [navigation, canGoBack, onGoBackProp])
 
   return (
     <CenteredView
       style={[
         a.flex_1,
         a.align_center,
-        !gtMobile ? a.justify_between : a.gap_5xl,
+        a.gap_5xl,
+        !gtMobile && a.justify_between,
         t.atoms.border_contrast_low,
         {paddingTop: 175, paddingBottom: 110},
       ]}
-      sideBorders>
+      sideBorders={sideBorders}>
       <View style={[a.w_full, a.align_center, a.gap_lg]}>
         <Text style={[a.font_bold, a.text_3xl]}>{title}</Text>
         <Text
@@ -68,21 +80,25 @@ export function Error({
           <Button
             variant="solid"
             color="primary"
-            label="Click here"
+            label={_(msg`Press to retry`)}
             onPress={onRetry}
             size="large"
             style={[a.rounded_sm, a.overflow_hidden, {paddingVertical: 10}]}>
-            Retry
+            <ButtonText>
+              <Trans>Retry</Trans>
+            </ButtonText>
           </Button>
         )}
         <Button
           variant="solid"
           color={onRetry ? 'secondary' : 'primary'}
-          label="Click here"
+          label={_(msg`Return to previous page`)}
           onPress={onGoBack}
           size="large"
           style={[a.rounded_sm, a.overflow_hidden, {paddingVertical: 10}]}>
-          Go Back
+          <ButtonText>
+            <Trans>Go Back</Trans>
+          </ButtonText>
         </Button>
       </View>
     </CenteredView>
