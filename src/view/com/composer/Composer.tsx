@@ -1,17 +1,9 @@
-import React, {
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react'
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react'
 import {
   ActivityIndicator,
   BackHandler,
   Keyboard,
   KeyboardAvoidingView,
-  LayoutAnimation,
   Platform,
   ScrollView,
   StyleSheet,
@@ -37,8 +29,8 @@ import {
   useLanguagePrefs,
   useLanguagePrefsApi,
 } from '#/state/preferences/languages'
-import {Gif} from '#/state/queries/giphy'
 import {useProfileQuery} from '#/state/queries/profile'
+import {Gif} from '#/state/queries/tenor'
 import {ThreadgateSetting} from '#/state/queries/threadgate'
 import {getAgent, useSession} from '#/state/session'
 import {useComposerControls} from '#/state/shell/composer'
@@ -129,19 +121,13 @@ export const ComposePost = observer(function ComposePost({
     initQuote,
   )
   const {extLink, setExtLink} = useExternalLinkFetch({setQuote})
+  const [extGif, setExtGif] = useState<Gif>()
   const [labels, setLabels] = useState<string[]>([])
   const [threadgate, setThreadgate] = useState<ThreadgateSetting[]>([])
   const gallery = useMemo(
     () => new GalleryModel(initImageUris),
     [initImageUris],
   )
-
-  useLayoutEffect(() => {
-    if (isIOS) {
-      LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
-    }
-  }, [gallery.size])
-
   const onClose = useCallback(() => {
     closeComposer()
   }, [closeComposer])
@@ -331,18 +317,20 @@ export const ComposePost = observer(function ComposePost({
   }, [])
 
   const onSelectGif = useCallback(
-    (gif: Gif) =>
+    (gif: Gif) => {
       setExtLink({
-        uri: `${gif.url}?hh=${gif.images.original.height}&ww=${gif.images.original.width}`,
+        uri: `${gif.media_formats.gif.url}?hh=${gif.media_formats.gif.dims[1]}&ww=${gif.media_formats.gif.dims[0]}`,
         isLoading: true,
         meta: {
-          url: gif.url,
-          image: gif.images.original_still.url,
+          url: gif.media_formats.gif.url,
+          image: gif.media_formats.preview.url,
           likelyType: LikelyType.HTML,
-          title: `${gif.title} - Find & Share on GIPHY`,
-          description: `ALT: ${gif.alt_text}`,
+          title: gif.content_description,
+          description: `ALT: ${gif.content_description}`,
         },
-      }),
+      })
+      setExtGif(gif)
+    },
     [setExtLink],
   )
 
@@ -487,7 +475,11 @@ export const ComposePost = observer(function ComposePost({
           {gallery.isEmpty && extLink && (
             <ExternalEmbed
               link={extLink}
-              onRemove={() => setExtLink(undefined)}
+              gif={extGif}
+              onRemove={() => {
+                setExtLink(undefined)
+                setExtGif(undefined)
+              }}
             />
           )}
           {quote ? (
