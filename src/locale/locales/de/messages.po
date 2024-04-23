@@ -4577,7 +4577,7 @@ msgstr "Es gab ein Problem bei der Aktualisierung deines Feeds. Bitte überprüf
 
 #: src/components/dialogs/GifSelect.tsx:201
 msgid "There was an issue connecting to Tenor."
-msgstr ""
+msgstr "Es gab ein Problem bei der Verbindung mit Tenor."
 
 #: src/view/screens/ProfileFeed.tsx:247
 #: src/view/screens/ProfileList.tsx:277
@@ -4691,10 +4691,6 @@ msgid "This content is not viewable without a Bluesky account."
 msgstr "Dieser Inhalt ist ohne ein Bluesky-Konto nicht sichtbar."
 
 #: src/view/screens/Settings/ExportCarDialog.tsx:75
-#~ msgid "This feature is in beta. You can read more about repository exports in <0>this blogpost.</0>"
-#~ msgstr "Diese Funktion befindet sich in der Beta-Phase. Du kannst mehr über Kontodepot-Exporte in <0>diesem Blogpost lesen.</0>"
-
-#: src/view/screens/Settings/ExportCarDialog.tsx:75
 msgid "This feature is in beta. You can read more about repository exports in <0>this blogpost</0>."
 msgstr "Diese Funktion befindet sich in der Beta-Phase. Du kannst mehr über Kontodepot-Exporte in <0>diesem Blogpost lesen</0>."
 
@@ -4782,14 +4778,6 @@ msgstr "Dieser Benutzer hat dich blockiert. Du kannst deren Inhalte nicht sehen.
 msgid "This user has requested that their content only be shown to signed-in users."
 msgstr "Dieser Benutzer hat darum gebeten, dass seine Inhalte nur angemeldeten Benutzern angezeigt werden."
 
-#: src/view/com/modals/ModerationDetails.tsx:42
-#~ msgid "This user is included in the <0/> list which you have blocked."
-#~ msgstr "Dieser Benutzer ist in der Liste <0/> enthalten, die du blockiert hast."
-
-#: src/view/com/modals/ModerationDetails.tsx:74
-#~ msgid "This user is included in the <0/> list which you have muted."
-#~ msgstr "Dieser Benutzer ist in der Liste <0/> enthalten, die du stummgeschaltet haben."
-
 #: src/components/moderation/ModerationDetailsDialog.tsx:55
 msgid "This user is included in the <0>{0}</0> list which you have blocked."
 msgstr "Dieser Benutzer ist in der Liste <0>{0}</0> enthalten, die du blockiert hast."
@@ -4810,10 +4798,6 @@ msgstr "Diese Warnung ist nur für Beiträge mit angehängten Medien verfügbar.
 msgid "This will delete {0} from your muted words. You can always add it back later."
 msgstr "Dies wird {0} aus deinen stummgeschalteten Wörtern löschen. Du kannst es später jederzeit wieder hinzufügen."
 
-#: src/view/com/util/forms/PostDropdownBtn.tsx:282
-#~ msgid "This will hide this post from your feeds."
-#~ msgstr "Dadurch wird dieser Beitrag aus deinen Feeds ausgeblendet."
-
 #: src/view/screens/Settings/index.tsx:526
 msgid "Thread preferences"
 msgstr "Thread-Einstellungen"
@@ -4833,7 +4817,7 @@ msgstr "Thread-Einstellungen"
 
 #: src/view/screens/Settings/DisableEmail2FADialog.tsx:102
 msgid "To disable the email 2FA method, please verify your access to the email address."
-msgstr ""
+msgstr "Um die Zwei-Faktor-Authentifizierungsmethode per E-Mail zu deaktivieren, überprüfen Sie bitte Ihren Zugriff auf die E-Mail-Adresse."
 
 #: src/components/ReportDialog/SelectLabelerView.tsx:33
 msgid "To whom would you like to send this report?"
@@ -4854,7 +4838,7 @@ msgstr "Umschalten zum Aktivieren oder Deaktivieren von Inhalten für Erwachsene
 #: src/screens/Hashtag.tsx:88
 #: src/view/screens/Search/Search.tsx:418
 msgid "Top"
-msgstr ""
+msgstr "Top"
 
 #: src/view/com/modals/EditImage.tsx:272
 msgid "Transformations"
@@ -4874,7 +4858,7 @@ msgstr "Erneut versuchen"
 
 #: src/view/screens/Settings/index.tsx:695
 msgid "Two-factor authentication"
-msgstr ""
+msgstr "Zwei-Faktor-Authentifizierung"
 
 #: src/view/com/modals/ChangeHandle.tsx:428
 msgid "Type:"
@@ -4945,10 +4929,6 @@ msgstr "{0} nicht mehr folgen"
 msgid "Unfollow Account"
 msgstr "Konto nicht mehr folgen"
 
-#: src/view/com/auth/create/state.ts:262
-#~ msgid "Unfortunately, you do not meet the requirements to create an account."
-#~ msgstr "Leider erfüllst du nicht die Voraussetzungen, um einen Account zu erstellen."
-
 #: src/view/com/util/post-ctrls/PostCtrls.tsx:197
 msgid "Unlike"
 msgstr "Like aufheben"
@@ -4993,10 +4973,6 @@ msgstr "Anheften aufheben von Home"
 msgid "Unpin moderation list"
 msgstr "Anheften der Moderationsliste aufheben"
 
-#: src/view/screens/ProfileFeed.tsx:346
-#~ msgid "Unsave"
-#~ msgstr "Speicherung aufheben"
-
 #: src/screens/Profile/Header/ProfileHeaderLabeler.tsx:225
 msgid "Unsubscribe"
 msgstr "Abbestellen"
@@ -5012,10 +4988,6 @@ msgstr "Unerwünschte sexuelle Inhalte"
 #: src/view/com/modals/UserAddRemoveLists.tsx:70
 msgid "Update {displayName} in Lists"
 msgstr "{displayName} in Listen aktualisieren"
-
-#: src/lib/hooks/useOTAUpdate.ts:15
-#~ msgid "Update Available"
-#~ msgstr "Update verfügbar"
 
 #: src/view/com/modals/ChangeHandle.tsx:508
 msgid "Update to {handle}"
@@ -5107,10 +5079,6 @@ msgstr "Benutzer blockiert dich"
 msgid "User Blocks You"
 msgstr "Benutzer blockiert dich"
 
-#: src/view/com/auth/create/Step2.tsx:79
-#~ msgid "User handle"
-#~ msgstr "Benutzerhandle"
-
 #: src/view/com/lists/ListCard.tsx:85
 #: src/view/com/modals/UserAddRemoveLists.tsx:198
 msgid "User list by {0}"
@@ -5189,7 +5157,7 @@ msgstr "Überprüfe deine E-Mail"
 
 #: src/view/screens/Settings/index.tsx:852
 msgid "Version {0}"
-msgstr ""
+msgstr "Version {0}"
 
 #: src/screens/Onboarding/index.tsx:42
 msgid "Video Games"
@@ -5257,10 +5225,6 @@ msgstr "Inhalt warnen"
 msgid "Warn content and filter from feeds"
 msgstr "Inhalte warnen und aus Feeds filtern"
 
-#: src/screens/Onboarding/StepAlgoFeeds/index.tsx:134
-#~ msgid "We also think you'll like \"For You\" by Skygaze:"
-#~ msgstr "Wir glauben auch, dass dir \"For You\" von Skygaze gefallen wird:"
-
 #: src/screens/Hashtag.tsx:210
 msgid "We couldn't find any results for that hashtag."
 msgstr "Wir konnten keine Ergebnisse für diesen Hashtag finden."
@@ -5301,10 +5265,6 @@ msgstr "Die Verbindung konnte nicht hergestellt werden. Bitte versuche es erneut
 msgid "We will let you know when your account is ready."
 msgstr "Wir werden dich benachrichtigen, wenn dein Konto bereit ist."
 
-#: src/view/com/modals/AppealLabel.tsx:48
-#~ msgid "We'll look into your appeal promptly."
-#~ msgstr "Wir werden deinen Widerspruch unverzüglich prüfen."
-
 #: src/screens/Onboarding/StepInterests/index.tsx:142
 msgid "We'll use this to help customize your experience."
 msgstr "Wir verwenden diese Informationen, um dein Erlebnis individuell zu gestalten."
@@ -5341,10 +5301,6 @@ msgstr "Willkommen bei <0>Bluesky</0>"
 #: src/screens/Onboarding/StepInterests/index.tsx:134
 msgid "What are your interests?"
 msgstr "Was sind deine Interessen?"
-
-#: src/view/com/modals/report/Modal.tsx:169
-#~ msgid "What is the issue with this {collectionName}?"
-#~ msgstr "Was ist das Problem mit diesem {collectionName}?"
 
 #: src/view/com/auth/SplashScreen.tsx:40
 #: src/view/com/auth/SplashScreen.web.tsx:81
@@ -5488,10 +5444,6 @@ msgstr "Du hast diesen Konto stummgeschaltet."
 msgid "You have muted this user"
 msgstr "Du hast diesen Benutzer stummgeschaltet"
 
-#: src/view/com/modals/ModerationDetails.tsx:87
-#~ msgid "You have muted this user."
-#~ msgstr "Du hast diesen Benutzer stummgeschaltet."
-
 #: src/view/com/feeds/ProfileFeedgens.tsx:144
 msgid "You have no feeds."
 msgstr "Du hast keine Feeds."
@@ -5505,10 +5457,6 @@ msgstr "Du hast keine Listen."
 msgid "You have not blocked any accounts yet. To block an account, go to their profile and select \"Block account\" from the menu on their account."
 msgstr "Du hast noch keine Konten blockiert. Um ein Konto zu blockieren, gehe auf dessen Profil und wähle \"Konto blockieren\" aus dem Menü des Kontos aus."
 
-#: src/view/screens/ModerationBlockedAccounts.tsx:132
-#~ msgid "You have not blocked any accounts yet. To block an account, go to their profile and selected \"Block account\" from the menu on their account."
-#~ msgstr "Du hast noch keine Konten blockiert. Um ein Konto zu blockieren, gehe auf dessen Profil und wähle \"Konto blockieren\" aus dem Menü des Kontos aus."
-
 #: src/view/screens/AppPasswords.tsx:89
 msgid "You have not created any app passwords yet. You can create one by pressing the button below."
 msgstr "Du hast noch keine App-Passwörter erstellt. Du kannst eines erstellen, indem du auf die Schaltfläche unten klickst."
@@ -5516,10 +5464,6 @@ msgstr "Du hast noch keine App-Passwörter erstellt. Du kannst eines erstellen, 
 #: src/view/screens/ModerationMutedAccounts.tsx:136
 msgid "You have not muted any accounts yet. To mute an account, go to their profile and select \"Mute account\" from the menu on their account."
 msgstr "Du hast noch keine Konten stummgeschaltet. Um ein Konto stumm zu schalten, gehe auf dessen Profil und wähle \"Konto stummschalten\" aus dem Menü des Kontos aus."
-
-#: src/view/screens/ModerationMutedAccounts.tsx:131
-#~ msgid "You have not muted any accounts yet. To mute an account, go to their profile and selected \"Mute account\" from the menu on their account."
-#~ msgstr "Du hast noch keine Konten stummgeschaltet. Um ein Konto stumm zu schalten, gehe auf dessen Profil und wähle \"Konto stummschalten\" aus dem Menü des Kontos aus."
 
 #: src/components/dialogs/MutedWords.tsx:249
 msgid "You haven't muted any words or tags yet"
@@ -5531,11 +5475,7 @@ msgstr "Du kannst Einspruch gegen diese Etiketten einlegen, wenn Sie der Meinung
 
 #: src/screens/Signup/StepInfo/Policies.tsx:79
 msgid "You must be 13 years of age or older to sign up."
-msgstr ""
-
-#: src/view/com/modals/ContentFilteringSettings.tsx:175
-#~ msgid "You must be 18 or older to enable adult content."
-#~ msgstr "Du musst 18 Jahre oder älter sein, um Inhalte für Erwachsene zu aktivieren."
+msgstr "Sie müssen mindestens 13 Jahre alt sein, um sich anzumelden."
 
 #: src/screens/Onboarding/StepModeration/AdultContentEnabledPref.tsx:110
 msgid "You must be 18 years or older to enable adult content"
