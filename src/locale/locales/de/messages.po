@@ -1433,17 +1433,17 @@ msgstr "E-Mail:"
 
 #: src/components/dialogs/Embed.tsx:112
 msgid "Embed HTML code"
-msgstr ""
+msgstr "HTML-Code zum Einbetten"
 
 #: src/components/dialogs/Embed.tsx:97
 #: src/view/com/util/forms/PostDropdownBtn.tsx:257
 #: src/view/com/util/forms/PostDropdownBtn.tsx:259
 msgid "Embed post"
-msgstr ""
+msgstr "Beitrag einbetten"
 
 #: src/components/dialogs/Embed.tsx:101
 msgid "Embed this post in your website. Simply copy the following snippet and paste it into the HTML code of your website."
-msgstr ""
+msgstr "Betten Sie diesen Beitrag in Ihre Website ein. Kopieren Sie einfach das folgende Snippet und fügen Sie es in den HTML-Code Ihrer Website ein."
 
 #: src/components/dialogs/EmbedConsent.tsx:101
 msgid "Enable {0} only"
@@ -1635,7 +1635,7 @@ msgstr "Beitrag konnte nicht gelöscht werden, bitte versuche es erneut"
 
 #: src/components/dialogs/GifSelect.tsx:200
 msgid "Failed to load GIFs"
-msgstr ""
+msgstr "GIFs konnten nicht geladen werden"
 
 #: src/view/com/auth/onboarding/RecommendedFeeds.tsx:110
 #: src/view/com/auth/onboarding/RecommendedFeeds.tsx:143
@@ -1706,15 +1706,7 @@ msgstr "Konten zum Folgen finden"
 
 #: src/view/screens/Search/Search.tsx:521
 msgid "Find posts and users on Bluesky"
-msgstr ""
-
-#: src/view/screens/Search/Search.tsx:589
-#~ msgid "Find users on Bluesky"
-#~ msgstr "Nutzer auf Bluesky finden"
-
-#: src/view/screens/Search/Search.tsx:587
-#~ msgid "Find users with the search tool on the right"
-#~ msgstr "Finde Nutzer mit der Suchfunktion auf der rechten Seite"
+msgstr "Beiträge und Benutzer auf Bluesky finden"
 
 #: src/view/com/auth/onboarding/RecommendedFollowsItem.tsx:155
 msgid "Finding similar accounts..."
@@ -1944,7 +1936,7 @@ msgstr "Handle"
 
 #: src/view/screens/AccessibilitySettings.tsx:103
 msgid "Haptics"
-msgstr ""
+msgstr "Haptik"
 
 #: src/lib/moderation/useReportOptions.ts:32
 msgid "Harassment, trolling, or intolerance"
@@ -2146,7 +2138,7 @@ msgstr "Passwort für die Kontolöschung eingeben"
 
 #: src/screens/Login/LoginForm.tsx:257
 msgid "Input the code which has been emailed to you"
-msgstr ""
+msgstr "Gib den Code ein, den du per E-Mail zugesandt wurde"
 
 #: src/screens/Login/LoginForm.tsx:212
 msgid "Input the password tied to {identifier}"
@@ -2171,7 +2163,7 @@ msgstr "Gib deinen Handle ein"
 #: src/screens/Login/LoginForm.tsx:126
 #: src/view/screens/Settings/DisableEmail2FADialog.tsx:70
 msgid "Invalid 2FA confirmation code."
-msgstr ""
+msgstr "Ungültiger Zwei-Faktor-Authentifizierungscode."
 
 #: src/view/com/post-thread/PostThreadItem.tsx:222
 msgid "Invalid or unsupported post record"
@@ -2265,7 +2257,7 @@ msgstr "Sprachen"
 #: src/screens/Hashtag.tsx:99
 #: src/view/screens/Search/Search.tsx:428
 msgid "Latest"
-msgstr ""
+msgstr "Neueste"
 
 #: src/components/moderation/ScreenHider.tsx:136
 msgid "Learn More"
@@ -2450,7 +2442,7 @@ msgstr "Anmeldung bei einem Konto, das nicht aufgelistet ist"
 
 #: src/components/RichText.tsx:207
 msgid "Long press to open tag menu for #{tag}"
-msgstr ""
+msgstr "Langes Drücken zum Öffnen des Tag-Menüs für #{tag}"
 
 #: src/screens/Login/SetNewPasswordForm.tsx:116
 msgid "Looks like XXXXX-XXXXX"
@@ -2815,7 +2807,7 @@ msgstr "Kein DNS-Panel"
 
 #: src/components/dialogs/GifSelect.tsx:206
 msgid "No featured GIFs found. There may be an issue with Tenor."
-msgstr ""
+msgstr "Keine vorgestellten GIFs gefunden. Möglicherweise gibt es ein Problem mit Tenor."
 
 #: src/screens/Profile/Header/ProfileHeaderStandard.tsx:116
 msgid "No longer following {0}"
@@ -2850,7 +2842,7 @@ msgstr "Keine Ergebnisse für {query} gefunden"
 
 #: src/components/dialogs/GifSelect.tsx:204
 msgid "No search results found for \"{search}\"."
-msgstr ""
+msgstr "Keine Ergebnisse für \"{search}\" gefunden."
 
 #: src/components/dialogs/EmbedConsent.tsx:105
 #: src/components/dialogs/EmbedConsent.tsx:112
@@ -2910,7 +2902,7 @@ msgstr "Nacktheit"
 
 #: src/lib/moderation/useReportOptions.ts:71
 msgid "Nudity or adult content not labeled as such"
-msgstr ""
+msgstr "Nacktheit oder Inhalte für Erwachsene, die nicht als solche gekennzeichnet sind"
 
 #: src/screens/Signup/index.tsx:143
 msgid "of"
@@ -3012,7 +3004,7 @@ msgstr "Öffnet {numItems} Optionen"
 
 #: src/view/screens/Settings/index.tsx:485
 msgid "Opens accessibility settings"
-msgstr ""
+msgstr "Öffnet die Einstellungen für die Barrierefreiheit"
 
 #: src/view/screens/Log.tsx:54
 msgid "Opens additional details for a debug entry"
@@ -3038,10 +3030,6 @@ msgstr "Öffnet die konfigurierbaren Spracheinstellungen"
 msgid "Opens device photo gallery"
 msgstr "Öffnet die Gerätefotogalerie"
 
-#: src/view/com/profile/ProfileHeader.tsx:420
-#~ msgid "Opens editor for profile display name, avatar, background image, and description"
-#~ msgstr "Öffnet den Editor für Profilanzeige, Avatar, Hintergrundbild und Beschreibung"
-
 #: src/view/screens/Settings/index.tsx:621
 msgid "Opens external embeds settings"
 msgstr "Öffnet die Einstellungen für externe eingebettete Medien"
@@ -3056,17 +3044,9 @@ msgstr "Öffnet den Vorgang, einen neuen Bluesky account anzulegen"
 msgid "Opens flow to sign into your existing Bluesky account"
 msgstr "Öffnet den Vorgang, sich mit einen bestehenden Bluesky Account anzumelden"
 
-#: src/view/com/profile/ProfileHeader.tsx:575
-#~ msgid "Opens followers list"
-#~ msgstr "Öffnet die Follower-Liste"
-
-#: src/view/com/profile/ProfileHeader.tsx:594
-#~ msgid "Opens following list"
-#~ msgstr "Öffnet folgende Liste"
-
 #: src/view/com/composer/photos/SelectGifBtn.tsx:37
 msgid "Opens GIF select dialog"
-msgstr ""
+msgstr "Öffnet den GIF-Auswahldialog"
 
 #: src/view/com/modals/InviteCodes.tsx:173
 msgid "Opens list of invite codes"
@@ -3075,10 +3055,6 @@ msgstr "Öffnet die Liste der Einladungscodes"
 #: src/view/screens/Settings/index.tsx:757
 msgid "Opens modal for account deletion confirmation. Requires email code"
 msgstr "Öffnet ein Modal, um die Löschung des Kontos zu bestätigen. Erfordert einen E-Mail-Code"
-
-#: src/view/screens/Settings/index.tsx:774
-#~ msgid "Opens modal for account deletion confirmation. Requires email code."
-#~ msgstr "Öffnet ein Modal, um die Löschung des Kontos zu bestätigen. Erfordert einen E-Mail-Code."
 
 #: src/view/screens/Settings/index.tsx:715
 msgid "Opens modal for changing your Bluesky password"
@@ -3121,17 +3097,9 @@ msgstr "Öffnet den Bildschirm mit allen gespeicherten Feeds"
 msgid "Opens the app password settings"
 msgstr "Öffnet die Einstellungen für das App-Passwort"
 
-#: src/view/screens/Settings/index.tsx:676
-#~ msgid "Opens the app password settings page"
-#~ msgstr "Öffnet die Einstellungsseite für das App-Passwort"
-
 #: src/view/screens/Settings/index.tsx:506
 msgid "Opens the Following feed preferences"
 msgstr "Öffnet die Following-Feed-Einstellungen"
-
-#: src/view/screens/Settings/index.tsx:535
-#~ msgid "Opens the home feed preferences"
-#~ msgstr "Öffnet die Home-Feed-Einstellungen"
 
 #: src/view/com/modals/LinkWarning.tsx:93
 msgid "Opens the linked website"
@@ -3204,11 +3172,11 @@ msgstr "Passwort aktualisiert!"
 
 #: src/view/com/util/post-embeds/GifEmbed.tsx:31
 msgid "Pause"
-msgstr ""
+msgstr "Pause"
 
 #: src/view/screens/Search/Search.tsx:438
 msgid "People"
-msgstr ""
+msgstr "Menschen"
 
 #: src/Navigation.tsx:165
 msgid "People followed by @{0}"
@@ -3249,7 +3217,7 @@ msgstr "Angeheftete Feeds"
 
 #: src/view/com/util/post-embeds/GifEmbed.tsx:31
 msgid "Play"
-msgstr ""
+msgstr "Abspielen"
 
 #: src/view/com/util/post-embeds/ExternalGifEmbed.tsx:123
 msgid "Play {0}"
@@ -3257,7 +3225,7 @@ msgstr "{0} abspielen"
 
 #: src/view/com/util/post-embeds/GifEmbed.tsx:30
 msgid "Play or pause the GIF"
-msgstr ""
+msgstr "Abspielen oder Anhalten des GIFs"
 
 #: src/view/com/util/post-embeds/ExternalPlayerEmbed.tsx:57
 #: src/view/com/util/post-embeds/ExternalPlayerEmbed.tsx:58
@@ -3307,11 +3275,6 @@ msgstr "Bitte gib auch dein Passwort ein:"
 #: src/components/moderation/LabelsOnMeDialog.tsx:221
 msgid "Please explain why you think this label was incorrectly applied by {0}"
 msgstr "Bitte teile uns mit, warum du denkst, dass dieses Etikett von {0} fälschlicherweise vergeben wurde."
-
-#: src/view/com/modals/AppealLabel.tsx:72
-#: src/view/com/modals/AppealLabel.tsx:75
-#~ msgid "Please tell us why you think this content warning was incorrectly applied!"
-#~ msgstr "Bitte teile uns mit, warum du denkst, dass diese Inhaltswarnung falsch angewendet wurde!"
 
 #: src/view/com/modals/VerifyEmail.tsx:109
 msgid "Please Verify Your Email"
@@ -3403,7 +3366,7 @@ msgstr "Potenziell irreführender Link"
 
 #: src/components/forms/HostingProvider.tsx:46
 msgid "Press to change hosting provider"
-msgstr ""
+msgstr "Drücken Sie, um den Hosting-Anbieter zu wechseln"
 
 #: src/components/Error.tsx:83
 #: src/components/Lists.tsx:83
@@ -3524,10 +3487,6 @@ msgstr "Empfohlene Nutzer"
 msgid "Remove"
 msgstr "Entfernen"
 
-#: src/view/com/feeds/FeedSourceCard.tsx:108
-#~ msgid "Remove {0} from my feeds?"
-#~ msgstr "{0} aus meinen Feeds entfernen?"
-
 #: src/view/com/util/AccountDropdownBtn.tsx:22
 msgid "Remove account"
 msgstr "Konto entfernen"
@@ -3575,17 +3534,9 @@ msgstr "Stummgeschaltetes Wort aus deiner Liste entfernen"
 msgid "Remove repost"
 msgstr "Repost entfernen"
 
-#: src/view/com/feeds/FeedSourceCard.tsx:175
-#~ msgid "Remove this feed from my feeds?"
-#~ msgstr "Diesen Feed aus meinen Feeds entfernen?"
-
 #: src/view/com/posts/FeedErrorMessage.tsx:202
 msgid "Remove this feed from your saved feeds"
 msgstr "Diesen Feed aus deinen gespeicherten Feeds entfernen"
-
-#: src/view/com/posts/FeedErrorMessage.tsx:132
-#~ msgid "Remove this feed from your saved feeds?"
-#~ msgstr "Diesen Feed aus deinen gespeicherten Feeds entfernen?"
 
 #: src/view/com/modals/ListAddRemoveUsers.tsx:199
 #: src/view/com/modals/UserAddRemoveLists.tsx:152
@@ -3621,21 +3572,11 @@ msgstr "Antworten"
 msgid "Reply Filters"
 msgstr "Antwortfilter"
 
-#: src/view/com/post/Post.tsx:177
-#: src/view/com/posts/FeedItem.tsx:285
-#~ msgctxt "description"
-#~ msgid "Reply to <0/>"
-#~ msgstr "Antwort an <0/>"
-
 #: src/view/com/post/Post.tsx:178
 #: src/view/com/posts/FeedItem.tsx:285
 msgctxt "description"
 msgid "Reply to <0><1/></0>"
-msgstr ""
-
-#: src/view/com/modals/report/Modal.tsx:166
-#~ msgid "Report {collectionName}"
-#~ msgstr "{collectionName} melden"
+msgstr "Antwort an <0><1/></0>"
 
 #: src/view/com/profile/ProfileMenu.tsx:319
 #: src/view/com/profile/ProfileMenu.tsx:322
@@ -3644,7 +3585,7 @@ msgstr "Konto melden"
 
 #: src/components/ReportDialog/index.tsx:49
 msgid "Report dialog"
-msgstr ""
+msgstr "Dialog für Melden"
 
 #: src/view/screens/ProfileFeed.tsx:363
 #: src/view/screens/ProfileFeed.tsx:365
@@ -3711,7 +3652,7 @@ msgstr "Repostet von {0}"
 
 #: src/view/com/posts/FeedItem.tsx:216
 msgid "Reposted by <0><1/></0>"
-msgstr ""
+msgstr "Repostet von <0><1/></0>"
 
 #: src/view/com/notifications/FeedItem.tsx:168
 msgid "reposted your post"
@@ -3737,7 +3678,7 @@ msgstr "Alt-Text vor der Veröffentlichung erforderlich machen"
 
 #: src/view/screens/Settings/Email2FAToggle.tsx:53
 msgid "Require email code to log into your account"
-msgstr ""
+msgstr "E-Mail-Code für die Anmeldung bei Ihrem Konto erforderlich"
 
 #: src/screens/Signup/StepInfo/index.tsx:69
 msgid "Required for this provider"
@@ -3746,7 +3687,7 @@ msgstr "Für diesen Anbieter erforderlich"
 #: src/view/screens/Settings/DisableEmail2FADialog.tsx:168
 #: src/view/screens/Settings/DisableEmail2FADialog.tsx:171
 msgid "Resend email"
-msgstr ""
+msgstr "E-Mail erneut senden"
 
 #: src/view/com/modals/ChangePassword.tsx:185
 msgid "Reset code"
@@ -3756,10 +3697,6 @@ msgstr "Code zurücksetzen"
 msgid "Reset Code"
 msgstr "Code zurücksetzen"
 
-#: src/view/screens/Settings/index.tsx:824
-#~ msgid "Reset onboarding"
-#~ msgstr "Onboarding zurücksetzen"
-
 #: src/view/screens/Settings/index.tsx:817
 #: src/view/screens/Settings/index.tsx:820
 msgid "Reset onboarding state"
@@ -3768,10 +3705,6 @@ msgstr "Onboarding-Status zurücksetzen"
 #: src/screens/Login/ForgotPasswordForm.tsx:86
 msgid "Reset password"
 msgstr "Passwort zurücksetzen"
-
-#: src/view/screens/Settings/index.tsx:814
-#~ msgid "Reset preferences"
-#~ msgstr "Einstellungen zurücksetzen"
 
 #: src/view/screens/Settings/index.tsx:807
 #: src/view/screens/Settings/index.tsx:810
