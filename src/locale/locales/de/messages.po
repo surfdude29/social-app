@@ -1100,7 +1100,7 @@ msgstr "Dunkles Thema"
 
 #: src/screens/Signup/StepInfo/index.tsx:134
 msgid "Date of birth"
-msgstr "Datum der Geburt"
+msgstr "Geburtsdatum"
 
 #: src/view/screens/Settings/index.tsx:800
 msgid "Debug Moderation"
