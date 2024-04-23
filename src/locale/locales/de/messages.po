@@ -3646,10 +3646,6 @@ msgstr "Repostet von"
 msgid "Reposted by {0}"
 msgstr "Repostet von {0}"
 
-#: src/view/com/posts/FeedItem.tsx:214
-#~ msgid "Reposted by <0/>"
-#~ msgstr "Repostet von <0/>"
-
 #: src/view/com/posts/FeedItem.tsx:216
 msgid "Reposted by <0><1/></0>"
 msgstr "Repostet von <0><1/></0>"
