@@ -3862,11 +3862,11 @@ msgstr "Nach Nutzern suchen"
 
 #: src/components/dialogs/GifSelect.tsx:158
 msgid "Search GIFs"
-msgstr ""
+msgstr "GIFs suchen"
 
 #: src/components/dialogs/GifSelect.tsx:159
 msgid "Search Tenor"
-msgstr ""
+msgstr "Suche Tenor"
 
 #: src/view/com/modals/ChangeEmail.tsx:110
 msgid "Security Step Required"
@@ -3891,15 +3891,11 @@ msgstr "Siehe <0>{displayTag}</0>-Beiträge von diesem Benutzer"
 #: src/view/com/notifications/FeedItem.tsx:419
 #: src/view/com/util/UserAvatar.tsx:381
 msgid "See profile"
-msgstr ""
+msgstr "Siehe Profil"
 
 #: src/view/screens/SavedFeeds.tsx:164
 msgid "See this guide"
 msgstr "Siehe diesen Leitfaden"
-
-#: src/view/com/auth/HomeLoggedOutCTA.tsx:40
-#~ msgid "See what's next"
-#~ msgstr "Schau, was als nächstes kommt"
 
 #: src/view/com/util/Selector.tsx:106
 msgid "Select {item}"
@@ -3907,7 +3903,7 @@ msgstr "Wähle {item}"
 
 #: src/screens/Login/ChooseAccountForm.tsx:61
 msgid "Select account"
-msgstr ""
+msgstr "Konto auswählen"
 
 #: src/screens/Login/index.tsx:120
 msgid "Select from an existing account"
@@ -3915,11 +3911,11 @@ msgstr "Von einem bestehenden Konto auswählen"
 
 #: src/view/com/composer/photos/SelectGifBtn.tsx:36
 msgid "Select GIF"
-msgstr ""
+msgstr "GIF auswählen"
 
 #: src/components/dialogs/GifSelect.tsx:253
 msgid "Select GIF \"{0}\""
-msgstr ""
+msgstr "GIF auswählen \"{0}\""
 
 #: src/view/screens/LanguageSettings.tsx:299
 msgid "Select languages"
@@ -3932,11 +3928,6 @@ msgstr "Moderator auswählen"
 #: src/view/com/util/Selector.tsx:107
 msgid "Select option {i} of {numItems}"
 msgstr "Wähle Option {i} von {numItems}"
-
-#: src/view/com/auth/create/Step1.tsx:96
-#: src/view/com/auth/login/LoginForm.tsx:153
-#~ msgid "Select service"
-#~ msgstr "Service auswählen"
 
 #: src/screens/Onboarding/StepSuggestedAccounts/index.tsx:52
 msgid "Select some accounts below to follow"
@@ -3963,16 +3954,12 @@ msgid "Select which languages you want your subscribed feeds to include. If none
 msgstr "Wähle aus, welche Sprachen deine abonnierten Feeds enthalten sollen. Wenn du keine Sprachen auswählst, werden alle Sprachen angezeigt."
 
 #: src/view/screens/LanguageSettings.tsx:98
-#~ msgid "Select your app language for the default text to display in the app"
-#~ msgstr "Wählen deine App-Sprache für den Standardtext aus, der in der App angezeigt werden soll"
-
-#: src/view/screens/LanguageSettings.tsx:98
 msgid "Select your app language for the default text to display in the app."
 msgstr "Wählen deine App-Sprache für den Standardtext aus, der in der App angezeigt werden soll."
 
 #: src/screens/Signup/StepInfo/index.tsx:135
 msgid "Select your date of birth"
-msgstr ""
+msgstr "Wählen deine Geburtsdatum"
 
 #: src/screens/Onboarding/StepInterests/index.tsx:200
 msgid "Select your interests from the options below"
@@ -4014,10 +4001,6 @@ msgstr "Feedback senden"
 msgid "Send report"
 msgstr "Bericht senden"
 
-#: src/view/com/modals/report/SendReportButton.tsx:45
-#~ msgid "Send Report"
-#~ msgstr "Bericht senden"
-
 #: src/components/ReportDialog/SelectLabelerView.tsx:44
 msgid "Send report to {0}"
 msgstr "Bericht an {0} senden"
@@ -4025,7 +4008,7 @@ msgstr "Bericht an {0} senden"
 #: src/view/screens/Settings/DisableEmail2FADialog.tsx:119
 #: src/view/screens/Settings/DisableEmail2FADialog.tsx:122
 msgid "Send verification email"
-msgstr ""
+msgstr "Bestätigungs-E-Mail senden"
 
 #: src/view/com/modals/DeleteAccount.tsx:132
 msgid "Sends email with confirmation code for account deletion"
@@ -4035,47 +4018,13 @@ msgstr "Sendet eine E-Mail mit Bestätigungscode für die Kontolöschung"
 msgid "Server address"
 msgstr "Server-Adresse"
 
-#: src/view/com/modals/ContentFilteringSettings.tsx:311
-#~ msgid "Set {value} for {labelGroup} content moderation policy"
-#~ msgstr "Legt {value} für die {labelGroup} Inhaltsmoderationsrichtlinie fest"
-
-#: src/view/com/modals/ContentFilteringSettings.tsx:160
-#: src/view/com/modals/ContentFilteringSettings.tsx:179
-#~ msgctxt "action"
-#~ msgid "Set Age"
-#~ msgstr "Alter festlegen"
-
 #: src/screens/Moderation/index.tsx:304
 msgid "Set birthdate"
 msgstr "Geburtsdatum einstellen"
 
-#: src/view/screens/Settings/index.tsx:488
-#~ msgid "Set color theme to dark"
-#~ msgstr "Farbthema auf dunkel einstellen"
-
-#: src/view/screens/Settings/index.tsx:481
-#~ msgid "Set color theme to light"
-#~ msgstr "Farbthema auf hell einstellen"
-
-#: src/view/screens/Settings/index.tsx:475
-#~ msgid "Set color theme to system setting"
-#~ msgstr "Farbthema auf Systemeinstellung setzen"
-
-#: src/view/screens/Settings/index.tsx:514
-#~ msgid "Set dark theme to the dark theme"
-#~ msgstr "Dunkles Thema auf das dunkle Thema einstellen"
-
-#: src/view/screens/Settings/index.tsx:507
-#~ msgid "Set dark theme to the dim theme"
-#~ msgstr "Dunkles Thema auf das gedämpfte Thema einstellen"
-
 #: src/screens/Login/SetNewPasswordForm.tsx:102
 msgid "Set new password"
 msgstr "Neues Passwort festlegen"
-
-#: src/view/com/auth/create/Step1.tsx:202
-#~ msgid "Set password"
-#~ msgstr "Passwort festlegen"
 
 #: src/view/screens/PreferencesFollowingFeed.tsx:225
 msgid "Set this setting to \"No\" to hide all quote posts from your feed. Reposts will still be visible."
@@ -4129,26 +4078,17 @@ msgstr "Setzt das dunkle Thema auf das gedämpfte Thema einstellen"
 msgid "Sets email for password reset"
 msgstr "Legt die E-Mail für das Zurücksetzen des Passworts fest"
 
-#: src/view/com/auth/login/ForgotPasswordForm.tsx:122
-#~ msgid "Sets hosting provider for password reset"
-#~ msgstr "Legt den Hosting-Anbieter für das Zurücksetzen des Passworts fest"
-
 #: src/view/com/modals/crop-image/CropImage.web.tsx:124
 msgid "Sets image aspect ratio to square"
-msgstr ""
+msgstr "Setzt das Bildseitenverhältnis auf quadratisch"
 
 #: src/view/com/modals/crop-image/CropImage.web.tsx:114
 msgid "Sets image aspect ratio to tall"
-msgstr "Setzt das Bildseitenverhältnis auf quadratisch"
+msgstr "Setzt das Bildseitenverhältnis auf hoch"
 
 #: src/view/com/modals/crop-image/CropImage.web.tsx:104
 msgid "Sets image aspect ratio to wide"
 msgstr "Setzt das Bildseitenverhältnis auf breit"
-
-#: src/view/com/auth/create/Step1.tsx:97
-#: src/view/com/auth/login/LoginForm.tsx:154
-#~ msgid "Sets server for the Bluesky client"
-#~ msgstr "Setzt den Server für den Bluesky-Client"
 
 #: src/Navigation.tsx:140
 #: src/view/screens/Settings/index.tsx:309
@@ -4194,11 +4134,11 @@ msgstr "Feed teilen"
 #: src/view/com/modals/LinkWarning.tsx:89
 #: src/view/com/modals/LinkWarning.tsx:95
 msgid "Share Link"
-msgstr ""
+msgstr "Link teilen"
 
 #: src/view/com/modals/LinkWarning.tsx:92
 msgid "Shares the linked website"
-msgstr ""
+msgstr "Teilt die verlinkte Website"
 
 #: src/components/moderation/ContentHider.tsx:115
 #: src/components/moderation/LabelPreference.tsx:136
@@ -4225,10 +4165,6 @@ msgstr "Abzeichen anzeigen"
 #: src/lib/moderation/useLabelBehaviorDescription.ts:61
 msgid "Show badge and filter from feeds"
 msgstr "Abzeichen anzeigen und aus Feeds filtern"
-
-#: src/view/com/modals/EmbedConsent.tsx:87
-#~ msgid "Show embeds from {0}"
-#~ msgstr "Eingebettete Medien von {0} anzeigen"
 
 #: src/screens/Profile/Header/ProfileHeaderStandard.tsx:198
 msgid "Show follows similar to {0}"
@@ -4305,10 +4241,6 @@ msgstr "Warnung anzeigen"
 msgid "Show warning and filter from feeds"
 msgstr "Warnung anzeigen und aus Feeds filtern"
 
-#: src/view/com/profile/ProfileHeader.tsx:462
-#~ msgid "Shows a list of users similar to this user."
-#~ msgstr "Zeigt eine Liste von Benutzern, die diesem Benutzer ähnlich sind."
-
 #: src/view/com/post-thread/PostThreadFollowBtn.tsx:130
 msgid "Shows posts from {0} in your feed"
 msgstr "Zeigt Beiträge von {0} in deinem Feed"
@@ -4334,12 +4266,6 @@ msgstr "Zeigt Beiträge von {0} in deinem Feed"
 msgid "Sign in"
 msgstr "Anmelden"
 
-#: src/view/com/auth/HomeLoggedOutCTA.tsx:82
-#: src/view/com/auth/SplashScreen.tsx:86
-#: src/view/com/auth/SplashScreen.web.tsx:91
-#~ msgid "Sign In"
-#~ msgstr "Anmelden"
-
 #: src/components/AccountList.tsx:109
 msgid "Sign in as {0}"
 msgstr "Anmelden als {0}"
@@ -4350,15 +4276,11 @@ msgstr "Anmelden als..."
 
 #: src/components/dialogs/Signin.tsx:75
 msgid "Sign in or create your account to join the conversation!"
-msgstr ""
-
-#: src/view/com/auth/login/LoginForm.tsx:140
-#~ msgid "Sign into"
-#~ msgstr "Anmelden bei"
+msgstr "Anmelden an oder erstellen dein Konto, um an der Diskussion teilzunehmen!"
 
 #: src/components/dialogs/Signin.tsx:46
 msgid "Sign into Bluesky or create a new account"
-msgstr ""
+msgstr "Anmelden bei Bluesky an oder erstellen dein neues Konto"
 
 #: src/view/screens/Settings/index.tsx:111
 #: src/view/screens/Settings/index.tsx:114
@@ -4394,10 +4316,6 @@ msgstr "Angemeldet als"
 msgid "Signed in as @{0}"
 msgstr "Angemeldet als @{0}"
 
-#: src/view/com/modals/SwitchAccount.tsx:70
-#~ msgid "Signs {0} out of Bluesky"
-#~ msgstr "Meldet {0} von Bluesky ab"
-
 #: src/screens/Onboarding/StepInterests/index.tsx:239
 #: src/screens/Onboarding/StepSuggestedAccounts/index.tsx:203
 #: src/view/com/auth/onboarding/WelcomeMobile.tsx:35
@@ -4417,10 +4335,6 @@ msgstr "Software-Entwicklung"
 #: src/screens/Profile/Sections/Labels.tsx:87
 msgid "Something went wrong, please try again."
 msgstr "Es ist ein Fehler aufgetreten, bitte versuche es erneut."
-
-#: src/components/Lists.tsx:203
-#~ msgid "Something went wrong!"
-#~ msgstr "Es ist ein Fehler aufgetreten."
 
 #: src/App.native.tsx:64
 msgid "Sorry! Your session expired. Please log in again."
@@ -4460,11 +4374,7 @@ msgstr "Status-Seite"
 
 #: src/screens/Signup/index.tsx:143
 msgid "Step"
-msgstr ""
-
-#: src/view/com/auth/create/StepHeader.tsx:22
-#~ msgid "Step {0} of {numSteps}"
-#~ msgstr "Schritt {0} von {numSteps}"
+msgstr "Schritt"
 
 #: src/view/screens/Settings/index.tsx:288
 msgid "Storage cleared, you need to restart the app now."
