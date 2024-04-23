@@ -5120,7 +5120,7 @@ msgstr "Benutzer in \"{0}\""
 
 #: src/components/LikesDialog.tsx:85
 msgid "Users that have liked this content or profile"
-msgstr "Benutzer, denen dieser Inhalt oder dieses Profil gelikt hat"
+msgstr "Benutzer, denen dieser Inhalt oder dieses Profil geliked hat"
 
 #: src/view/com/modals/ChangeHandle.tsx:436
 msgid "Value:"
