@@ -61,7 +61,7 @@ msgstr "⚠Ungültiger Handle"
 
 #: src/screens/Login/LoginForm.tsx:238
 msgid "2FA Confirmation"
-msgstr ""
+msgstr "Bestätigung der Zwei-Faktor-Authentifizierung"
 
 #: src/view/com/util/ViewHeader.tsx:91
 #: src/view/screens/Search/Search.tsx:727
@@ -79,12 +79,12 @@ msgstr "Barrierefreiheit"
 
 #: src/view/screens/Settings/index.tsx:484
 msgid "Accessibility settings"
-msgstr ""
+msgstr "Einstellungen zur Barrierefreiheit"
 
 #: src/Navigation.tsx:284
 #: src/view/screens/AccessibilitySettings.tsx:63
 msgid "Accessibility Settings"
-msgstr ""
+msgstr "Einstellungen zur Barrierefreiheit"
 
 #: src/components/moderation/LabelsOnMe.tsx:42
 msgid "account"
@@ -171,23 +171,6 @@ msgstr "Alt-Text hinzufügen"
 #: src/view/screens/AppPasswords.tsx:158
 msgid "Add App Password"
 msgstr "App-Passwort hinzufügen"
-
-#: src/view/com/modals/report/InputIssueDetails.tsx:41
-#: src/view/com/modals/report/Modal.tsx:191
-#~ msgid "Add details"
-#~ msgstr "Details hinzufügen"
-
-#: src/view/com/modals/report/Modal.tsx:194
-#~ msgid "Add details to report"
-#~ msgstr "Details zum Report hinzufügen"
-
-#: src/view/com/composer/Composer.tsx:467
-#~ msgid "Add link card"
-#~ msgstr "Link-Karte hinzufügen"
-
-#: src/view/com/composer/Composer.tsx:472
-#~ msgid "Add link card:"
-#~ msgstr "Link-Karte hinzufügen:"
 
 #: src/components/dialogs/MutedWords.tsx:157
 msgid "Add mute word for configured settings"
@@ -279,7 +262,7 @@ msgstr "Eine E-Mail wurde an deine vorherige Adresse {0} gesendet. Sie enthält 
 
 #: src/components/dialogs/GifSelect.tsx:284
 msgid "An error occured"
-msgstr ""
+msgstr "Es ist ein Fehler aufgetreten"
 
 #: src/lib/moderation/useReportOptions.ts:26
 msgid "An issue not included in these options"
@@ -305,7 +288,7 @@ msgstr "Tiere"
 
 #: src/view/com/util/post-embeds/GifEmbed.tsx:134
 msgid "Animated GIF"
-msgstr ""
+msgstr "Animiertes GIF"
 
 #: src/lib/moderation/useReportOptions.ts:31
 msgid "Anti-Social Behavior"
@@ -681,7 +664,7 @@ msgstr "Schau dir einige empfohlene Nutzer an. Folge ihnen, um ähnliche Nutzer 
 
 #: src/screens/Login/LoginForm.tsx:262
 msgid "Check your email for a login code and enter it here."
-msgstr ""
+msgstr "Prüfen Sie Ihre E-Mail auf einen Anmeldecode und geben Sie ihn hier ein."
 
 #: src/view/com/modals/DeleteAccount.tsx:168
 msgid "Check your inbox for an email with the confirmation code to enter below:"
@@ -749,10 +732,6 @@ msgstr "hier klicken"
 msgid "Click here to open tag menu for {tag}"
 msgstr "Klicke hier, um das Tag-Menü für {tag} zu öffnen"
 
-#: src/components/RichText.tsx:198
-#~ msgid "Click here to open tag menu for #{tag}"
-#~ msgstr "Klicke hier, um das Tag-Menü für #{tag} zu öffnen"
-
 #: src/screens/Onboarding/index.tsx:35
 msgid "Climate"
 msgstr "Klima"
@@ -778,11 +757,11 @@ msgstr "Untere Schublade schließen"
 
 #: src/components/dialogs/GifSelect.tsx:294
 msgid "Close dialog"
-msgstr ""
+msgstr "Dialog schließen"
 
 #: src/components/dialogs/GifSelect.tsx:150
 msgid "Close GIF dialog"
-msgstr ""
+msgstr "GIF-Dialog schließen"
 
 #: src/view/com/lightbox/ImageViewing/components/ImageDefaultHeader.tsx:36
 msgid "Close image"
@@ -1003,7 +982,7 @@ msgstr "In die Zwischenablage kopiert"
 
 #: src/components/dialogs/Embed.tsx:134
 msgid "Copied!"
-msgstr ""
+msgstr "Kopiert!"
 
 #: src/view/com/modals/AddAppPasswords.tsx:190
 msgid "Copies app password"
@@ -1020,7 +999,7 @@ msgstr "{0} kopieren"
 #: src/components/dialogs/Embed.tsx:120
 #: src/components/dialogs/Embed.tsx:139
 msgid "Copy code"
-msgstr ""
+msgstr "Kopieren diesen Code"
 
 #: src/view/screens/ProfileList.tsx:390
 msgid "Copy link to list"
@@ -1065,7 +1044,7 @@ msgstr "Konto erstellen"
 #: src/components/dialogs/Signin.tsx:86
 #: src/components/dialogs/Signin.tsx:88
 msgid "Create an account"
-msgstr ""
+msgstr "Ein Konto erstellen"
 
 #: src/view/com/modals/AddAppPasswords.tsx:227
 msgid "Create App Password"
@@ -1083,10 +1062,6 @@ msgstr "Meldung für {0} erstellen"
 #: src/view/screens/AppPasswords.tsx:246
 msgid "Created {0}"
 msgstr "Erstellt {0}"
-
-#: src/view/com/composer/Composer.tsx:469
-#~ msgid "Creates a card with a thumbnail. The card links to {url}"
-#~ msgstr "Erzeugt eine Karte mit Vorschaubild und verlinkt auf {url}"
 
 #: src/screens/Onboarding/index.tsx:29
 msgid "Culture"
@@ -1125,7 +1100,7 @@ msgstr "Dunkles Thema"
 
 #: src/screens/Signup/StepInfo/index.tsx:134
 msgid "Date of birth"
-msgstr ""
+msgstr "Datum der Geburt"
 
 #: src/view/screens/Settings/index.tsx:800
 msgid "Debug Moderation"
@@ -1207,15 +1182,15 @@ msgstr "Dimmen"
 
 #: src/view/screens/AccessibilitySettings.tsx:94
 msgid "Disable autoplay for GIFs"
-msgstr ""
+msgstr "Autoplay für GIFs deaktivieren"
 
 #: src/view/screens/Settings/DisableEmail2FADialog.tsx:90
 msgid "Disable Email 2FA"
-msgstr ""
+msgstr "E-Mail-Zwei-Faktor-Authentifizierung deaktivieren"
 
 #: src/view/screens/AccessibilitySettings.tsx:108
 msgid "Disable haptic feedback"
-msgstr ""
+msgstr "Deaktivieren der haptischen Rückmeldung"
 
 #: src/lib/moderation/useLabelBehaviorDescription.ts:32
 #: src/lib/moderation/useLabelBehaviorDescription.ts:42
@@ -1433,7 +1408,7 @@ msgstr "E-Mail"
 
 #: src/view/screens/Settings/DisableEmail2FADialog.tsx:64
 msgid "Email 2FA disabled"
-msgstr ""
+msgstr "E-Mail-Zwei-Faktor-Authentifizierung deaktiviert"
 
 #: src/screens/Login/ForgotPasswordForm.tsx:99
 msgid "Email address"
