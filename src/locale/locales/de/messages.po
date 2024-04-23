@@ -5014,7 +5014,7 @@ msgstr "Hochladen aus Dateien"
 #: src/view/com/util/UserBanner.tsx:127
 #: src/view/com/util/UserBanner.tsx:131
 msgid "Upload from Library"
-msgstr "Hochladen aus der Bibliothek"
+msgstr "Hochladen aus der Sammlung"
 
 #: src/view/com/modals/ChangeHandle.tsx:408
 msgid "Use a file on your server"
