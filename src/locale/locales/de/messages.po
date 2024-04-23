@@ -1928,7 +1928,7 @@ msgstr "Gehe zum nächsten"
 
 #: src/lib/moderation/useGlobalLabelStrings.ts:46
 msgid "Graphic Media"
-msgstr "Grafische Medien"
+msgstr "Medien in allen Einzelheiten grafischen"
 
 #: src/view/com/modals/ChangeHandle.tsx:266
 msgid "Handle"
