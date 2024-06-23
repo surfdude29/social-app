@@ -86,7 +86,7 @@ msgstr "Avatar de {0}"
 
 #: src/screens/StarterPack/Wizard/StepDetails.tsx:68
 msgid "{0}'s favorite feeds and people - join me!"
-msgstr "Les fils d'actualité et les personnes préférées de {0} – rejoignez-moi !"
+msgstr "Les fils d'actu et les personnes préférées de {0} – rejoignez-moi !"
 
 #: src/screens/StarterPack/Wizard/StepDetails.tsx:47
 msgid "{0}'s starter pack"
