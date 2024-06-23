@@ -281,7 +281,7 @@ msgstr "Ajouter"
 
 #: src/screens/StarterPack/Wizard/index.tsx:539
 msgid "Add {0} more to continue"
-msgstr "Ajouter {0} pour continuer"
+msgstr "Ajouter {0} autres pour continuer"
 
 #: src/components/StarterPack/Wizard/WizardListCard.tsx:56
 msgid "Add {displayName} to starter pack"
