@@ -5344,19 +5344,19 @@ msgstr "Démarrer les discussions"
 #: src/Navigation.tsx:325
 #: src/screens/StarterPack/Wizard/index.tsx:190
 msgid "Starter Pack"
-msgstr ""
+msgstr "Pack de démarrage"
 
 #: src/components/StarterPack/StarterPackCard.tsx:65
 msgid "Starter pack by {0}"
-msgstr ""
+msgstr "Pack de démarrage par {0}"
 
 #: src/screens/StarterPack/StarterPackScreen.tsx:579
 msgid "Starter pack is invalid"
-msgstr ""
+msgstr "Le pack de démarrage n'est pas valide"
 
 #: src/view/screens/Profile.tsx:221
 msgid "Starter Packs"
-msgstr ""
+msgstr "Packs de démarrage"
 
 #: src/view/screens/Settings/index.tsx:963
 msgid "Status Page"
@@ -5404,11 +5404,7 @@ msgstr "S’abonner à cette liste"
 
 #: src/view/screens/Search/Explore.tsx:331
 msgid "Suggested accounts"
-msgstr ""
-
-#: src/view/screens/Search/Search.tsx:425
-#~ msgid "Suggested Follows"
-#~ msgstr "Suivis suggérés"
+msgstr "Comptes suggérés"
 
 #: src/view/com/profile/ProfileHeaderSuggestedFollows.tsx:65
 msgid "Suggested for you"
@@ -5471,7 +5467,7 @@ msgstr "Racontez une blague !"
 
 #: src/screens/StarterPack/Wizard/StepDetails.tsx:63
 msgid "Tell us a little more"
-msgstr ""
+msgstr "Dites-nous en un peu plus"
 
 #: src/view/shell/desktop/RightNav.tsx:86
 msgid "Terms"
@@ -5519,7 +5515,7 @@ msgstr "Ce pseudo est déjà occupé."
 #: src/screens/StarterPack/Wizard/index.tsx:105
 #: src/screens/StarterPack/Wizard/index.tsx:113
 msgid "That starter pack could not be found."
-msgstr ""
+msgstr "Ce pack de démarrage n'a pas pu être trouvé."
 
 #: src/screens/Profile/Header/ProfileHeaderStandard.tsx:310
 #: src/view/com/profile/ProfileMenu.tsx:353
@@ -5536,7 +5532,7 @@ msgstr "Notre politique de droits d’auteur a été déplacée vers <0/>"
 
 #: src/screens/StarterPack/StarterPackLandingScreen.tsx:298
 msgid "The experience is better in the app. Download Bluesky now and we'll pick back up where you left off."
-msgstr ""
+msgstr "L'expérience est meilleure dans l'application. Téléchargez Bluesky maintenant et nous reprendrons là où vous vous êtes arrêté."
 
 #: src/view/com/posts/FeedShutdownMsg.tsx:66
 msgid "The feed has been replaced with Discover."
@@ -5565,7 +5561,7 @@ msgstr "Notre politique de confidentialité a été déplacée vers <0/>"
 
 #: src/screens/StarterPack/StarterPackScreen.tsx:589
 msgid "The starter pack that you are trying to view is invalid. You may delete this starter pack instead."
-msgstr ""
+msgstr "Le pack de démarrage que vous essayez de visualiser n'est pas valide. Vous pouvez supprimer ce pack de démarrage à la place."
 
 #: src/view/screens/Support.tsx:36
 msgid "The support form has been moved. If you need help, please <0/> or visit {HELP_DESK_URL} to get in touch with us."
@@ -5832,7 +5828,7 @@ msgstr "Ce compte est inclus dans la liste <0>{0}</0> que vous avez masquée."
 
 #: src/components/NewskieDialog.tsx:53
 msgid "This user is new here. Press for more info about when they joined."
-msgstr ""
+msgstr "Ce compte est nouveau. Appuyez pour obtenir plus d'informations sur sa date d'arrivée."
 
 #: src/view/com/profile/ProfileFollows.tsx:87
 msgid "This user isn't following anyone."
@@ -5937,7 +5933,7 @@ msgstr "Impossible de contacter votre service. Veuillez vérifier votre connexio
 
 #: src/screens/StarterPack/StarterPackScreen.tsx:513
 msgid "Unable to delete"
-msgstr ""
+msgstr "Impossible de supprimer"
 
 #: src/components/dms/MessagesListBlockedFooter.tsx:89
 #: src/components/dms/MessagesListBlockedFooter.tsx:96
@@ -6266,7 +6262,7 @@ msgstr "Voir le profil de {0}"
 
 #: src/components/ProfileHoverCard/index.web.tsx:430
 msgid "View blocked user's profile"
-msgstr ""
+msgstr "Voir le profil du compte bloqué"
 
 #: src/view/screens/Log.tsx:56
 msgid "View debug entry"
@@ -6311,7 +6307,7 @@ msgstr "Voir les comptes qui a liké ce fil d’actu"
 #: src/view/com/home/HomeHeaderLayout.web.tsx:79
 #: src/view/com/home/HomeHeaderLayoutMobile.tsx:84
 msgid "View your feeds and explore more"
-msgstr ""
+msgstr "Consultez vos fils d'actu et explorez-en plus"
 
 #: src/view/com/modals/LinkWarning.tsx:89
 #: src/view/com/modals/LinkWarning.tsx:95
@@ -6406,12 +6402,8 @@ msgid "We're sorry! We can't find the page you were looking for."
 msgstr "Nous sommes désolés ! La page que vous recherchez est introuvable."
 
 #: src/screens/Profile/Header/ProfileHeaderLabeler.tsx:330
-#~ msgid "We're sorry! You can only subscribe to ten labelers, and you've reached your limit of ten."
-#~ msgstr "Nous sommes désolés ! Vous ne pouvez vous abonner qu’à dix étiqueteurs, et vous avez atteint votre limite de dix."
-
-#: src/screens/Profile/Header/ProfileHeaderLabeler.tsx:330
 msgid "We're sorry! You can only subscribe to twenty labelers, and you've reached your limit of twenty."
-msgstr ""
+msgstr "Nous sommes désolés ! Vous ne pouvez vous abonner qu'à vingt étiqueteurs, et vous avez atteint votre limite de vingt."
 
 #: src/screens/Deactivated.tsx:128
 msgid "Welcome back!"
@@ -6423,7 +6415,7 @@ msgstr "Quels sont vos centres d’intérêt ?"
 
 #: src/screens/StarterPack/Wizard/StepDetails.tsx:42
 msgid "What do you want to call your starter pack?"
-msgstr ""
+msgstr "Quel est le nom de votre pack de démarrage ?"
 
 #: src/view/com/auth/SplashScreen.tsx:40
 #: src/view/com/auth/SplashScreen.web.tsx:86
@@ -6452,11 +6444,11 @@ msgstr "Qui peut répondre ?"
 
 #: src/view/com/threadgate/WhoCanReply.tsx:206
 msgid "Who can reply dialog"
-msgstr ""
+msgstr "Dialogue qui permet de changer qui peut répondre"
 
 #: src/view/com/threadgate/WhoCanReply.tsx:210
 msgid "Who can reply?"
-msgstr ""
+msgstr "Qui peut répondre ?"
 
 #: src/screens/Home/NoFeedsPinned.tsx:79
 #: src/screens/Messages/List/index.tsx:185
@@ -6485,7 +6477,7 @@ msgstr "Pourquoi ce post devrait-il être examiné ?"
 
 #: src/components/ReportDialog/SelectReportOptionView.tsx:60
 msgid "Why should this starter pack be reviewed?"
-msgstr ""
+msgstr "Pourquoi ce pack de démarrage devrait-il être examiné ?"
 
 #: src/components/ReportDialog/SelectReportOptionView.tsx:48
 msgid "Why should this user be reviewed?"
@@ -6530,7 +6522,7 @@ msgstr "Oui, désactiver"
 
 #: src/screens/StarterPack/StarterPackScreen.tsx:525
 msgid "Yes, delete this starter pack"
-msgstr ""
+msgstr "Oui, supprimez ce pack de démarrage"
 
 #: src/screens/Deactivated.tsx:150
 msgid "Yes, reactivate my account"
@@ -6542,7 +6534,7 @@ msgstr "Hier, {time}"
 
 #: src/components/StarterPack/StarterPackCard.tsx:68
 msgid "you"
-msgstr ""
+msgstr "vous"
 
 #: src/screens/SignupQueued.tsx:136
 msgid "You are in line."
