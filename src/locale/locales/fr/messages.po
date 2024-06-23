@@ -175,7 +175,7 @@ msgstr "<0>{0}, </0><1>{1}, </1>et {2, plural, one {# autre} other {# autres}} s
 #: src/screens/StarterPack/Wizard/index.tsx:509
 msgctxt "feeds"
 msgid "<0>{0}, </0><1>{1}, </1>and {2, plural, one {# other} other {# others}} are included in your starter pack"
-msgstr "<0>{0}, </0><1>{1}, </1>et {2, plural, one {# autre} other {# autres}} sont inclus dans votre pack de démarrage"
+msgstr "<0>{0}, </0><1>{1} </1>et {2, plural, one {# autre} other {# autres}} sont inclus dans votre pack de démarrage"
 
 #: src/view/shell/Drawer.tsx:101
 msgid "<0>{0}</0> {1, plural, one {follower} other {followers}}"
