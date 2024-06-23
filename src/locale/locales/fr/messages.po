@@ -5561,7 +5561,7 @@ msgstr "Notre politique de confidentialité a été déplacée vers <0/>"
 
 #: src/screens/StarterPack/StarterPackScreen.tsx:589
 msgid "The starter pack that you are trying to view is invalid. You may delete this starter pack instead."
-msgstr "Le pack de démarrage que vous essayez de visualiser n'est pas valide. Vous pouvez supprimer ce pack de démarrage à la place."
+msgstr "Le pack de démarrage que vous essayez de consulter n'est pas valide. Vous pouvez supprimer ce pack de démarrage à la place."
 
 #: src/view/screens/Support.tsx:36
 msgid "The support form has been moved. If you need help, please <0/> or visit {HELP_DESK_URL} to get in touch with us."
