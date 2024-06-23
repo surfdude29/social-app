@@ -2067,7 +2067,7 @@ msgstr "Échec de la suppression du post, veuillez réessayer"
 
 #: src/screens/StarterPack/StarterPackScreen.tsx:562
 msgid "Failed to delete starter pack"
-msgstr "Échec de la suppression du pack démarrage"
+msgstr "Échec de la suppression du pack de démarrage"
 
 #: src/view/screens/Search/Explore.tsx:426
 #: src/view/screens/Search/Explore.tsx:454
