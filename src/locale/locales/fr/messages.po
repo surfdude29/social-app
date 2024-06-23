@@ -6576,7 +6576,7 @@ msgstr "Vous n’avez pas d’abonné·e·s."
 
 #: src/screens/Profile/KnownFollowers.tsx:99
 msgid "You don't follow any users who follow @{name}."
-msgstr ""
+msgstr "Vous ne suivez aucun des comptes qui suivent @{name}."
 
 #: src/view/com/modals/InviteCodes.tsx:67
 msgid "You don't have any invite codes yet! We'll send you some when you've been on Bluesky for a little longer."
@@ -6671,11 +6671,11 @@ msgstr "Vous pouvez faire appel de ces étiquettes si vous estimez qu’elles on
 
 #: src/screens/StarterPack/Wizard/State.tsx:92
 msgid "You may only add up to 50 feeds"
-msgstr ""
+msgstr "Vous ne pouvez ajouter que 50 fils d'actu au maximum."
 
 #: src/screens/StarterPack/Wizard/State.tsx:77
 msgid "You may only add up to 50 profiles"
-msgstr ""
+msgstr "Vous ne pouvez ajouter que 50 profils au maximum"
 
 #: src/screens/Signup/StepInfo/Policies.tsx:79
 msgid "You must be 13 years of age or older to sign up."
@@ -6683,15 +6683,15 @@ msgstr "Vous devez avoir 13 ans ou plus pour vous inscrire."
 
 #: src/components/StarterPack/ProfileStarterPacks.tsx:304
 msgid "You must be following at least seven other people to generate a starter pack."
-msgstr ""
+msgstr "Vous devez suivre au moins sept autres personnes pour générer un pack de démarrage."
 
 #: src/components/StarterPack/QrCodeDialog.tsx:62
 msgid "You must grant access to your photo library to save a QR code"
-msgstr ""
+msgstr "Vous devez autoriser l'accès à votre photothèque pour enregistrer un code QR"
 
 #: src/components/StarterPack/ShareDialog.tsx:70
 msgid "You must grant access to your photo library to save the image."
-msgstr ""
+msgstr "Vous devez autoriser l'accès à votre photothèque pour enregistrer l'image."
 
 #: src/components/ReportDialog/SubmitView.tsx:205
 msgid "You must select at least one labeler for a report"
@@ -6727,23 +6727,23 @@ msgstr "Vous : {short}"
 
 #: src/screens/Signup/index.tsx:169
 msgid "You'll follow the suggested users and feeds once you finish creating your account!"
-msgstr ""
+msgstr "Vous suivrez les comptes et fils d'actu suggérés une fois que vous aurez créé votre compte !"
 
 #: src/screens/Signup/index.tsx:174
 msgid "You'll follow the suggested users once you finish creating your account!"
-msgstr ""
+msgstr "Vous suivrez les comptes suggérés une fois que vous aurez créé votre compte !"
 
 #: src/screens/StarterPack/StarterPackLandingScreen.tsx:229
 msgid "You'll follow these people and {0} others"
-msgstr ""
+msgstr "Vous suivrez ces personnes et {0} autres"
 
 #: src/screens/StarterPack/StarterPackLandingScreen.tsx:227
 msgid "You'll follow these people right away"
-msgstr ""
+msgstr "Vous suivrez ces personnes immédiatement"
 
 #: src/screens/StarterPack/StarterPackLandingScreen.tsx:256
 msgid "You'll stay updated with these feeds"
-msgstr ""
+msgstr "Vous resterez informé grâce à ces fils d'actu"
 
 #: src/screens/SignupQueued.tsx:93
 #: src/screens/SignupQueued.tsx:94
