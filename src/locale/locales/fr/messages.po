@@ -3624,11 +3624,11 @@ msgstr "Plus anciennes réponses en premier"
 
 #: src/components/StarterPack/QrCode.tsx:69
 msgid "on"
-msgstr ""
+msgstr "sur"
 
 #: src/lib/hooks/useTimeAgo.ts:81
 msgid "on {str}"
-msgstr ""
+msgstr "à {str}"
 
 #: src/view/screens/Settings/index.tsx:256
 msgid "Onboarding reset"
@@ -3644,11 +3644,7 @@ msgstr "Seuls les fichiers .jpg et .png sont acceptés"
 
 #: src/view/com/threadgate/WhoCanReply.tsx:239
 msgid "Only {0} can reply"
-msgstr ""
-
-#: src/view/com/threadgate/WhoCanReply.tsx:100
-#~ msgid "Only {0} can reply."
-#~ msgstr "Seul {0} peut répondre."
+msgstr "Seul {0} peut répondre"
 
 #: src/screens/Signup/StepHandle.tsx:98
 msgid "Only contains letters, numbers, and hyphens"
@@ -3714,7 +3710,7 @@ msgstr "Ouvrir le menu d’options du post"
 
 #: src/screens/StarterPack/StarterPackScreen.tsx:416
 msgid "Open starter pack menu"
-msgstr ""
+msgstr "Ouvrir le menu du pack de démarrage"
 
 #: src/view/screens/Settings/index.tsx:860
 #: src/view/screens/Settings/index.tsx:870
@@ -3814,11 +3810,6 @@ msgstr "Ouvre les paramètres de modération"
 #: src/screens/Login/LoginForm.tsx:228
 msgid "Opens password reset form"
 msgstr "Ouvre le formulaire de réinitialisation du mot de passe"
-
-#: src/view/com/home/HomeHeaderLayout.web.tsx:77
-#: src/view/screens/Feeds.tsx:417
-#~ msgid "Opens screen to edit Saved Feeds"
-#~ msgstr "Ouvre l’écran pour modifier les fils d’actu enregistrés"
 
 #: src/view/screens/Settings/index.tsx:617
 msgid "Opens screen with all saved feeds"
@@ -3946,7 +3937,7 @@ msgstr "Permission d’accès à la pellicule refusée. Veuillez l’activer dan
 
 #: src/components/StarterPack/Wizard/WizardListCard.tsx:52
 msgid "Person toggle"
-msgstr ""
+msgstr "Bouton per les personnes"
 
 #: src/screens/Onboarding/index.tsx:28
 msgid "Pets"
@@ -4148,7 +4139,7 @@ msgstr "Appuyer pour réessayer"
 
 #: src/components/KnownFollowers.tsx:116
 msgid "Press to view followers of this account that you also follow"
-msgstr ""
+msgstr "Appuyer pour voir les personnes qui suivent ce compte et que vous suivez également"
 
 #: src/view/com/lightbox/Lightbox.web.tsx:150
 msgid "Previous image"
@@ -4226,15 +4217,15 @@ msgstr "Publier la réponse"
 
 #: src/components/StarterPack/QrCodeDialog.tsx:131
 msgid "QR code copied to your clipboard!"
-msgstr ""
+msgstr "Code QR copié dans votre presse-papiers !"
 
 #: src/components/StarterPack/QrCodeDialog.tsx:109
 msgid "QR code has been downloaded!"
-msgstr ""
+msgstr "Code QR a été téléchargé !"
 
 #: src/components/StarterPack/QrCodeDialog.tsx:110
 msgid "QR code saved to your camera roll!"
-msgstr ""
+msgstr "Code QR enregistré dans votre photothèque !"
 
 #: src/view/com/util/post-ctrls/RepostButton.tsx:116
 #: src/view/com/util/post-ctrls/RepostButton.tsx:128
@@ -4283,7 +4274,7 @@ msgstr "Supprimer"
 
 #: src/components/StarterPack/Wizard/WizardListCard.tsx:55
 msgid "Remove {displayName} from starter pack"
-msgstr ""
+msgstr "Supprimer {displayName} du pack de démarrage"
 
 #: src/view/com/util/AccountDropdownBtn.tsx:22
 msgid "Remove account"
@@ -4391,11 +4382,11 @@ msgstr "Réponses"
 
 #: src/view/com/threadgate/WhoCanReply.tsx:66
 msgid "Replies disabled"
-msgstr ""
+msgstr "Les réponses sont désactivées"
 
 #: src/view/com/threadgate/WhoCanReply.tsx:123
 msgid "Replies on this thread are disabled"
-msgstr ""
+msgstr "Les réponses à ce fil de discussion sont désactivées"
 
 #: src/view/com/threadgate/WhoCanReply.tsx:237
 msgid "Replies to this thread are disabled"
@@ -4419,7 +4410,7 @@ msgstr "Réponse à <0><1/></0>"
 #: src/view/com/posts/FeedItem.tsx:437
 msgctxt "description"
 msgid "Reply to a blocked post"
-msgstr ""
+msgstr "Réponse à un post bloqué"
 
 #: src/components/dms/MessageMenu.tsx:132
 #: src/components/dms/MessagesListBlockedFooter.tsx:77
@@ -4463,7 +4454,7 @@ msgstr "Signaler le post"
 #: src/screens/StarterPack/StarterPackScreen.tsx:469
 #: src/screens/StarterPack/StarterPackScreen.tsx:472
 msgid "Report starter pack"
-msgstr ""
+msgstr "Signaler le pack de démarrage"
 
 #: src/components/ReportDialog/SelectReportOptionView.tsx:43
 msgid "Report this content"
@@ -4489,7 +4480,7 @@ msgstr "Signaler ce post"
 
 #: src/components/ReportDialog/SelectReportOptionView.tsx:59
 msgid "Report this starter pack"
-msgstr ""
+msgstr "Signaler ce pack de démarrage"
 
 #: src/components/ReportDialog/SelectReportOptionView.tsx:47
 msgid "Report this user"
@@ -4665,7 +4656,7 @@ msgstr "Enregistrer le changement de pseudo"
 #: src/components/StarterPack/ShareDialog.tsx:163
 #: src/components/StarterPack/ShareDialog.tsx:170
 msgid "Save image"
-msgstr ""
+msgstr "Enregistrer l'image"
 
 #: src/view/com/modals/crop-image/CropImage.web.tsx:169
 msgid "Save image crop"
@@ -4673,7 +4664,7 @@ msgstr "Enregistrer le recadrage de l’image"
 
 #: src/components/StarterPack/QrCodeDialog.tsx:184
 msgid "Save QR code"
-msgstr ""
+msgstr "Enregistrer le code QR"
 
 #: src/view/screens/ProfileFeed.tsx:332
 #: src/view/screens/ProfileFeed.tsx:338
@@ -4756,7 +4747,7 @@ msgstr "Rechercher tous les posts avec le mot-clé {displayTag}"
 
 #: src/screens/StarterPack/Wizard/index.tsx:467
 msgid "Search for feeds that you want to suggest to others."
-msgstr ""
+msgstr "Recherchez les fils d'actu que vous voulez suggérer à d'autres personnes."
 
 #: src/view/com/auth/LoggedOut.tsx:101
 #: src/view/com/auth/LoggedOut.tsx:102
@@ -5066,7 +5057,7 @@ msgstr "Partager le fil d’actu"
 
 #: src/screens/StarterPack/StarterPackScreen.tsx:462
 msgid "Share link"
-msgstr ""
+msgstr "Partager le lien"
 
 #: src/components/StarterPack/ShareDialog.tsx:143
 #: src/view/com/modals/LinkWarning.tsx:89
@@ -5076,15 +5067,15 @@ msgstr "Partager le lien"
 
 #: src/components/StarterPack/ShareDialog.tsx:100
 msgid "Share link dialog"
-msgstr ""
+msgstr "Dialogue pour le partage d'un lien"
 
 #: src/screens/StarterPack/StarterPackScreen.tsx:296
 msgid "Share this starter pack"
-msgstr ""
+msgstr "Partagez ce pack de démarrage"
 
 #: src/components/StarterPack/ShareDialog.tsx:112
 msgid "Share this starter pack and help people join your community on Bluesky."
-msgstr ""
+msgstr "Partagez ce pack de démarrage et aidez les gens à rejoindre votre communauté sur Bluesky."
 
 #: src/components/dms/ChatEmptyPill.tsx:34
 msgid "Share your favorite feed!"
@@ -5258,12 +5249,12 @@ msgstr "Connecté en tant que @{0}"
 
 #: src/view/com/notifications/FeedItem.tsx:197
 msgid "signed up with your starter pack"
-msgstr ""
+msgstr "s'est inscrit [median] avec votre pack de démarrage"
 
 #: src/screens/StarterPack/StarterPackLandingScreen.tsx:277
 #: src/screens/StarterPack/StarterPackLandingScreen.tsx:284
 msgid "Signup without a starter pack"
-msgstr ""
+msgstr "S'inscrire sans pack de démarrage"
 
 #: src/screens/Onboarding/StepInterests/index.tsx:240
 #: src/screens/StarterPack/Wizard/index.tsx:202
