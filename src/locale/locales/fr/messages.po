@@ -2101,11 +2101,11 @@ msgstr "Échec de l’envoi de l’appel, veuillez réessayer."
 
 #: src/view/com/util/forms/PostDropdownBtn.tsx:180
 msgid "Failed to toggle thread mute, please try again"
-msgstr ""
+msgstr "Échec de basculer la masquage du fil de discussion, veuillez réessayer"
 
 #: src/components/FeedCard.tsx:280
 msgid "Failed to update feeds"
-msgstr ""
+msgstr "Échec de la mise à jour des fils d'actu"
 
 #: src/components/dms/MessagesNUX.tsx:60
 #: src/screens/Messages/Settings.tsx:35
@@ -2121,13 +2121,9 @@ msgstr "Fil d’actu"
 msgid "Feed by {0}"
 msgstr "Fil d’actu par {0}"
 
-#: src/view/screens/Feeds.tsx:709
-#~ msgid "Feed offline"
-#~ msgstr "Fil d’actu hors ligne"
-
 #: src/components/StarterPack/Wizard/WizardListCard.tsx:52
 msgid "Feed toggle"
-msgstr ""
+msgstr "Bouton pour le fil d'actu"
 
 #: src/view/shell/desktop/RightNav.tsx:66
 #: src/view/shell/Drawer.tsx:345
@@ -2152,7 +2148,7 @@ msgstr "Les fils d’actu sont des algorithmes personnalisés qui se construisen
 
 #: src/components/FeedCard.tsx:277
 msgid "Feeds updated!"
-msgstr ""
+msgstr "Fils d'actu mis à jour !"
 
 #: src/view/com/modals/ChangeHandle.tsx:475
 msgid "File Contents"
@@ -2190,7 +2186,7 @@ msgstr "Affine les fils de discussion."
 
 #: src/screens/StarterPack/Wizard/index.tsx:202
 msgid "Finish"
-msgstr ""
+msgstr "Finir"
 
 #: src/screens/Onboarding/index.tsx:35
 msgid "Fitness"
@@ -2239,7 +2235,7 @@ msgstr "Suivre le compte"
 #: src/screens/StarterPack/StarterPackScreen.tsx:308
 #: src/screens/StarterPack/StarterPackScreen.tsx:315
 msgid "Follow all"
-msgstr ""
+msgstr "Suivre tous"
 
 #: src/view/com/post-thread/PostThreadFollowBtn.tsx:144
 msgid "Follow Back"
@@ -2247,11 +2243,7 @@ msgstr "Suivre en retour"
 
 #: src/view/screens/Search/Explore.tsx:333
 msgid "Follow more accounts to get connected to your interests and build your network."
-msgstr ""
-
-#: src/components/KnownFollowers.tsx:169
-#~ msgid "Followed by"
-#~ msgstr ""
+msgstr "Suivez plus de comptes pour vous connecter à vos centres d'intérêt et développer votre réseau."
 
 #: src/view/com/profile/ProfileCard.tsx:227
 msgid "Followed by {0}"
@@ -2259,19 +2251,19 @@ msgstr "Suivi par {0}"
 
 #: src/components/KnownFollowers.tsx:223
 msgid "Followed by <0>{0}</0>"
-msgstr ""
+msgstr "Suivi par <0>{0}</0>"
 
 #: src/components/KnownFollowers.tsx:209
 msgid "Followed by <0>{0}</0> and {1, plural, one {# other} other {# others}}"
-msgstr ""
+msgstr "Suivi par <0>{0}</0> et {1, plural, one {# autre} other {# autres}}"
 
 #: src/components/KnownFollowers.tsx:196
 msgid "Followed by <0>{0}</0> and <1>{1}</1>"
-msgstr ""
+msgstr "Suivi par <0>{0}</0> et <1>{1}</1>"
 
 #: src/components/KnownFollowers.tsx:178
 msgid "Followed by <0>{0}</0>, <1>{1}</1>, and {2, plural, one {# other} other {# others}}"
-msgstr ""
+msgstr "Suivi par <0>{0}</0>, <1>{1}</1>, et {2, plural, one {# autre} other {# autres}}"
 
 #: src/view/com/modals/Threadgate.tsx:101
 msgid "Followed users"
@@ -2292,12 +2284,12 @@ msgstr "Abonné·e·s"
 
 #: src/Navigation.tsx:179
 msgid "Followers of @{0} that you know"
-msgstr ""
+msgstr "Abonné·e·s de @{0} que vous connaissez"
 
 #: src/screens/Profile/KnownFollowers.tsx:108
 #: src/screens/Profile/KnownFollowers.tsx:118
 msgid "Followers you know"
-msgstr ""
+msgstr "Abonné·e·s que vous connaissez"
 
 #: src/components/ProfileHoverCard/index.web.tsx:445
 #: src/components/ProfileHoverCard/index.web.tsx:456
@@ -2380,7 +2372,7 @@ msgstr "Galerie"
 
 #: src/components/StarterPack/ProfileStarterPacks.tsx:277
 msgid "Generate a starter pack"
-msgstr ""
+msgstr "Générer un pack de démarrage"
 
 #: src/components/dms/MessagesNUX.tsx:168
 msgid "Get started"
@@ -2393,7 +2385,7 @@ msgstr "C’est parti"
 
 #: src/view/com/util/images/ImageHorzList.tsx:35
 msgid "GIF"
-msgstr ""
+msgstr "GIF"
 
 #: src/screens/Onboarding/StepProfile/index.tsx:225
 msgid "Give your profile a face"
@@ -2435,7 +2427,7 @@ msgstr "Retour à l’étape précédente"
 
 #: src/screens/StarterPack/Wizard/index.tsx:313
 msgid "Go back to the previous step"
-msgstr ""
+msgstr "Retour à l’étape précédente"
 
 #: src/view/screens/NotFound.tsx:55
 msgid "Go home"
