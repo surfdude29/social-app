@@ -4223,7 +4223,7 @@ msgstr "Publier la réponse"
 
 #: src/components/StarterPack/QrCodeDialog.tsx:131
 msgid "QR code copied to your clipboard!"
-msgstr "Code QR copié dans votre presse-papiers !"
+msgstr "Code QR copié dans votre presse-papier !"
 
 #: src/components/StarterPack/QrCodeDialog.tsx:109
 msgid "QR code has been downloaded!"
