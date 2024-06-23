@@ -170,7 +170,7 @@ msgstr "<0>{0} </0>et<1> </1><2>{1} </2>sont inclus dans votre pack de démarrag
 #: src/screens/StarterPack/Wizard/index.tsx:497
 msgctxt "profiles"
 msgid "<0>{0}, </0><1>{1}, </1>and {2, plural, one {# other} other {# others}} are included in your starter pack"
-msgstr "<0>{0}, </0><1>{1}, </1>et {2, plural, one {# autre} other {# autres}} sont inclus dans votre pack de démarrage"
+msgstr "<0>{0}, </0><1>{1} </1>et {2, plural, one {# autre} other {# autres}} sont inclus dans votre pack de démarrage"
 
 #: src/screens/StarterPack/Wizard/index.tsx:509
 msgctxt "feeds"
