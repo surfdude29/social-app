@@ -347,7 +347,7 @@ msgstr "Ajoutez l’enregistrement DNS suivant à votre domaine :"
 
 #: src/components/FeedCard.tsx:300
 msgid "Add this feed to your feeds"
-msgstr "Ajoutez ce fil à vos fils d'actu"
+msgstr "Ajouter ce fil à vos fils d'actu"
 
 #: src/view/com/profile/ProfileMenu.tsx:267
 #: src/view/com/profile/ProfileMenu.tsx:270
