@@ -37,10 +37,6 @@ msgstr "{0, plural, one {# étiquette a été placée sur ce contenu} other {# �
 msgid "{0, plural, one {# repost} other {# reposts}}"
 msgstr "{0, plural, one {# repost} other {# reposts}}"
 
-#: src/components/KnownFollowers.tsx:179
-#~ msgid "{0, plural, one {and # other} other {and # others}}"
-#~ msgstr ""
-
 #: src/components/ProfileHoverCard/index.web.tsx:398
 #: src/screens/Profile/Header/Metrics.tsx:23
 msgid "{0, plural, one {follower} other {followers}}"
@@ -82,7 +78,7 @@ msgstr "{0, plural, one {Déliker (# like)} other {Déliker (# likes)}}"
 
 #: src/screens/StarterPack/StarterPackScreen.tsx:343
 msgid "{0} people have used this starter pack!"
-msgstr ""
+msgstr "{0} personnes ont utilisé ce pack de démarrage !"
 
 #: src/view/com/util/UserAvatar.tsx:419
 msgid "{0}'s avatar"
@@ -90,11 +86,11 @@ msgstr "Avatar de {0}"
 
 #: src/screens/StarterPack/Wizard/StepDetails.tsx:68
 msgid "{0}'s favorite feeds and people - join me!"
-msgstr ""
+msgstr "Les fils d'actualité et les personnes préférées de {0} – rejoignez-moi !"
 
 #: src/screens/StarterPack/Wizard/StepDetails.tsx:47
 msgid "{0}'s starter pack"
-msgstr ""
+msgstr "Pack de démarrage de {0}"
 
 #: src/components/LabelingServiceCard/index.tsx:71
 msgid "{count, plural, one {Liked by # user} other {Liked by # users}}"
@@ -102,27 +98,27 @@ msgstr "{count, plural, one {Liké par # compte} other {Liké par # comptes}}"
 
 #: src/lib/hooks/useTimeAgo.ts:69
 msgid "{diff, plural, one {day} other {days}}"
-msgstr ""
+msgstr "{diff, plural, one {jour} other {jours}}"
 
 #: src/lib/hooks/useTimeAgo.ts:64
 msgid "{diff, plural, one {hour} other {hours}}"
-msgstr ""
+msgstr "{diff, plural, one {heure} other {heures}}"
 
 #: src/lib/hooks/useTimeAgo.ts:59
 msgid "{diff, plural, one {minute} other {minutes}}"
-msgstr ""
+msgstr "{diff, plural, one {minute} other {minutes}}"
 
 #: src/lib/hooks/useTimeAgo.ts:75
 msgid "{diff, plural, one {month} other {months}}"
-msgstr ""
+msgstr "{diff, plural, one {mois} other {mois}}"
 
 #: src/lib/hooks/useTimeAgo.ts:54
 msgid "{diffSeconds, plural, one {second} other {seconds}}"
-msgstr ""
+msgstr "{diffSeconds, plural, one {seconde} other {secondes}}"
 
 #: src/screens/StarterPack/Wizard/index.tsx:182
 msgid "{displayName}'s Starter Pack"
-msgstr ""
+msgstr "Le pack de démarrage de {displayName}"
 
 #: src/screens/SignupQueued.tsx:207
 msgid "{estimatedTimeHrs, plural, one {hour} other {hours}}"
@@ -153,11 +149,11 @@ msgstr "{numUnreadNotifications} non lus"
 
 #: src/components/NewskieDialog.tsx:92
 msgid "{profileName} joined Bluesky {0} ago"
-msgstr ""
+msgstr "{profileName} a rejoint Bluesky il y a {0}"
 
 #: src/components/NewskieDialog.tsx:87
 msgid "{profileName} joined Bluesky using a starter pack {0} ago"
-msgstr ""
+msgstr "{profileName} a rejoint Bluesky en utilisant un pack de démarrage il y a {0}"
 
 #: src/view/screens/PreferencesFollowingFeed.tsx:67
 msgid "{value, plural, =0 {Show all replies} one {Show replies with at least # like} other {Show replies with at least # likes}}"
@@ -169,11 +165,11 @@ msgstr "<0/> membres"
 
 #: src/screens/StarterPack/Wizard/index.tsx:485
 msgid "<0>{0} </0>and<1> </1><2>{1} </2>are included in your starter pack"
-msgstr ""
+msgstr "<0>{0} </0>et<1> </1><2>{1} </2>sont inclus dans votre pack de démarrage"
 
 #: src/screens/StarterPack/Wizard/index.tsx:497
 msgid "<0>{0}, </0><1>{1}, </1>and {2} {3, plural, one {other} other {others}} are included in your starter pack"
-msgstr ""
+msgstr "<0>{0}, </0><1>{1}, </1>et {2} {3, plural, one {autre} other {autres}} sont inclus dans votre pack de démarrage"
 
 #: src/view/shell/Drawer.tsx:101
 msgid "<0>{0}</0> {1, plural, one {follower} other {followers}}"
@@ -185,7 +181,7 @@ msgstr "<0>{0}</0> {1, plural, one {abonnement} other {abonnements}}"
 
 #: src/screens/StarterPack/Wizard/index.tsx:478
 msgid "<0>{0}</0> is included in your starter pack"
-msgstr ""
+msgstr "<0>{0}</0> est inclus dans votre pack de démarrage"
 
 #: src/view/com/modals/SelfLabel.tsx:135
 msgid "<0>Not Applicable.</0> This warning is only available for posts with media attached."
@@ -279,11 +275,11 @@ msgstr "Ajouter"
 
 #: src/screens/StarterPack/Wizard/index.tsx:539
 msgid "Add {0} more to continue"
-msgstr ""
+msgstr "Ajouter {0} pour continuer"
 
 #: src/components/StarterPack/Wizard/WizardListCard.tsx:56
 msgid "Add {displayName} to starter pack"
-msgstr ""
+msgstr "Ajouter {displayName} au pack de démarrage"
 
 #: src/view/com/modals/SelfLabel.tsx:57
 msgid "Add a content warning"
@@ -325,7 +321,7 @@ msgstr "Ajouter des mots et des mots-clés masqués"
 
 #: src/screens/StarterPack/Wizard/index.tsx:197
 msgid "Add people to your starter pack that you think others will enjoy following"
-msgstr ""
+msgstr "Ajoutez à votre pack de démarrage des personnes que vous pensez que d'autres aimeront suivre"
 
 #: src/screens/Home/NoFeedsPinned.tsx:99
 msgid "Add recommended feeds"
@@ -333,7 +329,7 @@ msgstr "Ajouter les fils d’actu recommandés"
 
 #: src/screens/StarterPack/Wizard/index.tsx:464
 msgid "Add some feeds to your starter pack!"
-msgstr ""
+msgstr "Ajoutez des fils d'actu à votre pack de démarrage !"
 
 #: src/screens/Feeds/NoFollowingFeed.tsx:41
 msgid "Add the default feed of only people you follow"
@@ -345,7 +341,7 @@ msgstr "Ajoutez l’enregistrement DNS suivant à votre domaine :"
 
 #: src/components/FeedCard.tsx:300
 msgid "Add this feed to your feeds"
-msgstr ""
+msgstr "Ajoutez ce fil à vos fils d'actu"
 
 #: src/view/com/profile/ProfileMenu.tsx:267
 #: src/view/com/profile/ProfileMenu.tsx:270
@@ -385,7 +381,7 @@ msgstr "Avancé"
 
 #: src/screens/StarterPack/StarterPackScreen.tsx:271
 msgid "All accounts have been followed!"
-msgstr ""
+msgstr "Tous les comptes ont été suivis !"
 
 #: src/view/screens/Feeds.tsx:721
 msgid "All the feeds you've saved, right in one place."
@@ -445,20 +441,20 @@ msgstr "Une erreur s’est produite"
 
 #: src/components/StarterPack/ProfileStarterPacks.tsx:313
 msgid "An error occurred while generating your starter pack. Want to try again?"
-msgstr ""
+msgstr "Une erreur s'est produite lors de la génération de votre pack de démarrage. Vous voulez réessayer ?"
 
 #: src/components/StarterPack/ShareDialog.tsx:79
 msgid "An error occurred while saving the image."
-msgstr ""
+msgstr "Une erreur s'est produite lors de l'enregistrement de l'image."
 
 #: src/components/StarterPack/QrCodeDialog.tsx:76
 #: src/components/StarterPack/ShareDialog.tsx:91
 msgid "An error occurred while saving the QR code!"
-msgstr ""
+msgstr "Une erreur s'est produite lors de l'enregistrement du code QR !"
 
 #: src/screens/StarterPack/StarterPackScreen.tsx:273
 msgid "An error occurred while trying to follow all"
-msgstr ""
+msgstr "Une erreur s'est produite en essayant de suivre tous les comptes"
 
 #: src/lib/moderation/useReportOptions.ts:28
 msgid "An issue not included in these options"
@@ -552,7 +548,7 @@ msgstr "Utiliser les fils d’actu recommandés par défaut"
 
 #: src/screens/StarterPack/StarterPackScreen.tsx:497
 msgid "Are you sure you want delete this starter pack?"
-msgstr ""
+msgstr "Êtes-vous sûr de vouloir supprimer ce pack de démarrage ?"
 
 #: src/view/screens/AppPasswords.tsx:282
 msgid "Are you sure you want to delete the app password \"{name}\"?"
@@ -572,7 +568,7 @@ msgstr "Êtes-vous sûr de vouloir supprimer {0} de vos fils d’actu ?"
 
 #: src/components/FeedCard.tsx:317
 msgid "Are you sure you want to remove this from your feeds?"
-msgstr ""
+msgstr "Êtes-vous sûr de vouloir retirer cette information de vos fils d'actu ?"
 
 #: src/view/com/composer/Composer.tsx:649
 msgid "Are you sure you'd like to discard this draft?"
