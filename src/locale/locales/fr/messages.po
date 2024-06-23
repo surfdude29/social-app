@@ -2269,7 +2269,7 @@ msgstr "Suivi par <0>{0}</0> et <1>{1}</1>"
 
 #: src/components/KnownFollowers.tsx:178
 msgid "Followed by <0>{0}</0>, <1>{1}</1>, and {2, plural, one {# other} other {# others}}"
-msgstr "Suivi par <0>{0}</0>, <1>{1}</1>, et {2, plural, one {# autre} other {# autres}}"
+msgstr "Suivi par <0>{0}</0>, <1>{1}</1> et {2, plural, one {# autre} other {# autres}}"
 
 #: src/view/com/modals/Threadgate.tsx:101
 msgid "Followed users"
