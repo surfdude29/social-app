@@ -5834,7 +5834,7 @@ msgstr "Ce compte est inclus dans la liste <0>{0}</0> que vous avez masquée."
 
 #: src/components/NewskieDialog.tsx:53
 msgid "This user is new here. Press for more info about when they joined."
-msgstr "Ce compte est nouveau. Appuyez pour obtenir plus d'informations sur sa date d'arrivée."
+msgstr "Ce compte est nouveau ici. Appuyez pour obtenir plus d'informations sur sa date d'arrivée."
 
 #: src/view/com/profile/ProfileFollows.tsx:87
 msgid "This user isn't following anyone."
