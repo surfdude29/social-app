@@ -2642,7 +2642,7 @@ msgstr "Texte alt de l’image"
 
 #: src/components/StarterPack/ShareDialog.tsx:88
 msgid "Image saved to your camera roll!"
-msgstr ""
+msgstr "Image enregistrée dans votre photothèque !"
 
 #: src/lib/moderation/useReportOptions.ts:49
 msgid "Impersonation or false claims about identity or affiliation"
@@ -2735,19 +2735,19 @@ msgstr "Invitations : 1 code dispo"
 
 #: src/components/StarterPack/ShareDialog.tsx:109
 msgid "Invite people to this starter pack!"
-msgstr ""
+msgstr "Invitez les gens à ce pack de démarrage !"
 
 #: src/screens/StarterPack/Wizard/StepDetails.tsx:35
 msgid "Invite your friends to follow your favorite feeds and people"
-msgstr ""
+msgstr "Invitez vos amis à suivre vos fils d'actu et vos personnes préférées"
 
 #: src/screens/StarterPack/Wizard/StepDetails.tsx:32
 msgid "Invites, but personal"
-msgstr ""
+msgstr "Invitations, mais personnelles"
 
 #: src/screens/StarterPack/Wizard/index.tsx:473
 msgid "It's just you right now! Add more people to your starter pack by searching above."
-msgstr ""
+msgstr "Il n'y a que vous pour l'instant ! Ajoutez d'autres personnes à votre pack de démarrage en effectuant une recherche ci-dessus."
 
 #: src/view/com/auth/SplashScreen.web.tsx:157
 msgid "Jobs"
@@ -2756,11 +2756,11 @@ msgstr "Emplois"
 #: src/screens/StarterPack/StarterPackLandingScreen.tsx:194
 #: src/screens/StarterPack/StarterPackLandingScreen.tsx:200
 msgid "Join Bluesky"
-msgstr ""
+msgstr "Rejoignez Bluesky"
 
 #: src/components/StarterPack/QrCode.tsx:56
 msgid "Join the conversation"
-msgstr ""
+msgstr "Participez à la conversation"
 
 #: src/screens/Onboarding/index.tsx:21
 msgid "Journalism"
@@ -2869,7 +2869,7 @@ msgstr "Stockage ancien effacé, vous devez redémarrer l’application maintena
 
 #: src/components/StarterPack/ProfileStarterPacks.tsx:293
 msgid "Let me choose"
-msgstr ""
+msgstr "Permettez-moi de choisir"
 
 #: src/screens/Login/index.tsx:130
 #: src/screens/Login/index.tsx:145
@@ -2969,15 +2969,15 @@ msgstr "Listes qui bloquent ce compte :"
 
 #: src/view/screens/Search/Explore.tsx:130
 msgid "Load more"
-msgstr ""
+msgstr "Chargez plus"
 
 #: src/view/screens/Search/Explore.tsx:218
 msgid "Load more suggested feeds"
-msgstr ""
+msgstr "Charger d'autres fils d'actu suggérés"
 
 #: src/view/screens/Search/Explore.tsx:216
 msgid "Load more suggested follows"
-msgstr ""
+msgstr "Chargez d'autres comptes suggérés à suivre"
 
 #: src/view/screens/Notifications.tsx:184
 msgid "Load new notifications"
@@ -3040,7 +3040,7 @@ msgstr "On dirait que vous n’avez plus de fil d’actu « Following ». <0>C
 
 #: src/components/StarterPack/ProfileStarterPacks.tsx:252
 msgid "Make one for me"
-msgstr ""
+msgstr "Faites-en un pour moi"
 
 #: src/view/com/modals/LinkWarning.tsx:79
 msgid "Make sure this is where you intend to go!"
@@ -3391,7 +3391,7 @@ msgstr "Nouveau post"
 
 #: src/components/NewskieDialog.tsx:71
 msgid "New user info dialog"
-msgstr ""
+msgstr "Dialogue d'information sur un nouveau compte"
 
 #: src/view/com/modals/CreateOrEditList.tsx:236
 msgid "New User List"
@@ -3450,7 +3450,7 @@ msgstr "Aucun GIFs vedettes à afficher. Il y a peut-être un souci chez Tenor."
 
 #: src/screens/StarterPack/Wizard/StepFeeds.tsx:105
 msgid "No feeds found. Try searching for something else."
-msgstr ""
+msgstr "Aucun fil d'actu n'a été trouvé. Essayez de chercher autre chose."
 
 #: src/screens/Profile/Header/ProfileHeaderStandard.tsx:120
 msgid "No longer following {0}"
@@ -3532,7 +3532,7 @@ msgstr "Personne n’a encore liké. Peut-être devriez-vous ouvrir la voie !"
 
 #: src/screens/StarterPack/Wizard/StepProfiles.tsx:93
 msgid "Nobody was found. Try searching for someone else."
-msgstr ""
+msgstr "Personne n'a été trouvé. Essayez de chercher quelqu'un d'autre."
 
 #: src/lib/moderation/useGlobalLabelStrings.ts:42
 msgid "Non-sexual Nudity"
@@ -3582,7 +3582,7 @@ msgstr "Notifications"
 
 #: src/lib/hooks/useTimeAgo.ts:51
 msgid "now"
-msgstr ""
+msgstr "maintenant"
 
 #: src/components/dms/MessageItem.tsx:175
 msgid "Now"
