@@ -6677,7 +6677,7 @@ msgstr "Vous pouvez faire appel de ces étiquettes si vous estimez qu’elles on
 
 #: src/screens/StarterPack/Wizard/State.tsx:92
 msgid "You may only add up to 50 feeds"
-msgstr "Vous ne pouvez ajouter que 50 fils d'actu au maximum."
+msgstr "Vous ne pouvez ajouter que 50 fils d'actu au maximum"
 
 #: src/screens/StarterPack/Wizard/State.tsx:77
 msgid "You may only add up to 50 profiles"
