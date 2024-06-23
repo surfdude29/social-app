@@ -78,7 +78,7 @@ msgstr "{0, plural, one {Déliker (# like)} other {Déliker (# likes)}}"
 
 #: src/screens/StarterPack/StarterPackScreen.tsx:343
 msgid "{0} people have used this starter pack!"
-msgstr "{0} personnes ont utilisé ce pack de démarrage !"
+msgstr "{0} personnes ont utilisé ce pack de démarrage !"
 
 #: src/view/com/util/UserAvatar.tsx:419
 msgid "{0}'s avatar"
@@ -86,7 +86,7 @@ msgstr "Avatar de {0}"
 
 #: src/screens/StarterPack/Wizard/StepDetails.tsx:68
 msgid "{0}'s favorite feeds and people - join me!"
-msgstr "Les fils d'actu et les personnes préférées de {0} – rejoignez-moi !"
+msgstr "Les fils d’actu et les personnes préférées de {0} – rejoignez-moi !"
 
 #: src/screens/StarterPack/Wizard/StepDetails.tsx:47
 msgid "{0}'s starter pack"
@@ -327,7 +327,7 @@ msgstr "Ajouter des mots et des mots-clés masqués"
 
 #: src/screens/StarterPack/Wizard/index.tsx:197
 msgid "Add people to your starter pack that you think others will enjoy following"
-msgstr "Ajoutez à votre pack de démarrage des personnes que vous pensez que d'autres aimeront suivre"
+msgstr "Ajoutez à votre pack de démarrage des personnes que vous pensez que d’autres aimeront suivre"
 
 #: src/screens/Home/NoFeedsPinned.tsx:99
 msgid "Add recommended feeds"
@@ -335,7 +335,7 @@ msgstr "Ajouter les fils d’actu recommandés"
 
 #: src/screens/StarterPack/Wizard/index.tsx:464
 msgid "Add some feeds to your starter pack!"
-msgstr "Ajoutez des fils d'actu à votre pack de démarrage !"
+msgstr "Ajoutez des fils d’actu à votre pack de démarrage !"
 
 #: src/screens/Feeds/NoFollowingFeed.tsx:41
 msgid "Add the default feed of only people you follow"
@@ -347,7 +347,7 @@ msgstr "Ajoutez l’enregistrement DNS suivant à votre domaine :"
 
 #: src/components/FeedCard.tsx:300
 msgid "Add this feed to your feeds"
-msgstr "Ajouter ce fil à vos fils d'actu"
+msgstr "Ajouter ce fil à vos fils d’actu"
 
 #: src/view/com/profile/ProfileMenu.tsx:267
 #: src/view/com/profile/ProfileMenu.tsx:270
@@ -387,7 +387,7 @@ msgstr "Avancé"
 
 #: src/screens/StarterPack/StarterPackScreen.tsx:271
 msgid "All accounts have been followed!"
-msgstr "Tous les comptes ont été suivis !"
+msgstr "Tous les comptes ont été suivis !"
 
 #: src/view/screens/Feeds.tsx:721
 msgid "All the feeds you've saved, right in one place."
@@ -447,20 +447,20 @@ msgstr "Une erreur s’est produite"
 
 #: src/components/StarterPack/ProfileStarterPacks.tsx:313
 msgid "An error occurred while generating your starter pack. Want to try again?"
-msgstr "Une erreur s'est produite lors de la génération de votre pack de démarrage. Vous voulez réessayer ?"
+msgstr "Une erreur s’est produite lors de la génération de votre pack de démarrage. Vous voulez réessayer ?"
 
 #: src/components/StarterPack/ShareDialog.tsx:79
 msgid "An error occurred while saving the image."
-msgstr "Une erreur s'est produite lors de l'enregistrement de l'image."
+msgstr "Une erreur s’est produite lors de l’enregistrement de l’image."
 
 #: src/components/StarterPack/QrCodeDialog.tsx:76
 #: src/components/StarterPack/ShareDialog.tsx:91
 msgid "An error occurred while saving the QR code!"
-msgstr "Une erreur s'est produite lors de l'enregistrement du code QR !"
+msgstr "Une erreur s’est produite lors de l’enregistrement du code QR !"
 
 #: src/screens/StarterPack/StarterPackScreen.tsx:273
 msgid "An error occurred while trying to follow all"
-msgstr "Une erreur s'est produite en essayant de suivre tous les comptes"
+msgstr "Une erreur s’est produite en essayant de suivre tous les comptes"
 
 #: src/lib/moderation/useReportOptions.ts:28
 msgid "An issue not included in these options"
@@ -554,7 +554,7 @@ msgstr "Utiliser les fils d’actu recommandés par défaut"
 
 #: src/screens/StarterPack/StarterPackScreen.tsx:497
 msgid "Are you sure you want delete this starter pack?"
-msgstr "Êtes-vous sûr de vouloir supprimer ce pack de démarrage ?"
+msgstr "Êtes-vous sûr de vouloir supprimer ce pack de démarrage ?"
 
 #: src/view/screens/AppPasswords.tsx:282
 msgid "Are you sure you want to delete the app password \"{name}\"?"
@@ -574,7 +574,7 @@ msgstr "Êtes-vous sûr de vouloir supprimer {0} de vos fils d’actu ?"
 
 #: src/components/FeedCard.tsx:317
 msgid "Are you sure you want to remove this from your feeds?"
-msgstr "Êtes-vous sûr de vouloir supprimer cela de vos fils d'actu ?"
+msgstr "Êtes-vous sûr de vouloir supprimer cela de vos fils d’actu ?"
 
 #: src/view/com/composer/Composer.tsx:649
 msgid "Are you sure you'd like to discard this draft?"
@@ -1504,7 +1504,7 @@ msgstr "Supprimer le pack de démarrage"
 
 #: src/screens/StarterPack/StarterPackScreen.tsx:494
 msgid "Delete starter pack?"
-msgstr "Supprimer le pack de démarrage ?"
+msgstr "Supprimer le pack de démarrage ?"
 
 #: src/view/screens/ProfileList.tsx:662
 msgid "Delete this list?"
@@ -1735,7 +1735,7 @@ msgstr "Modifier l’avatar"
 
 #: src/components/StarterPack/Wizard/WizardEditListDialog.tsx:115
 msgid "Edit Feeds"
-msgstr "Modifier les fils d'actu"
+msgstr "Modifier les fils d’actu"
 
 #: src/view/com/composer/photos/Gallery.tsx:151
 #: src/view/com/modals/EditImage.tsx:208
@@ -2072,7 +2072,7 @@ msgstr "Échec de la suppression du pack de démarrage"
 #: src/view/screens/Search/Explore.tsx:426
 #: src/view/screens/Search/Explore.tsx:454
 msgid "Failed to load feeds preferences"
-msgstr "Échec du chargement des fils d'actu"
+msgstr "Échec du chargement des fils d’actu"
 
 #: src/components/dialogs/GifSelect.ios.tsx:196
 #: src/components/dialogs/GifSelect.tsx:212
@@ -2086,7 +2086,7 @@ msgstr "Échec du chargement de l’historique"
 #: src/view/screens/Search/Explore.tsx:419
 #: src/view/screens/Search/Explore.tsx:447
 msgid "Failed to load suggested feeds"
-msgstr "Échec du chargement des fils d'actu suggerés"
+msgstr "Échec du chargement des fils d’actu suggerés"
 
 #: src/view/screens/Search/Explore.tsx:377
 msgid "Failed to load suggested follows"
@@ -2111,7 +2111,7 @@ msgstr "Échec de basculer la masquage du fil de discussion, veuillez réessayer
 
 #: src/components/FeedCard.tsx:280
 msgid "Failed to update feeds"
-msgstr "Échec de la mise à jour des fils d'actu"
+msgstr "Échec de la mise à jour des fils d’actu"
 
 #: src/components/dms/MessagesNUX.tsx:60
 #: src/screens/Messages/Settings.tsx:35
@@ -2129,7 +2129,7 @@ msgstr "Fil d’actu par {0}"
 
 #: src/components/StarterPack/Wizard/WizardListCard.tsx:52
 msgid "Feed toggle"
-msgstr "Bouton pour le fil d'actu"
+msgstr "Bouton pour le fil d’actu"
 
 #: src/view/shell/desktop/RightNav.tsx:66
 #: src/view/shell/Drawer.tsx:345
@@ -2154,7 +2154,7 @@ msgstr "Les fils d’actu sont des algorithmes personnalisés qui se construisen
 
 #: src/components/FeedCard.tsx:277
 msgid "Feeds updated!"
-msgstr "Fils d'actu mis à jour !"
+msgstr "Fils d’actu mis à jour !"
 
 #: src/view/com/modals/ChangeHandle.tsx:475
 msgid "File Contents"
@@ -2249,7 +2249,7 @@ msgstr "Suivre en retour"
 
 #: src/view/screens/Search/Explore.tsx:333
 msgid "Follow more accounts to get connected to your interests and build your network."
-msgstr "Suivez plus de comptes pour vous connecter à vos centres d'intérêt et développer votre réseau."
+msgstr "Suivez plus de comptes pour vous connecter à vos centres d’intérêt et développer votre réseau."
 
 #: src/view/com/profile/ProfileCard.tsx:227
 msgid "Followed by {0}"
@@ -2648,7 +2648,7 @@ msgstr "Texte alt de l’image"
 
 #: src/components/StarterPack/ShareDialog.tsx:88
 msgid "Image saved to your camera roll!"
-msgstr "Image enregistrée dans votre photothèque !"
+msgstr "Image enregistrée dans votre photothèque !"
 
 #: src/lib/moderation/useReportOptions.ts:49
 msgid "Impersonation or false claims about identity or affiliation"
@@ -2741,11 +2741,11 @@ msgstr "Invitations : 1 code dispo"
 
 #: src/components/StarterPack/ShareDialog.tsx:109
 msgid "Invite people to this starter pack!"
-msgstr "Invitez les gens à ce pack de démarrage !"
+msgstr "Invitez les gens à ce pack de démarrage !"
 
 #: src/screens/StarterPack/Wizard/StepDetails.tsx:35
 msgid "Invite your friends to follow your favorite feeds and people"
-msgstr "Invitez vos amis à suivre vos fils d'actu et vos personnes préférées"
+msgstr "Invitez vos amis à suivre vos fils d’actu et vos personnes préférées"
 
 #: src/screens/StarterPack/Wizard/StepDetails.tsx:32
 msgid "Invites, but personal"
@@ -2753,7 +2753,7 @@ msgstr "Invitations, mais personnelles"
 
 #: src/screens/StarterPack/Wizard/index.tsx:473
 msgid "It's just you right now! Add more people to your starter pack by searching above."
-msgstr "Il n'y a que vous pour l'instant ! Ajoutez d'autres personnes à votre pack de démarrage en effectuant une recherche ci-dessus."
+msgstr "Il n’y a que vous pour l’instant ! Ajoutez d’autres personnes à votre pack de démarrage en effectuant une recherche ci-dessus."
 
 #: src/view/com/auth/SplashScreen.web.tsx:157
 msgid "Jobs"
@@ -2979,11 +2979,11 @@ msgstr "Chargez plus"
 
 #: src/view/screens/Search/Explore.tsx:218
 msgid "Load more suggested feeds"
-msgstr "Charger d'autres fils d'actu suggérés"
+msgstr "Charger d’autres fils d’actu suggérés"
 
 #: src/view/screens/Search/Explore.tsx:216
 msgid "Load more suggested follows"
-msgstr "Chargez d'autres suivis suggérés"
+msgstr "Chargez d’autres suivis suggérés"
 
 #: src/view/screens/Notifications.tsx:184
 msgid "Load new notifications"
@@ -3397,7 +3397,7 @@ msgstr "Nouveau post"
 
 #: src/components/NewskieDialog.tsx:71
 msgid "New user info dialog"
-msgstr "Dialogue d'information sur un nouveau compte"
+msgstr "Dialogue d’information sur un nouveau compte"
 
 #: src/view/com/modals/CreateOrEditList.tsx:236
 msgid "New User List"
@@ -3456,7 +3456,7 @@ msgstr "Aucun GIFs vedettes à afficher. Il y a peut-être un souci chez Tenor."
 
 #: src/screens/StarterPack/Wizard/StepFeeds.tsx:105
 msgid "No feeds found. Try searching for something else."
-msgstr "Aucun fil d'actu n'a été trouvé. Essayez de chercher autre chose."
+msgstr "Aucun fil d’actu n’a été trouvé. Essayez de chercher autre chose."
 
 #: src/screens/Profile/Header/ProfileHeaderStandard.tsx:120
 msgid "No longer following {0}"
@@ -3538,7 +3538,7 @@ msgstr "Personne n’a encore liké. Peut-être devriez-vous ouvrir la voie !"
 
 #: src/screens/StarterPack/Wizard/StepProfiles.tsx:93
 msgid "Nobody was found. Try searching for someone else."
-msgstr "Personne n'a été trouvé. Essayez de chercher quelqu'un d'autre."
+msgstr "Personne n’a été trouvé. Essayez de chercher quelqu’un d’autre."
 
 #: src/lib/moderation/useGlobalLabelStrings.ts:42
 msgid "Non-sexual Nudity"
@@ -4223,15 +4223,15 @@ msgstr "Publier la réponse"
 
 #: src/components/StarterPack/QrCodeDialog.tsx:131
 msgid "QR code copied to your clipboard!"
-msgstr "Code QR copié dans votre presse-papier !"
+msgstr "Code QR copié dans votre presse-papier !"
 
 #: src/components/StarterPack/QrCodeDialog.tsx:109
 msgid "QR code has been downloaded!"
-msgstr "Code QR a été téléchargé !"
+msgstr "Code QR a été téléchargé !"
 
 #: src/components/StarterPack/QrCodeDialog.tsx:110
 msgid "QR code saved to your camera roll!"
-msgstr "Code QR enregistré dans votre photothèque !"
+msgstr "Code QR enregistré dans votre photothèque !"
 
 #: src/view/com/util/post-ctrls/RepostButton.tsx:116
 #: src/view/com/util/post-ctrls/RepostButton.tsx:128
@@ -4662,7 +4662,7 @@ msgstr "Enregistrer le changement de pseudo"
 #: src/components/StarterPack/ShareDialog.tsx:163
 #: src/components/StarterPack/ShareDialog.tsx:170
 msgid "Save image"
-msgstr "Enregistrer l'image"
+msgstr "Enregistrer l’image"
 
 #: src/view/com/modals/crop-image/CropImage.web.tsx:169
 msgid "Save image crop"
@@ -4753,7 +4753,7 @@ msgstr "Rechercher tous les posts avec le mot-clé {displayTag}"
 
 #: src/screens/StarterPack/Wizard/index.tsx:467
 msgid "Search for feeds that you want to suggest to others."
-msgstr "Recherchez les fils d'actu que vous voulez suggérer à d'autres personnes."
+msgstr "Recherchez les fils d’actu que vous voulez suggérer à d’autres personnes."
 
 #: src/view/com/auth/LoggedOut.tsx:101
 #: src/view/com/auth/LoggedOut.tsx:102
@@ -5073,7 +5073,7 @@ msgstr "Partager le lien"
 
 #: src/components/StarterPack/ShareDialog.tsx:100
 msgid "Share link dialog"
-msgstr "Dialogue pour le partage d'un lien"
+msgstr "Dialogue pour le partage d’un lien"
 
 #: src/screens/StarterPack/StarterPackScreen.tsx:296
 msgid "Share this starter pack"
@@ -5255,12 +5255,12 @@ msgstr "Connecté en tant que @{0}"
 
 #: src/view/com/notifications/FeedItem.tsx:197
 msgid "signed up with your starter pack"
-msgstr "s'est inscrit·e avec votre pack de démarrage"
+msgstr "s’est inscrit·e avec votre pack de démarrage"
 
 #: src/screens/StarterPack/StarterPackLandingScreen.tsx:277
 #: src/screens/StarterPack/StarterPackLandingScreen.tsx:284
 msgid "Signup without a starter pack"
-msgstr "S'inscrire sans pack de démarrage"
+msgstr "S’inscrire sans pack de démarrage"
 
 #: src/screens/Onboarding/StepInterests/index.tsx:240
 #: src/screens/StarterPack/Wizard/index.tsx:202
@@ -5358,7 +5358,7 @@ msgstr "Pack de démarrage par {0}"
 
 #: src/screens/StarterPack/StarterPackScreen.tsx:579
 msgid "Starter pack is invalid"
-msgstr "Le pack de démarrage n'est pas valide"
+msgstr "Le pack de démarrage n’est pas valide"
 
 #: src/view/screens/Profile.tsx:221
 msgid "Starter Packs"
@@ -5521,7 +5521,7 @@ msgstr "Ce pseudo est déjà occupé."
 #: src/screens/StarterPack/Wizard/index.tsx:105
 #: src/screens/StarterPack/Wizard/index.tsx:113
 msgid "That starter pack could not be found."
-msgstr "Ce pack de démarrage n'a pas pu être trouvé."
+msgstr "Ce pack de démarrage n’a pas pu être trouvé."
 
 #: src/screens/Profile/Header/ProfileHeaderStandard.tsx:310
 #: src/view/com/profile/ProfileMenu.tsx:353
@@ -5538,7 +5538,7 @@ msgstr "Notre politique de droits d’auteur a été déplacée vers <0/>"
 
 #: src/screens/StarterPack/StarterPackLandingScreen.tsx:298
 msgid "The experience is better in the app. Download Bluesky now and we'll pick back up where you left off."
-msgstr "L'expérience est meilleure dans l'application. Téléchargez Bluesky maintenant et nous reprendrons là où vous vous êtes arrêté."
+msgstr "L’expérience est meilleure dans l’application. Téléchargez Bluesky maintenant et nous reprendrons là où vous vous êtes arrêté."
 
 #: src/view/com/posts/FeedShutdownMsg.tsx:66
 msgid "The feed has been replaced with Discover."
@@ -5567,7 +5567,7 @@ msgstr "Notre politique de confidentialité a été déplacée vers <0/>"
 
 #: src/screens/StarterPack/StarterPackScreen.tsx:589
 msgid "The starter pack that you are trying to view is invalid. You may delete this starter pack instead."
-msgstr "Le pack de démarrage que vous essayez de consulter n'est pas valide. Vous pouvez supprimer ce pack de démarrage à la place."
+msgstr "Le pack de démarrage que vous essayez de consulter n’est pas valide. Vous pouvez supprimer ce pack de démarrage à la place."
 
 #: src/view/screens/Support.tsx:36
 msgid "The support form has been moved. If you need help, please <0/> or visit {HELP_DESK_URL} to get in touch with us."
@@ -5834,7 +5834,7 @@ msgstr "Ce compte est inclus dans la liste <0>{0}</0> que vous avez masquée."
 
 #: src/components/NewskieDialog.tsx:53
 msgid "This user is new here. Press for more info about when they joined."
-msgstr "Ce compte est nouveau ici. Appuyez pour obtenir plus d'informations sur sa date d'arrivée."
+msgstr "Ce compte est nouveau ici. Appuyez pour obtenir plus d’informations sur sa date d’arrivée."
 
 #: src/view/com/profile/ProfileFollows.tsx:87
 msgid "This user isn't following anyone."
@@ -6313,7 +6313,7 @@ msgstr "Voir les comptes qui a liké ce fil d’actu"
 #: src/view/com/home/HomeHeaderLayout.web.tsx:79
 #: src/view/com/home/HomeHeaderLayoutMobile.tsx:84
 msgid "View your feeds and explore more"
-msgstr "Consultez vos fils d'actu et explorez-en plus"
+msgstr "Consultez vos fils d’actu et explorez-en plus"
 
 #: src/view/com/modals/LinkWarning.tsx:89
 #: src/view/com/modals/LinkWarning.tsx:95
@@ -6409,7 +6409,7 @@ msgstr "Nous sommes désolés ! La page que vous recherchez est introuvable."
 
 #: src/screens/Profile/Header/ProfileHeaderLabeler.tsx:330
 msgid "We're sorry! You can only subscribe to twenty labelers, and you've reached your limit of twenty."
-msgstr "Nous sommes désolés ! Vous ne pouvez vous abonner qu'à vingt étiqueteurs, et vous avez atteint votre limite de vingt."
+msgstr "Nous sommes désolés ! Vous ne pouvez vous abonner qu’à vingt étiqueteurs, et vous avez atteint votre limite de vingt."
 
 #: src/screens/Deactivated.tsx:128
 msgid "Welcome back!"
@@ -6421,7 +6421,7 @@ msgstr "Quels sont vos centres d’intérêt ?"
 
 #: src/screens/StarterPack/Wizard/StepDetails.tsx:42
 msgid "What do you want to call your starter pack?"
-msgstr "Quel est le nom de votre pack de démarrage ?"
+msgstr "Quel est le nom de votre pack de démarrage ?"
 
 #: src/view/com/auth/SplashScreen.tsx:40
 #: src/view/com/auth/SplashScreen.web.tsx:86
@@ -6483,7 +6483,7 @@ msgstr "Pourquoi ce post devrait-il être examiné ?"
 
 #: src/components/ReportDialog/SelectReportOptionView.tsx:60
 msgid "Why should this starter pack be reviewed?"
-msgstr "Pourquoi ce pack de démarrage devrait-il être examiné ?"
+msgstr "Pourquoi ce pack de démarrage devrait-il être examiné ?"
 
 #: src/components/ReportDialog/SelectReportOptionView.tsx:48
 msgid "Why should this user be reviewed?"
@@ -6677,7 +6677,7 @@ msgstr "Vous pouvez faire appel de ces étiquettes si vous estimez qu’elles on
 
 #: src/screens/StarterPack/Wizard/State.tsx:92
 msgid "You may only add up to 50 feeds"
-msgstr "Vous ne pouvez ajouter que 50 fils d'actu au maximum"
+msgstr "Vous ne pouvez ajouter que 50 fils d’actu au maximum"
 
 #: src/screens/StarterPack/Wizard/State.tsx:77
 msgid "You may only add up to 50 profiles"
@@ -6693,11 +6693,11 @@ msgstr "Vous devez suivre au moins sept autres personnes pour générer un pack 
 
 #: src/components/StarterPack/QrCodeDialog.tsx:62
 msgid "You must grant access to your photo library to save a QR code"
-msgstr "Vous devez autoriser l'accès à votre photothèque pour enregistrer un code QR"
+msgstr "Vous devez autoriser l’accès à votre photothèque pour enregistrer un code QR"
 
 #: src/components/StarterPack/ShareDialog.tsx:70
 msgid "You must grant access to your photo library to save the image."
-msgstr "Vous devez autoriser l'accès à votre photothèque pour enregistrer l'image."
+msgstr "Vous devez autoriser l’accès à votre photothèque pour enregistrer l’image."
 
 #: src/components/ReportDialog/SubmitView.tsx:205
 msgid "You must select at least one labeler for a report"
@@ -6733,11 +6733,11 @@ msgstr "Vous : {short}"
 
 #: src/screens/Signup/index.tsx:169
 msgid "You'll follow the suggested users and feeds once you finish creating your account!"
-msgstr "Vous suivrez les comptes et fils d'actu suggérés une fois que vous aurez créé votre compte !"
+msgstr "Vous suivrez les comptes et fils d’actu suggérés une fois que vous aurez créé votre compte !"
 
 #: src/screens/Signup/index.tsx:174
 msgid "You'll follow the suggested users once you finish creating your account!"
-msgstr "Vous suivrez les comptes suggérés une fois que vous aurez créé votre compte !"
+msgstr "Vous suivrez les comptes suggérés une fois que vous aurez créé votre compte !"
 
 #: src/screens/StarterPack/StarterPackLandingScreen.tsx:229
 msgid "You'll follow these people and {0} others"
@@ -6749,7 +6749,7 @@ msgstr "Vous suivrez ces personnes immédiatement"
 
 #: src/screens/StarterPack/StarterPackLandingScreen.tsx:256
 msgid "You'll stay updated with these feeds"
-msgstr "Vous resterez informé grâce à ces fils d'actu"
+msgstr "Vous resterez informé grâce à ces fils d’actu"
 
 #: src/screens/SignupQueued.tsx:93
 #: src/screens/SignupQueued.tsx:94
