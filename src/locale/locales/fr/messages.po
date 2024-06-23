@@ -5249,7 +5249,7 @@ msgstr "Connecté en tant que @{0}"
 
 #: src/view/com/notifications/FeedItem.tsx:197
 msgid "signed up with your starter pack"
-msgstr "s'est inscrit [median] avec votre pack de démarrage"
+msgstr "s'est inscrit·e avec votre pack de démarrage"
 
 #: src/screens/StarterPack/StarterPackLandingScreen.tsx:277
 #: src/screens/StarterPack/StarterPackLandingScreen.tsx:284
