@@ -168,8 +168,14 @@ msgid "<0>{0} </0>and<1> </1><2>{1} </2>are included in your starter pack"
 msgstr "<0>{0} </0>et<1> </1><2>{1} </2>sont inclus dans votre pack de démarrage"
 
 #: src/screens/StarterPack/Wizard/index.tsx:497
-msgid "<0>{0}, </0><1>{1}, </1>and {2} {3, plural, one {other} other {others}} are included in your starter pack"
-msgstr "<0>{0}, </0><1>{1}, </1>et {2} {3, plural, one {autre} other {autres}} sont inclus dans votre pack de démarrage"
+msgctxt "profiles"
+msgid "<0>{0}, </0><1>{1}, </1>and {2, plural, one {# other} other {# others}} are included in your starter pack"
+msgstr "<0>{0}, </0><1>{1}, </1>et {2, plural, one {# autre} other {# autres}} sont inclus dans votre pack de démarrage"
+
+#: src/screens/StarterPack/Wizard/index.tsx:509
+msgctxt "feeds"
+msgid "<0>{0}, </0><1>{1}, </1>and {2, plural, one {# other} other {# others}} are included in your starter pack"
+msgstr "<0>{0}, </0><1>{1}, </1>et {2, plural, one {# autre} other {# autres}} sont inclus dans votre pack de démarrage"
 
 #: src/view/shell/Drawer.tsx:101
 msgid "<0>{0}</0> {1, plural, one {follower} other {followers}}"
