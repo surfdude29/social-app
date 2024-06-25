@@ -78,7 +78,7 @@ msgstr "{0, plural, one {Déliker (# like)} other {Déliker (# likes)}}"
 
 #: src/screens/StarterPack/StarterPackLandingScreen.tsx:218
 msgid "{0} joined this week"
-msgstr ""
+msgstr "{0} ont été inscrites cette semaine"
 
 #: src/screens/StarterPack/StarterPackScreen.tsx:343
 msgid "{0} people have used this starter pack!"
@@ -199,7 +199,7 @@ msgstr "<0>Pas applicable.</0> Cet avertissement est seulement disponible pour l
 
 #: src/screens/StarterPack/Wizard/index.tsx:472
 msgid "<0>You</0> and<1> </1><2>{0} </2>are included in your starter pack"
-msgstr ""
+msgstr "<0>Vous</0> et<1> </1><2>{0} </2>faites partie de votre pack de démarrage"
 
 #: src/screens/Profile/Header/Handle.tsx:50
 msgid "⚠Invalid Handle"
@@ -933,7 +933,7 @@ msgstr "Choisir « Tout le monde » ou « Personne »"
 
 #: src/screens/StarterPack/Wizard/index.tsx:191
 msgid "Choose Feeds"
-msgstr ""
+msgstr "Choisissez des fils d'actu"
 
 #: src/components/StarterPack/ProfileStarterPacks.tsx:288
 msgid "Choose for me"
@@ -941,7 +941,7 @@ msgstr "Choisir pour moi"
 
 #: src/screens/StarterPack/Wizard/index.tsx:187
 msgid "Choose People"
-msgstr ""
+msgstr "Choisissez des personnes"
 
 #: src/view/com/auth/server-input/index.tsx:79
 msgid "Choose Service"
@@ -957,7 +957,7 @@ msgstr "Choisir cette couleur comme avatar"
 
 #: src/components/dialogs/ThreadgateEditor.tsx:91
 msgid "Choose who can reply"
-msgstr ""
+msgstr "Choisissez qui peut répondre"
 
 #: src/screens/Signup/StepInfo/index.tsx:114
 msgid "Choose your password"
@@ -1290,7 +1290,7 @@ msgstr "Copier ce code"
 
 #: src/components/StarterPack/ShareDialog.tsx:123
 msgid "Copy link"
-msgstr ""
+msgstr "Copier le lien"
 
 #: src/components/StarterPack/ShareDialog.tsx:143
 msgid "Copy Link"
@@ -1830,7 +1830,7 @@ msgstr "Éducation"
 
 #: src/components/dialogs/ThreadgateEditor.tsx:98
 msgid "Either choose \"Everybody\" or \"Nobody\""
-msgstr ""
+msgstr "Choisissez soit « Tout le monde », soit « Personne »"
 
 #: src/screens/Signup/StepInfo/index.tsx:80
 #: src/view/com/modals/ChangeEmail.tsx:136
@@ -3761,7 +3761,7 @@ msgstr "Ouvre {numItems} options"
 
 #: src/view/com/composer/threadgate/ThreadgateBtn.tsx:60
 msgid "Opens a dialog to choose who can reply to this thread"
-msgstr ""
+msgstr "Ouvre une boîte de dialogue permettant de choisir qui peut répondre à ce fil de discussion"
 
 #: src/view/screens/Settings/index.tsx:510
 msgid "Opens accessibility settings"
