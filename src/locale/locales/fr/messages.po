@@ -963,6 +963,10 @@ msgstr "Choisissez qui peut répondre"
 msgid "Choose your password"
 msgstr "Choisissez votre mot de passe"
 
+#: src/components/dialogs/ThreadgateEditor.tsx:95
+msgid "Chose who can reply"
+msgstr "Choisissez qui peut répondre"
+
 #: src/view/screens/Settings/index.tsx:910
 msgid "Clear all legacy storage data"
 msgstr "Effacer toutes les données de stockage existantes"
