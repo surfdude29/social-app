@@ -5110,7 +5110,7 @@ msgstr "Dialogue pour le partage d’un lien"
 #: src/components/StarterPack/ShareDialog.tsx:134
 #: src/components/StarterPack/ShareDialog.tsx:145
 msgid "Share QR code"
-msgstr ""
+msgstr "Partager le code QR"
 
 #: src/screens/StarterPack/StarterPackScreen.tsx:296
 msgid "Share this starter pack"
@@ -5888,7 +5888,7 @@ msgstr "Préférences des fils de discussion"
 
 #: src/components/WhoCanReply.tsx:109
 msgid "Thread settings updated"
-msgstr ""
+msgstr "Mise à jour des paramètres du fil de discussion"
 
 #: src/view/screens/PreferencesThreads.tsx:119
 msgid "Threaded Mode"
@@ -6454,7 +6454,7 @@ msgstr "Bienvenue !"
 
 #: src/components/NewskieDialog.tsx:103
 msgid "Welcome, friend!"
-msgstr ""
+msgstr "Bienvenue, mon ami !"
 
 #: src/screens/Onboarding/StepInterests/index.tsx:135
 msgid "What are your interests?"
@@ -6585,7 +6585,7 @@ msgstr "vous"
 
 #: src/components/NewskieDialog.tsx:43
 msgid "You"
-msgstr ""
+msgstr "Vous"
 
 #: src/screens/SignupQueued.tsx:136
 msgid "You are in line."
