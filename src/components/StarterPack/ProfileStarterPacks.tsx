@@ -235,8 +235,10 @@ function Empty() {
           <Trans>You haven't created a starter pack yet!</Trans>
         </Text>
         <Text style={[a.text_md, {color: 'white'}]}>
-          <Trans>Starter packs let you easily share your favorite feeds and people with
-          your friends.</Trans>
+          <Trans>
+            Starter packs let you easily share your favorite feeds and people with
+            your friends.
+          </Trans>
         </Text>
       </View>
       <View style={[a.flex_row, a.gap_md, {marginLeft: 'auto'}]}>
