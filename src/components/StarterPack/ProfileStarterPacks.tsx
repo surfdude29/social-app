@@ -238,8 +238,8 @@ function Empty() {
         </Text>
         <Text style={[a.text_md, {color: 'white'}]}>
           <Trans>
-            Starter packs let you easily share your favorite feeds and people with
-            your friends.
+            Starter packs let you easily share your favorite feeds and people
+            with your friends.
           </Trans>
         </Text>
       </View>
