@@ -232,9 +232,7 @@ function Empty() {
             t.atoms.text_contrast_medium,
             {color: 'white'},
           ]}>
-          <Trans>
-            You haven't created a starter pack yet!
-          </Trans>
+          <Trans>You haven't created a starter pack yet!</Trans>
         </Text>
         <Text style={[a.text_md, {color: 'white'}]}>
           <Trans>
