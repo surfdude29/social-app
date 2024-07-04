@@ -3005,7 +3005,7 @@ msgstr "Liker 10 posts"
 #: src/state/shell/progress-guide.tsx:163
 #: src/state/shell/progress-guide.tsx:168
 msgid "Like 10 posts to train the Discover feed"
-msgstr "Liker 10 posts pour former le fil d’actu de Discover"
+msgstr "Liker 10 posts pour former le fil d’actu « Discover »"
 
 #: src/screens/Profile/Header/ProfileHeaderLabeler.tsx:267
 #: src/view/screens/ProfileFeed.tsx:573
