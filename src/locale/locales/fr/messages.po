@@ -2270,7 +2270,7 @@ msgstr "Terminer"
 
 #: src/tours/Tooltip.tsx:149
 msgid "Finish tour and begin using the application"
-msgstr "Terminer la présentation et commencer à utiliser l'application"
+msgstr "Terminer la visite et commencer à utiliser l'application"
 
 #: src/screens/Onboarding/index.tsx:35
 msgid "Fitness"
@@ -2313,7 +2313,7 @@ msgstr "Suivre {name}"
 
 #: src/components/ProgressGuide/List.tsx:54
 msgid "Follow 7 accounts"
-msgstr "Suivez 7 comptes"
+msgstr "Suivre 7 comptes"
 
 #: src/view/com/profile/ProfileMenu.tsx:246
 #: src/view/com/profile/ProfileMenu.tsx:257
