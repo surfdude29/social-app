@@ -730,7 +730,7 @@ msgstr "Bluesky est un réseau ouvert où vous pouvez choisir votre hébergeur. 
 
 #: src/components/ProgressGuide/List.tsx:55
 msgid "Bluesky is better with friends!"
-msgstr "Bluesky est meilleur avec des amis !"
+msgstr "Bluesky est meilleur avec des ami·e·s !"
 
 #: src/components/StarterPack/ProfileStarterPacks.tsx:282
 msgid "Bluesky will choose a set of recommended accounts from people in your network."
@@ -752,6 +752,24 @@ msgstr "Flouter les images et les filtrer des fils d’actu"
 #: src/screens/Onboarding/state.ts:81
 msgid "Books"
 msgstr "Livres"
+
+#: src/components/FeedInterstitials.tsx:206
+msgid "Browse more accounts on the Explore page"
+msgstr "Consulter d'autres comptes sur la page Explore"
+
+#: src/components/FeedInterstitials.tsx:332
+msgid "Browse more feeds on the Explore page"
+msgstr "検索ページでさらにフィードを見る"
+
+#: src/components/FeedInterstitials.tsx:195
+#: src/components/FeedInterstitials.tsx:321
+msgid "Browse more suggestions"
+msgstr "さらにおすすめを見る"
+
+#: src/components/FeedInterstitials.tsx:214
+#: src/components/FeedInterstitials.tsx:341
+msgid "Browse more suggestions on the Explore page"
+msgstr "検索ページでさらにおすすめを見る"
 
 #: src/screens/Home/NoFeedsPinned.tsx:103
 #: src/screens/Home/NoFeedsPinned.tsx:109
