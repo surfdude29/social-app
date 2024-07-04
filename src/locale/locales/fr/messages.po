@@ -209,6 +209,10 @@ msgstr "⚠Pseudo invalide"
 msgid "2FA Confirmation"
 msgstr "Confirmation 2FA"
 
+#: src/tours/Tooltip.tsx:70
+msgid "A help tooltip"
+msgstr ""
+
 #: src/view/com/util/ViewHeader.tsx:93
 #: src/view/screens/Search/Search.tsx:684
 msgid "Access navigation links and settings"
