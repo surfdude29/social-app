@@ -211,7 +211,7 @@ msgstr "Confirmation 2FA"
 
 #: src/tours/Tooltip.tsx:70
 msgid "A help tooltip"
-msgstr ""
+msgstr "Une infobulle d'aide"
 
 #: src/view/com/util/ViewHeader.tsx:93
 #: src/view/screens/Search/Search.tsx:684
@@ -396,6 +396,10 @@ msgstr "Le contenu pour adultes est désactivé."
 #: src/view/screens/Settings/index.tsx:686
 msgid "Advanced"
 msgstr "Avancé"
+
+#: src/state/shell/progress-guide.tsx:177
+msgid "Algorithm training complete!"
+msgstr "Formation à l'algorithme terminée !"
 
 #: src/screens/StarterPack/StarterPackScreen.tsx:301
 msgid "All accounts have been followed!"
@@ -723,6 +727,10 @@ msgstr "Bluesky"
 #: src/view/com/auth/server-input/index.tsx:154
 msgid "Bluesky is an open network where you can choose your hosting provider. Custom hosting is now available in beta for developers."
 msgstr "Bluesky est un réseau ouvert où vous pouvez choisir votre hébergeur. L’auto-hébergement est désormais disponible en version bêta pour les développeurs."
+
+#: src/components/ProgressGuide/List.tsx:55
+msgid "Bluesky is better with friends!"
+msgstr "Bluesky est meilleur avec des amis !"
 
 #: src/components/StarterPack/ProfileStarterPacks.tsx:282
 msgid "Bluesky will choose a set of recommended accounts from people in your network."
