@@ -755,21 +755,21 @@ msgstr "Livres"
 
 #: src/components/FeedInterstitials.tsx:206
 msgid "Browse more accounts on the Explore page"
-msgstr "Consulter d'autres comptes sur la page Explore"
+msgstr "Parcourir d'autres comptes sur la page « Explore »"
 
 #: src/components/FeedInterstitials.tsx:332
 msgid "Browse more feeds on the Explore page"
-msgstr "検索ページでさらにフィードを見る"
+msgstr "Parcourir d'autres fils d'actu sur la page « Explore »"
 
 #: src/components/FeedInterstitials.tsx:195
 #: src/components/FeedInterstitials.tsx:321
 msgid "Browse more suggestions"
-msgstr "さらにおすすめを見る"
+msgstr "Parcourir d'autres suggestions"
 
 #: src/components/FeedInterstitials.tsx:214
 #: src/components/FeedInterstitials.tsx:341
 msgid "Browse more suggestions on the Explore page"
-msgstr "検索ページでさらにおすすめを見る"
+msgstr "Parcourir d'autres suggestions sur la page « Explore »"
 
 #: src/screens/Home/NoFeedsPinned.tsx:103
 #: src/screens/Home/NoFeedsPinned.tsx:109
@@ -955,6 +955,14 @@ msgstr "Vérifiez votre boîte e-mail pour un code de connexion et saisissez-le 
 #: src/view/com/modals/DeleteAccount.tsx:231
 msgid "Check your inbox for an email with the confirmation code to enter below:"
 msgstr "Consultez votre boîte de réception, vous avez du recevoir un e-mail contenant un code de confirmation à saisir ci-dessous :"
+
+#: src/screens/Onboarding/StepInterests/index.tsx:190
+msgid "Choose 3 or more:"
+msgstr "Choisissez 3 ou plus :"
+
+#: src/screens/Onboarding/StepInterests/index.tsx:325
+msgid "Choose at least {0} more"
+msgstr "Choisissez au moins {0} de plus"
 
 #: src/screens/StarterPack/Wizard/index.tsx:191
 msgid "Choose Feeds"
@@ -1632,6 +1640,10 @@ msgstr "Abandonner le brouillon ?"
 msgid "Discourage apps from showing my account to logged-out users"
 msgstr "Empêcher les applis de montrer mon compte aux personnes non connectées"
 
+#: src/tours/HomeTour.tsx:70
+msgid "Discover learns which posts you like as you browse."
+msgstr "« Discover » apprend quels sont les posts que vous aimez au fur et à mesure que vous naviguez."
+
 #: src/view/com/posts/FollowingEmptyState.tsx:70
 #: src/view/com/posts/FollowingEndOfFeed.tsx:71
 msgid "Discover new custom feeds"
@@ -1644,6 +1656,10 @@ msgstr "Découvrir de nouveaux fils d’actu"
 #: src/view/screens/Feeds.tsx:744
 msgid "Discover New Feeds"
 msgstr "Découvrir de nouveaux fils d’actu"
+
+#: src/components/ProgressGuide/List.tsx:40
+msgid "Dismiss getting started guide"
+msgstr "Annuler le guide de démarrage"
 
 #: src/view/screens/AccessibilitySettings.tsx:95
 msgid "Display larger alt text badges"
@@ -1934,6 +1950,10 @@ msgstr "Activé"
 #: src/screens/Profile/Sections/Feed.tsx:104
 msgid "End of feed"
 msgstr "Fin du fil d’actu"
+
+#: src/tours/Tooltip.tsx:159
+msgid "End of onboarding tour window. Do not move forward. Instead, go backward for more options, or press to skip."
+msgstr "Fin de la fenêtre de la visite d'accueil. N'avancez pas. Au lieu de cela, revenez en arrière pour plus d'options, ou appuyez pour passer."
 
 #: src/view/com/modals/AddAppPasswords.tsx:160
 msgid "Enter a name for this App Password"
@@ -2228,6 +2248,10 @@ msgstr "Finalisation"
 msgid "Find accounts to follow"
 msgstr "Trouver des comptes à suivre"
 
+#: src/tours/HomeTour.tsx:88
+msgid "Find more feeds and accounts to follow in the Explore page."
+msgstr "Trouvez d'autres fils d'actu et comptes à suivre dans la page « Explore »."
+
 #: src/view/screens/Search/Search.tsx:439
 msgid "Find posts and users on Bluesky"
 msgstr "Trouver des posts et comptes sur Bluesky"
@@ -2243,6 +2267,10 @@ msgstr "Affine les fils de discussion."
 #: src/screens/StarterPack/Wizard/index.tsx:192
 msgid "Finish"
 msgstr "Terminer"
+
+#: src/tours/Tooltip.tsx:149
+msgid "Finish tour and begin using the application"
+msgstr "Terminer la présentation et commencer à utiliser l'application"
 
 #: src/screens/Onboarding/index.tsx:35
 msgid "Fitness"
@@ -2282,6 +2310,10 @@ msgstr "Suivre {0}"
 #: src/view/com/posts/AviFollowButton.tsx:71
 msgid "Follow {name}"
 msgstr "Suivre {name}"
+
+#: src/components/ProgressGuide/List.tsx:54
+msgid "Follow 7 accounts"
+msgstr "Suivez 7 comptes"
 
 #: src/view/com/profile/ProfileMenu.tsx:246
 #: src/view/com/profile/ProfileMenu.tsx:257
@@ -2333,6 +2365,10 @@ msgstr "Comptes suivis uniquement"
 msgid "followed you"
 msgstr "vous suit"
 
+#: src/view/com/notifications/FeedItem.tsx:195
+msgid "followed you back"
+msgstr "vous a suivi"
+
 #: src/view/com/profile/ProfileFollowers.tsx:104
 #: src/view/screens/ProfileFollowers.tsx:25
 msgid "Followers"
@@ -2375,6 +2411,10 @@ msgstr "Préférences du fil d’actu « Following »"
 #: src/view/screens/Settings/index.tsx:582
 msgid "Following Feed Preferences"
 msgstr "Préférences du fil d’actu « Following »"
+
+#: src/tours/HomeTour.tsx:59
+msgid "Following shows the latest posts from people you follow."
+msgstr "« Following » affiche les derniers posts des personnes que vous suivez."
 
 #: src/screens/Profile/Header/Handle.tsx:31
 msgid "Follows you"
@@ -2440,6 +2480,10 @@ msgstr "C’est parti"
 msgid "Get Started"
 msgstr "C’est parti"
 
+#: src/components/ProgressGuide/List.tsx:33
+msgid "Getting started"
+msgstr "Pour commencer"
+
 #: src/view/com/util/images/ImageHorzList.tsx:35
 msgid "GIF"
 msgstr "GIF"
@@ -2472,6 +2516,10 @@ msgstr "Retour"
 #: src/view/screens/ProfileList.tsx:975
 msgid "Go Back"
 msgstr "Retour"
+
+#: src/screens/StarterPack/StarterPackLandingScreen.tsx:189
+msgid "Go back to previous screen"
+msgstr "Retour à l'écran précédent"
 
 #: src/components/dms/ReportDialog.tsx:154
 #: src/components/ReportDialog/SelectReportOptionView.tsx:80
@@ -2507,6 +2555,10 @@ msgstr "Aller à la suite"
 msgid "Go to profile"
 msgstr "Voir le profil"
 
+#: src/tours/Tooltip.tsx:138
+msgid "Go to the next step of the tour"
+msgstr "Passer à l'étape suivante de la visite"
+
 #: src/components/dms/ConvoMenu.tsx:164
 msgid "Go to user's profile"
 msgstr "Voir le profil du compte"
@@ -2514,6 +2566,10 @@ msgstr "Voir le profil du compte"
 #: src/lib/moderation/useGlobalLabelStrings.ts:46
 msgid "Graphic Media"
 msgstr "Médias crus"
+
+#: src/state/shell/progress-guide.tsx:167
+msgid "Half way there!"
+msgstr "A mi-chemin !"
 
 #: src/view/com/modals/ChangeHandle.tsx:260
 msgid "Handle"
