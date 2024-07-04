@@ -211,7 +211,7 @@ msgstr "Confirmation 2FA"
 
 #: src/tours/Tooltip.tsx:70
 msgid "A help tooltip"
-msgstr "Une infobulle d'aide"
+msgstr "Une infobulle d’aide"
 
 #: src/view/com/util/ViewHeader.tsx:93
 #: src/view/screens/Search/Search.tsx:684
@@ -399,7 +399,7 @@ msgstr "Avancé"
 
 #: src/state/shell/progress-guide.tsx:177
 msgid "Algorithm training complete!"
-msgstr "Formation à l'algorithme terminée !"
+msgstr "Formation à l’algorithme terminée !"
 
 #: src/screens/StarterPack/StarterPackScreen.tsx:301
 msgid "All accounts have been followed!"
@@ -730,7 +730,7 @@ msgstr "Bluesky est un réseau ouvert où vous pouvez choisir votre hébergeur. 
 
 #: src/components/ProgressGuide/List.tsx:55
 msgid "Bluesky is better with friends!"
-msgstr "Bluesky est meilleur avec des ami·e·s !"
+msgstr "Bluesky est meilleur avec des ami·e·s !"
 
 #: src/components/StarterPack/ProfileStarterPacks.tsx:282
 msgid "Bluesky will choose a set of recommended accounts from people in your network."
@@ -755,21 +755,21 @@ msgstr "Livres"
 
 #: src/components/FeedInterstitials.tsx:206
 msgid "Browse more accounts on the Explore page"
-msgstr "Parcourir d'autres comptes sur la page « Explore »"
+msgstr "Parcourir d’autres comptes sur la page « Explore »"
 
 #: src/components/FeedInterstitials.tsx:332
 msgid "Browse more feeds on the Explore page"
-msgstr "Parcourir d'autres fils d'actu sur la page « Explore »"
+msgstr "Parcourir d’autres fils d’actu sur la page « Explore »"
 
 #: src/components/FeedInterstitials.tsx:195
 #: src/components/FeedInterstitials.tsx:321
 msgid "Browse more suggestions"
-msgstr "Parcourir d'autres suggestions"
+msgstr "Parcourir d’autres suggestions"
 
 #: src/components/FeedInterstitials.tsx:214
 #: src/components/FeedInterstitials.tsx:341
 msgid "Browse more suggestions on the Explore page"
-msgstr "Parcourir d'autres suggestions sur la page « Explore »"
+msgstr "Parcourir d’autres suggestions sur la page « Explore »"
 
 #: src/screens/Home/NoFeedsPinned.tsx:103
 #: src/screens/Home/NoFeedsPinned.tsx:109
@@ -958,7 +958,7 @@ msgstr "Consultez votre boîte de réception, vous avez du recevoir un e-mail co
 
 #: src/screens/Onboarding/StepInterests/index.tsx:190
 msgid "Choose 3 or more:"
-msgstr "Choisissez 3 ou plus :"
+msgstr "Choisissez 3 ou plus :"
 
 #: src/screens/Onboarding/StepInterests/index.tsx:325
 msgid "Choose at least {0} more"
@@ -1953,7 +1953,7 @@ msgstr "Fin du fil d’actu"
 
 #: src/tours/Tooltip.tsx:159
 msgid "End of onboarding tour window. Do not move forward. Instead, go backward for more options, or press to skip."
-msgstr "Fin de la fenêtre de la visite d'accueil. N'avancez pas. Au lieu de cela, revenez en arrière pour plus d'options, ou appuyez pour passer."
+msgstr "Fin de la fenêtre de la visite d’accueil. N’avancez pas. Au lieu de cela, revenez en arrière pour plus d’options, ou appuyez pour passer."
 
 #: src/view/com/modals/AddAppPasswords.tsx:160
 msgid "Enter a name for this App Password"
@@ -2250,7 +2250,7 @@ msgstr "Trouver des comptes à suivre"
 
 #: src/tours/HomeTour.tsx:88
 msgid "Find more feeds and accounts to follow in the Explore page."
-msgstr "Trouvez d'autres fils d'actu et comptes à suivre dans la page « Explore »."
+msgstr "Trouvez d’autres fils d’actu et comptes à suivre dans la page « Explore »."
 
 #: src/view/screens/Search/Search.tsx:439
 msgid "Find posts and users on Bluesky"
@@ -2270,7 +2270,7 @@ msgstr "Terminer"
 
 #: src/tours/Tooltip.tsx:149
 msgid "Finish tour and begin using the application"
-msgstr "Terminer la visite et commencer à utiliser l'application"
+msgstr "Terminer la visite et commencer à utiliser l’application"
 
 #: src/screens/Onboarding/index.tsx:35
 msgid "Fitness"
@@ -2519,7 +2519,7 @@ msgstr "Retour"
 
 #: src/screens/StarterPack/StarterPackLandingScreen.tsx:189
 msgid "Go back to previous screen"
-msgstr "Retour à l'écran précédent"
+msgstr "Retour à l’écran précédent"
 
 #: src/components/dms/ReportDialog.tsx:154
 #: src/components/ReportDialog/SelectReportOptionView.tsx:80
@@ -2557,7 +2557,7 @@ msgstr "Voir le profil"
 
 #: src/tours/Tooltip.tsx:138
 msgid "Go to the next step of the tour"
-msgstr "Passer à l'étape suivante de la visite"
+msgstr "Passer à l’étape suivante de la visite"
 
 #: src/components/dms/ConvoMenu.tsx:164
 msgid "Go to user's profile"
@@ -2569,7 +2569,7 @@ msgstr "Médias crus"
 
 #: src/state/shell/progress-guide.tsx:167
 msgid "Half way there!"
-msgstr "A mi-chemin !"
+msgstr "A mi-chemin !"
 
 #: src/view/com/modals/ChangeHandle.tsx:260
 msgid "Handle"
@@ -3005,7 +3005,7 @@ msgstr "Liker 10 posts"
 #: src/state/shell/progress-guide.tsx:163
 #: src/state/shell/progress-guide.tsx:168
 msgid "Like 10 posts to train the Discover feed"
-msgstr "Liker 10 posts pour former le fil d'actu de Discover"
+msgstr "Liker 10 posts pour former le fil d’actu de Discover"
 
 #: src/screens/Profile/Header/ProfileHeaderLabeler.tsx:267
 #: src/view/screens/ProfileFeed.tsx:573
@@ -3777,7 +3777,7 @@ msgstr "Réinitialiser le didacticiel"
 
 #: src/tours/Tooltip.tsx:118
 msgid "Onboarding tour step {0}: {1}"
-msgstr "Étape de la visite d'accueil {0} : {1}"
+msgstr "Étape de la visite d’accueil {0} : {1}"
 
 #: src/view/com/composer/Composer.tsx:522
 msgid "One or more images is missing alt text."
@@ -4172,7 +4172,7 @@ msgstr "Veuillez entrer votre e-mail."
 
 #: src/screens/Signup/StepInfo/index.tsx:63
 msgid "Please enter your invite code."
-msgstr "Veuillez saisir votre code d'invitation."
+msgstr "Veuillez saisir votre code d’invitation."
 
 #: src/view/com/modals/DeleteAccount.tsx:253
 msgid "Please enter your password as well:"
@@ -5440,7 +5440,7 @@ msgstr "Développement de logiciels"
 
 #: src/components/FeedInterstitials.tsx:303
 msgid "Some other feeds you might like"
-msgstr "Quelques autres fils d'actu qui pourraient vous intéresser"
+msgstr "Quelques autres fils d’actu qui pourraient vous intéresser"
 
 #: src/components/WhoCanReply.tsx:72
 #: src/view/com/composer/threadgate/ThreadgateBtn.tsx:47
@@ -5511,7 +5511,7 @@ msgstr "Démarrer les discussions"
 
 #: src/tours/Tooltip.tsx:99
 msgid "Start of onboarding tour window. Do not move backward. Instead, go forward for more options, or press to skip."
-msgstr "Début de la fenêtre de la visite d'accueil. Ne revenez pas en arrière. Allez plutôt vers l'avant pour plus d'options, ou appuyez pour passer."
+msgstr "Début de la fenêtre de la visite d’accueil. Ne revenez pas en arrière. Allez plutôt vers l’avant pour plus d’options, ou appuyez pour passer."
 
 #: src/lib/generate-starterpack.ts:68
 #: src/Navigation.tsx:325
@@ -5604,7 +5604,7 @@ msgstr "Changer de compte"
 
 #: src/tours/HomeTour.tsx:48
 msgid "Switch between feeds to control your experience."
-msgstr "Basculez d'un fil d'actu à l'autre pour contrôler votre expérience."
+msgstr "Basculez d’un fil d’actu à l’autre pour contrôler votre expérience."
 
 #: src/view/screens/Settings/index.tsx:160
 msgid "Switch to {0}"
@@ -5644,7 +5644,7 @@ msgstr "Tapper pour voir en entier"
 
 #: src/state/shell/progress-guide.tsx:172
 msgid "Task complete - 10 likes!"
-msgstr "Tâche accomplie - 10 likes !"
+msgstr "Tâche accomplie - 10 likes !"
 
 #: src/components/ProgressGuide/List.tsx:49
 msgid "Teach our algorithm what you like"
@@ -5727,7 +5727,7 @@ msgstr "Notre politique de droits d’auteur a été déplacée vers <0/>"
 #: src/state/shell/progress-guide.tsx:173
 #: src/state/shell/progress-guide.tsx:178
 msgid "The Discover feed now knows what you like"
-msgstr "Le fil d'actu « Discover » sait désormais ce que vous aimez"
+msgstr "Le fil d’actu « Discover » sait désormais ce que vous aimez"
 
 #: src/screens/StarterPack/StarterPackLandingScreen.tsx:321
 msgid "The experience is better in the app. Download Bluesky now and we'll pick back up where you left off."
@@ -6621,7 +6621,7 @@ msgstr "Bienvenue !"
 
 #: src/components/NewskieDialog.tsx:103
 msgid "Welcome, friend!"
-msgstr "Bienvenue et enchanté !"
+msgstr "Bienvenue et enchanté !"
 
 #: src/screens/Onboarding/StepInterests/index.tsx:140
 msgid "What are your interests?"
@@ -7030,7 +7030,7 @@ msgstr "Votre e-mail n’a pas encore été vérifié. Il s’agit d’une mesur
 
 #: src/state/shell/progress-guide.tsx:162
 msgid "Your first like!"
-msgstr "Votre premier « like » !"
+msgstr "Votre premier « like » !"
 
 #: src/view/com/posts/FollowingEmptyState.tsx:43
 msgid "Your following feed is empty! Follow more users to see what's happening."
