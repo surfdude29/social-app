@@ -8,14 +8,14 @@ msgstr ""
 "Language: de\n"
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2024-03-12 13:00+0000\n"
-"Last-Translator: \n"
-"Language-Team: Translators in PR 2319, PythooonUser, cdfzo\n"
+"PO-Revision-Date: 2024-07-06 13:00+0100\n"
+"Last-Translator: surfdude29\n"
+"Language-Team: Translators in PR 2319, surfdude29, PythooonUser, cdfzo\n"
 "Plural-Forms: \n"
 
 #: src/screens/Messages/List/ChatListItem.tsx:120
 msgid "(contains embedded content)"
-msgstr ""
+msgstr "(Enthält eingebettete Inhalte)"
 
 #: src/view/com/modals/VerifyEmail.tsx:150
 msgid "(no email)"
@@ -23,15 +23,11 @@ msgstr "(keine E-Mail)"
 
 #: src/view/com/notifications/FeedItem.tsx:294
 msgid "{0, plural, one {{formattedCount} other} other {{formattedCount} others}}"
-msgstr ""
-
-#: src/components/moderation/LabelsOnMe.tsx:55
-#~ msgid "{0, plural, one {# label has been placed on this account} other {# labels has been placed on this account}}"
-#~ msgstr ""
+msgstr "{0, plural, one {{formattedCount} anderer} other {{formattedCount} andere}}"
 
 #: src/components/moderation/LabelsOnMe.tsx:55
 msgid "{0, plural, one {# label has been placed on this account} other {# labels have been placed on this account}}"
-msgstr ""
+msgstr "{0, plural, one {# Etikett wurde auf dieses Konto platziert} other {# Etiketten wurden auf dieses Konto platziert}}"
 
 #: src/components/moderation/LabelsOnMe.tsx:61
 #~ msgid "{0, plural, one {# label has been placed on this content} other {# labels has been placed on this content}}"
