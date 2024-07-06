@@ -207,11 +207,11 @@ msgstr "⚠Ungültiger Handle"
 
 #: src/screens/Login/LoginForm.tsx:266
 msgid "2FA Confirmation"
-msgstr ""
+msgstr "Zwei-Faktor-Authentifizierung Bestätigung"
 
 #: src/tours/Tooltip.tsx:70
 msgid "A help tooltip"
-msgstr ""
+msgstr "Ein Hilfe-Tooltip"
 
 #: src/lib/hooks/useOTAUpdate.ts:16
 #~ msgid "A new version of the app is available. Please update to continue using the app."
@@ -233,16 +233,12 @@ msgstr "Barrierefreiheit"
 
 #: src/view/screens/Settings/index.tsx:510
 msgid "Accessibility settings"
-msgstr ""
+msgstr "Einstellungen für Barrierefreiheit"
 
 #: src/Navigation.tsx:301
 #: src/view/screens/AccessibilitySettings.tsx:69
 msgid "Accessibility Settings"
-msgstr ""
-
-#: src/components/moderation/LabelsOnMe.tsx:42
-#~ msgid "account"
-#~ msgstr ""
+msgstr "Einstellungen für Barrierefreiheit"
 
 #: src/screens/Login/LoginForm.tsx:190
 #: src/view/screens/Settings/index.tsx:346
@@ -256,7 +252,7 @@ msgstr "Konto blockiert"
 
 #: src/view/com/profile/ProfileMenu.tsx:158
 msgid "Account followed"
-msgstr ""
+msgstr "Konto folgt"
 
 #: src/view/com/profile/ProfileMenu.tsx:118
 msgid "Account muted"
@@ -2637,7 +2633,7 @@ msgstr ""
 #: src/view/com/profile/ProfileMenu.tsx:246
 #: src/view/com/profile/ProfileMenu.tsx:257
 msgid "Follow Account"
-msgstr "Accounts folgen"
+msgstr "Konto folgen"
 
 #: src/screens/StarterPack/StarterPackScreen.tsx:405
 #: src/screens/StarterPack/StarterPackScreen.tsx:412
