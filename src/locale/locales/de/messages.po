@@ -27,15 +27,11 @@ msgstr "{0, plural, one {{formattedCount} anderer} other {{formattedCount} ander
 
 #: src/components/moderation/LabelsOnMe.tsx:55
 msgid "{0, plural, one {# label has been placed on this account} other {# labels have been placed on this account}}"
-msgstr "{0, plural, one {# Etikett wurde auf dieses Konto platziert} other {# Etiketten wurden auf dieses Konto platziert}}"
-
-#: src/components/moderation/LabelsOnMe.tsx:61
-#~ msgid "{0, plural, one {# label has been placed on this content} other {# labels has been placed on this content}}"
-#~ msgstr ""
+msgstr "{0, plural, one {# Label wurde auf dieses Konto platziert} other {# Labels wurden auf dieses Konto platziert}}"
 
 #: src/components/moderation/LabelsOnMe.tsx:61
 msgid "{0, plural, one {# label has been placed on this content} other {# labels have been placed on this content}}"
-msgstr ""
+msgstr "{0, plural, one {# Label wurde auf diesen Inhalt gesetzt} other {# Labels wurden auf diesen Inhalt gesetzt}}"
 
 #: src/view/com/util/post-ctrls/RepostButton.tsx:66
 msgid "{0, plural, one {# repost} other {# reposts}}"
