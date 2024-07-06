@@ -135,7 +135,7 @@ msgstr "{estimatedTimeMins, plural, one {Minute} other {Minuten}}"
 #: src/components/ProfileHoverCard/index.web.tsx:504
 #: src/screens/Profile/Header/Metrics.tsx:50
 msgid "{following} following"
-msgstr "{following} folge ich"
+msgstr "{following} Folge ich"
 
 #: src/components/dms/dialogs/SearchablePeopleList.tsx:405
 msgid "{handle} can't be messaged"
@@ -175,33 +175,31 @@ msgstr "<0>{0}, </0><1>{1} </1>und {2, plural, one {# weitere Person} other {# w
 #: src/screens/StarterPack/Wizard/index.tsx:519
 msgctxt "feeds"
 msgid "<0>{0}, </0><1>{1}, </1>and {2, plural, one {# other} other {# others}} are included in your starter pack"
-msgstr ""
-
-„Folgen”, „Entdecken”, „Great Cats” und 1 weiterer Feed sind in deinem Starterpaket enthalten
+msgstr "<0>{0}, </0><1>{1} </1>und {2, plural, one {# weiterer Feed} other {# weitere Feeds}} sind in deinem Starterpaket enthalten"
 
 #: src/view/shell/Drawer.tsx:101
 msgid "<0>{0}</0> {1, plural, one {follower} other {followers}}"
-msgstr ""
+msgstr "<0>{0}</0> {1, plural, one {Follower} other {Follower}}"
 
 #: src/view/shell/Drawer.tsx:112
 msgid "<0>{0}</0> {1, plural, one {following} other {following}}"
-msgstr ""
+msgstr "<0>{0}</0> {1, plural, one {Folge ich} other {Folge ich}}"
 
 #: src/screens/StarterPack/Wizard/index.tsx:507
 msgid "<0>{0}</0> and<1> </1><2>{1} </2>are included in your starter pack"
-msgstr ""
+msgstr "<0>{0}</0> und<1> </1><2>{1} </2>sind in deinem Starterpaket enthalten"
 
 #: src/screens/StarterPack/Wizard/index.tsx:500
 msgid "<0>{0}</0> is included in your starter pack"
-msgstr ""
+msgstr "<0>{0}</0> ist in deinem Starterpaket enthalten"
 
 #: src/view/com/modals/SelfLabel.tsx:135
 msgid "<0>Not Applicable.</0> This warning is only available for posts with media attached."
-msgstr ""
+msgstr "<0>Nicht zutreffend.</0> Diese Warnung ist nur für Beiträge mit angehängten Medien verfügbar."
 
 #: src/screens/StarterPack/Wizard/index.tsx:457
 msgid "<0>You</0> and<1> </1><2>{0} </2>are included in your starter pack"
-msgstr ""
+msgstr "<0>Du</0> und<1> </1><2>{0} </2>seid in eurem Starterpaket enthalten"
 
 #: src/screens/Profile/Header/Handle.tsx:50
 msgid "⚠Invalid Handle"
