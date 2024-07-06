@@ -122,15 +122,15 @@ msgstr "{diffSeconds, plural, one {Sekunde} other {Sekunden}}"
 
 #: src/screens/StarterPack/Wizard/index.tsx:175
 msgid "{displayName}'s Starter Pack"
-msgstr ""
+msgstr "Startpaket von {displayName}"
 
 #: src/screens/SignupQueued.tsx:207
 msgid "{estimatedTimeHrs, plural, one {hour} other {hours}}"
-msgstr ""
+msgstr "{estimatedTimeHrs, plural, one {Stunde} other {Stunden}}"
 
 #: src/screens/SignupQueued.tsx:213
 msgid "{estimatedTimeMins, plural, one {minute} other {minutes}}"
-msgstr ""
+msgstr "{estimatedTimeMins, plural, one {Minute} other {Minuten}}"
 
 #: src/components/ProfileHoverCard/index.web.tsx:504
 #: src/screens/Profile/Header/Metrics.tsx:50
@@ -139,13 +139,13 @@ msgstr "{following} folge ich"
 
 #: src/components/dms/dialogs/SearchablePeopleList.tsx:405
 msgid "{handle} can't be messaged"
-msgstr ""
+msgstr "{handle} kann nicht benachrichtigt werden"
 
 #: src/screens/Profile/Header/ProfileHeaderLabeler.tsx:286
 #: src/screens/Profile/Header/ProfileHeaderLabeler.tsx:299
 #: src/view/screens/ProfileFeed.tsx:588
 msgid "{likeCount, plural, one {Liked by # user} other {Liked by # users}}"
-msgstr ""
+msgstr "{likeCount, plural, one {Geliked von # Konto} other {Geliked von # Konten}}"
 
 #: src/view/shell/Drawer.tsx:462
 msgid "{numUnreadNotifications} unread"
@@ -153,23 +153,19 @@ msgstr "{numUnreadNotifications} ungelesen"
 
 #: src/components/NewskieDialog.tsx:116
 msgid "{profileName} joined Bluesky {0} ago"
-msgstr ""
+msgstr "{profileName} ist vor {0} bei Bluesky eingetreten"
 
 #: src/components/NewskieDialog.tsx:111
 msgid "{profileName} joined Bluesky using a starter pack {0} ago"
-msgstr ""
+msgstr "{profileName} hat sich vor {0} mit einem Starterpaket bei Bluesky angemeldet"
 
 #: src/view/screens/PreferencesFollowingFeed.tsx:67
 msgid "{value, plural, =0 {Show all replies} one {Show replies with at least # like} other {Show replies with at least # likes}}"
-msgstr ""
+msgstr "{value, plural, =0 {Show all replies} one {Show replies with at least # like} other {Show replies with at least # likes}}"
 
 #: src/components/WhoCanReply.tsx:295
 msgid "<0/> members"
 msgstr "<0/> Mitglieder"
-
-#: src/screens/StarterPack/Wizard/index.tsx:485
-#~ msgid "<0>{0} </0>and<1> </1><2>{1} </2>are included in your starter pack"
-#~ msgstr ""
 
 #: src/screens/StarterPack/Wizard/index.tsx:466
 msgctxt "profiles"
@@ -180,10 +176,6 @@ msgstr ""
 msgctxt "feeds"
 msgid "<0>{0}, </0><1>{1}, </1>and {2, plural, one {# other} other {# others}} are included in your starter pack"
 msgstr ""
-
-#: src/screens/StarterPack/Wizard/index.tsx:497
-#~ msgid "<0>{0}, </0><1>{1}, </1>and {2} {3, plural, one {other} other {others}} are included in your starter pack"
-#~ msgstr ""
 
 #: src/view/shell/Drawer.tsx:101
 msgid "<0>{0}</0> {1, plural, one {follower} other {followers}}"
@@ -197,38 +189,13 @@ msgstr ""
 msgid "<0>{0}</0> and<1> </1><2>{1} </2>are included in your starter pack"
 msgstr ""
 
-#: src/view/shell/Drawer.tsx:96
-#~ msgid "<0>{0}</0> following"
-#~ msgstr ""
-
 #: src/screens/StarterPack/Wizard/index.tsx:500
 msgid "<0>{0}</0> is included in your starter pack"
 msgstr ""
 
-#: src/components/ProfileHoverCard/index.web.tsx:437
-#~ msgid "<0>{followers} </0><1>{pluralizedFollowers}</1>"
-#~ msgstr ""
-
-#: src/components/ProfileHoverCard/index.web.tsx:449
-#: src/screens/Profile/Header/Metrics.tsx:45
-#~ msgid "<0>{following} </0><1>following</1>"
-#~ msgstr "<0>{following} </0><1>folge ich</1>"
-
-#: src/view/com/auth/onboarding/RecommendedFeeds.tsx:31
-#~ msgid "<0>Choose your</0><1>Recommended</1><2>Feeds</2>"
-#~ msgstr "<0>Wähle deine</0><1>empfohlenen</1><2>Feeds</2>"
-
-#: src/view/com/auth/onboarding/RecommendedFollows.tsx:38
-#~ msgid "<0>Follow some</0><1>Recommended</1><2>Users</2>"
-#~ msgstr "<0>Folge einigen</0><1>empfohlenen</1><2>Nutzern</2>"
-
 #: src/view/com/modals/SelfLabel.tsx:135
 msgid "<0>Not Applicable.</0> This warning is only available for posts with media attached."
 msgstr ""
-
-#: src/view/com/auth/onboarding/WelcomeDesktop.tsx:21
-#~ msgid "<0>Welcome to</0><1>Bluesky</1>"
-#~ msgstr "<0>Willkommen bei</0><1>Bluesky</1>"
 
 #: src/screens/StarterPack/Wizard/index.tsx:457
 msgid "<0>You</0> and<1> </1><2>{0} </2>are included in your starter pack"
@@ -241,10 +208,6 @@ msgstr "⚠Ungültiger Handle"
 #: src/screens/Login/LoginForm.tsx:266
 msgid "2FA Confirmation"
 msgstr ""
-
-#: src/view/com/util/moderation/LabelInfo.tsx:45
-#~ msgid "A content warning has been applied to this {0}."
-#~ msgstr "Diese Seite wurde mit einer Inhaltswarnung versehen {0}."
 
 #: src/tours/Tooltip.tsx:70
 msgid "A help tooltip"
