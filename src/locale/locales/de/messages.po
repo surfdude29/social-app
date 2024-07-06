@@ -45,11 +45,11 @@ msgstr "{0, plural, one {Follower} other {Follower}}"
 #: src/components/ProfileHoverCard/index.web.tsx:402
 #: src/screens/Profile/Header/Metrics.tsx:27
 msgid "{0, plural, one {following} other {following}}"
-msgstr ""
+msgstr "{0, plural, one {Folge ich} other {Folge ich}}"
 
 #: src/view/com/util/post-ctrls/PostCtrls.tsx:266
 msgid "{0, plural, one {Like (# like)} other {Like (# likes)}}"
-msgstr ""
+msgstr "{0, plural, one {Liken (# like)} other {Liken (# likes)}}"
 
 #: src/view/com/post-thread/PostThreadItem.tsx:382
 msgid "{0, plural, one {like} other {likes}}"
