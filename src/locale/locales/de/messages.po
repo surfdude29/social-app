@@ -2181,20 +2181,20 @@ msgstr "Konnte nicht gesendet werden"
 #: src/components/moderation/LabelsOnMeDialog.tsx:223
 #: src/screens/Messages/Conversation/ChatDisabled.tsx:87
 msgid "Failed to submit appeal, please try again."
-msgstr "Einspruch nicht eingereicht. Bitte erneut versuchen."
+msgstr "Anfechten nicht eingereicht. Bitte erneut versuchen."
 
 #: src/view/com/util/forms/PostDropdownBtn.tsx:180
 msgid "Failed to toggle thread mute, please try again"
-msgstr ""
+msgstr "Du konntest die Stummschaltung des Threads nicht aktivieren oder deaktivieren. Bitte versuche es erneut"
 
 #: src/components/FeedCard.tsx:269
 msgid "Failed to update feeds"
-msgstr ""
+msgstr "Aktualisierung der Feeds fehlgeschlagen"
 
 #: src/components/dms/MessagesNUX.tsx:60
 #: src/screens/Messages/Settings.tsx:35
 msgid "Failed to update settings"
-msgstr ""
+msgstr "Einstellungen konnten nicht aktualisiert werden"
 
 #: src/Navigation.tsx:214
 msgid "Feed"
@@ -2205,13 +2205,9 @@ msgstr "Feed"
 msgid "Feed by {0}"
 msgstr "Feed von {0}"
 
-#: src/view/screens/Feeds.tsx:709
-#~ msgid "Feed offline"
-#~ msgstr "Feed offline"
-
 #: src/components/StarterPack/Wizard/WizardListCard.tsx:55
 msgid "Feed toggle"
-msgstr ""
+msgstr "Kippschalter zum Feed"
 
 #: src/view/shell/desktop/RightNav.tsx:70
 #: src/view/shell/Drawer.tsx:345
@@ -2230,21 +2226,13 @@ msgstr "Feedback"
 msgid "Feeds"
 msgstr "Feeds"
 
-#: src/view/com/auth/onboarding/RecommendedFeeds.tsx:58
-#~ msgid "Feeds are created by users to curate content. Choose some feeds that you find interesting."
-#~ msgstr "Feeds werden von Nutzern erstellt, um Inhalte zu kuratieren. Wähle einige Feeds aus, die du interessant findest."
-
 #: src/view/screens/SavedFeeds.tsx:180
 msgid "Feeds are custom algorithms that users build with a little coding expertise. <0/> for more information."
 msgstr "Feeds sind benutzerdefinierte Algorithmen, die Nutzer mit ein wenig Programmierkenntnisse erstellen. <0/> für mehr Informationen."
 
-#: src/screens/Onboarding/StepTopicalFeeds.tsx:80
-#~ msgid "Feeds can be topical as well!"
-#~ msgstr "Die Feeds können auch auf einem Thema basieren!"
-
 #: src/components/FeedCard.tsx:266
 msgid "Feeds updated!"
-msgstr ""
+msgstr "Feeds aktualisiert!"
 
 #: src/view/com/modals/ChangeHandle.tsx:475
 msgid "File Contents"
@@ -2252,7 +2240,7 @@ msgstr "Dateiinhalt"
 
 #: src/view/screens/Settings/ExportCarDialog.tsx:42
 msgid "File saved successfully!"
-msgstr ""
+msgstr "Datei erfolgreich gespeichert!"
 
 #: src/lib/moderation/useLabelBehaviorDescription.ts:66
 msgid "Filter from feeds"
@@ -2270,23 +2258,11 @@ msgstr "Konten zum Folgen finden"
 
 #: src/tours/HomeTour.tsx:88
 msgid "Find more feeds and accounts to follow in the Explore page."
-msgstr ""
+msgstr "Weitere Feeds und Konten, denen du folgen kannst, findest du auf der Seite „Explore”."
 
 #: src/view/screens/Search/Search.tsx:439
 msgid "Find posts and users on Bluesky"
-msgstr ""
-
-#: src/view/screens/Search/Search.tsx:589
-#~ msgid "Find users on Bluesky"
-#~ msgstr "Nutzer auf Bluesky finden"
-
-#: src/view/screens/Search/Search.tsx:587
-#~ msgid "Find users with the search tool on the right"
-#~ msgstr "Finde Nutzer mit der Suchfunktion auf der rechten Seite"
-
-#: src/view/com/auth/onboarding/RecommendedFollowsItem.tsx:155
-#~ msgid "Finding similar accounts..."
-#~ msgstr "Suche nach ähnlichen Konten..."
+msgstr "Finde Beiträge und Nutzer auf Bluesky"
 
 #: src/view/screens/PreferencesFollowingFeed.tsx:110
 msgid "Fine-tune the content you see on your Following feed."
@@ -2298,11 +2274,11 @@ msgstr "Passe die Diskussionsstränge an."
 
 #: src/screens/StarterPack/Wizard/index.tsx:192
 msgid "Finish"
-msgstr ""
+msgstr "Beende"
 
 #: src/tours/Tooltip.tsx:149
 msgid "Finish tour and begin using the application"
-msgstr ""
+msgstr "Beende die Tour und beginne mit der Nutzung der Anwendung"
 
 #: src/screens/Onboarding/index.tsx:35
 msgid "Fitness"
@@ -2343,11 +2319,11 @@ msgstr "{0} folgen"
 
 #: src/view/com/posts/AviFollowButton.tsx:71
 msgid "Follow {name}"
-msgstr ""
+msgstr "{name} folgen"
 
 #: src/components/ProgressGuide/List.tsx:54
 msgid "Follow 7 accounts"
-msgstr ""
+msgstr "Folge 7 Konten"
 
 #: src/view/com/profile/ProfileMenu.tsx:246
 #: src/view/com/profile/ProfileMenu.tsx:257
@@ -2357,11 +2333,7 @@ msgstr "Konto folgen"
 #: src/screens/StarterPack/StarterPackScreen.tsx:405
 #: src/screens/StarterPack/StarterPackScreen.tsx:412
 msgid "Follow all"
-msgstr ""
-
-#: src/screens/Onboarding/StepSuggestedAccounts/index.tsx:187
-#~ msgid "Follow All"
-#~ msgstr "Allen folgen"
+msgstr "Allen folgen"
 
 #: src/view/com/post-thread/PostThreadFollowBtn.tsx:144
 msgid "Follow Back"
@@ -2369,19 +2341,7 @@ msgstr "Zurückfolgen"
 
 #: src/view/screens/Search/Explore.tsx:333
 msgid "Follow more accounts to get connected to your interests and build your network."
-msgstr ""
-
-#: src/screens/Onboarding/StepSuggestedAccounts/index.tsx:182
-#~ msgid "Follow selected accounts and continue to the next step"
-#~ msgstr "Ausgewählten Konten folgen und mit dem nächsten Schritt fortfahren"
-
-#: src/view/com/auth/onboarding/RecommendedFollows.tsx:65
-#~ msgid "Follow some users to get started. We can recommend you more users based on who you find interesting."
-#~ msgstr "Folge einigen Nutzern, um loszulegen. Wir können dir weitere Nutzer empfehlen, je nachdem, wen du interessant findest."
-
-#: src/components/KnownFollowers.tsx:169
-#~ msgid "Followed by"
-#~ msgstr ""
+msgstr "Folge weiteren Konten, um dich mit deinen Interessen zu verbinden und dein Netzwerk aufzubauen."
 
 #: src/view/com/profile/ProfileCard.tsx:190
 msgid "Followed by {0}"
@@ -2389,19 +2349,19 @@ msgstr "Gefolgt von {0}"
 
 #: src/components/KnownFollowers.tsx:223
 msgid "Followed by <0>{0}</0>"
-msgstr ""
+msgstr "Gefolgt von <0>{0}</0>"
 
 #: src/components/KnownFollowers.tsx:209
 msgid "Followed by <0>{0}</0> and {1, plural, one {# other} other {# others}}"
-msgstr ""
+msgstr "Gefolgt von <0>{0}</0> und {1, plural, one {# anderer} other {# andere}}"
 
 #: src/components/KnownFollowers.tsx:196
 msgid "Followed by <0>{0}</0> and <1>{1}</1>"
-msgstr ""
+msgstr "Gefolgt von <0>{0}</0> und <1>{1}</1>"
 
 #: src/components/KnownFollowers.tsx:178
 msgid "Followed by <0>{0}</0>, <1>{1}</1>, and {2, plural, one {# other} other {# others}}"
-msgstr ""
+msgstr "Gefolgt von <0>{0}</0>, <1>{1}</1> und {1, plural, one {# anderer} other {# andere}}"
 
 #: src/components/dialogs/ThreadgateEditor.tsx:124
 msgid "Followed users"
@@ -2417,7 +2377,7 @@ msgstr "folgte dir"
 
 #: src/view/com/notifications/FeedItem.tsx:195
 msgid "followed you back"
-msgstr ""
+msgstr "ist dir gefolgt"
 
 #: src/view/com/profile/ProfileFollowers.tsx:104
 #: src/view/screens/ProfileFollowers.tsx:25
@@ -2426,12 +2386,12 @@ msgstr "Follower"
 
 #: src/Navigation.tsx:182
 msgid "Followers of @{0} that you know"
-msgstr ""
+msgstr "Follower von @{0}, die du kennst"
 
 #: src/screens/Profile/KnownFollowers.tsx:108
 #: src/screens/Profile/KnownFollowers.tsx:118
 msgid "Followers you know"
-msgstr ""
+msgstr "Follower, die du kennst"
 
 #. User is following this account, click to unfollow
 #: src/components/ProfileCard.tsx:335
@@ -2453,11 +2413,11 @@ msgstr "ich folge {0}"
 
 #: src/view/com/posts/AviFollowButton.tsx:53
 msgid "Following {name}"
-msgstr ""
+msgstr "ich folge {name}"
 
 #: src/view/screens/Settings/index.tsx:574
 msgid "Following feed preferences"
-msgstr ""
+msgstr "Following-Feed-Einstellungen"
 
 #: src/Navigation.tsx:280
 #: src/view/screens/PreferencesFollowingFeed.tsx:103
@@ -2467,7 +2427,7 @@ msgstr "Following-Feed-Einstellungen"
 
 #: src/tours/HomeTour.tsx:59
 msgid "Following shows the latest posts from people you follow."
-msgstr ""
+msgstr "„Following” zeigt die neuesten Beiträge von Personen, denen du folgst."
 
 #: src/screens/Profile/Header/Handle.tsx:31
 msgid "Follows you"
@@ -2489,14 +2449,6 @@ msgstr "Aus Sicherheitsgründen müssen wir dir einen Bestätigungscode an deine
 #: src/view/com/modals/AddAppPasswords.tsx:232
 msgid "For security reasons, you won't be able to view this again. If you lose this password, you'll need to generate a new one."
 msgstr "Aus Sicherheitsgründen kannst du dies nicht erneut ansehen. Wenn du dieses Passwort verlierst, musst du ein neues generieren."
-
-#: src/view/com/auth/login/LoginForm.tsx:244
-#~ msgid "Forgot"
-#~ msgstr "Vergessen"
-
-#: src/view/com/auth/login/LoginForm.tsx:241
-#~ msgid "Forgot password"
-#~ msgstr "Passwort vergessen"
 
 #: src/screens/Login/index.tsx:129
 #: src/screens/Login/index.tsx:144
