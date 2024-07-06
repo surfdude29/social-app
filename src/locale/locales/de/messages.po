@@ -1221,7 +1221,7 @@ msgstr "Bestätigungscode"
 
 #: src/screens/Login/LoginForm.tsx:325
 msgid "Connecting..."
-msgstr "Verbinden..."
+msgstr "Verbinden…"
 
 #: src/screens/Signup/index.tsx:171
 msgid "Contact support"
@@ -1271,7 +1271,7 @@ msgstr "Fortfahren mit {0} (aktuell angemeldet)"
 
 #: src/view/com/post-thread/PostThreadLoadMore.tsx:52
 msgid "Continue thread..."
-msgstr "Fortsetzung des Threads..."
+msgstr "Fortsetzung des Threads…"
 
 #: src/screens/Onboarding/StepInterests/index.tsx:274
 #: src/screens/Onboarding/StepProfile/index.tsx:266
