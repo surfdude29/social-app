@@ -873,7 +873,7 @@ msgstr "Beitrag zitieren abbrechen"
 
 #: src/screens/Deactivated.tsx:155
 msgid "Cancel reactivation and log out"
-msgstr ""
+msgstr "Reaktivierung abbrechen und abmelden"
 
 #: src/view/com/modals/ListAddRemoveUsers.tsx:87
 #: src/view/shell/desktop/Search.tsx:214
@@ -882,7 +882,7 @@ msgstr "Suche abbrechen"
 
 #: src/view/com/modals/LinkWarning.tsx:106
 msgid "Cancels opening the linked website"
-msgstr ""
+msgstr "Öffnen der verlinkten Website wird abgebrochen"
 
 #: src/view/com/modals/VerifyEmail.tsx:160
 msgid "Change"
@@ -927,11 +927,11 @@ msgstr "Deine E-Mail ändern"
 #: src/view/shell/bottom-bar/BottomBar.tsx:204
 #: src/view/shell/desktop/LeftNav.tsx:302
 msgid "Chat"
-msgstr ""
+msgstr "Chat"
 
 #: src/components/dms/ConvoMenu.tsx:82
 msgid "Chat muted"
-msgstr ""
+msgstr "Chat stummgeschaltet"
 
 #: src/components/dms/ConvoMenu.tsx:112
 #: src/components/dms/MessageMenu.tsx:81
@@ -939,69 +939,49 @@ msgstr ""
 #: src/screens/Messages/List/index.tsx:88
 #: src/view/screens/Settings/index.tsx:639
 msgid "Chat settings"
-msgstr ""
+msgstr "Chat-Einstellungen"
 
 #: src/screens/Messages/Settings.tsx:59
 #: src/view/screens/Settings/index.tsx:648
 msgid "Chat Settings"
-msgstr ""
+msgstr "Chat-Einstellungen"
 
 #: src/components/dms/ConvoMenu.tsx:84
 msgid "Chat unmuted"
-msgstr ""
-
-#: src/screens/Messages/Conversation/index.tsx:26
-#~ msgid "Chat with {chatId}"
-#~ msgstr ""
+msgstr "Chat wurde nicht mehr stummgeschaltet"
 
 #: src/screens/SignupQueued.tsx:78
 #: src/screens/SignupQueued.tsx:82
 msgid "Check my status"
 msgstr "Meinen Status prüfen"
 
-#: src/view/com/auth/onboarding/RecommendedFeeds.tsx:122
-#~ msgid "Check out some recommended feeds. Tap + to add them to your list of pinned feeds."
-#~ msgstr "Schau dir einige empfohlene Feeds an. Tippe auf +, um sie zu deiner Liste der angehefteten Feeds hinzuzufügen."
-
-#: src/view/com/auth/onboarding/RecommendedFollows.tsx:186
-#~ msgid "Check out some recommended users. Follow them to see similar users."
-#~ msgstr "Schau dir einige empfohlene Nutzer an. Folge ihnen, um ähnliche Nutzer zu sehen."
-
 #: src/screens/Login/LoginForm.tsx:291
 msgid "Check your email for a login code and enter it here."
-msgstr ""
+msgstr "Schau in deinem E-Mail-Postfach nach einem Anmeldecode und gib ihn hier ein."
 
 #: src/view/com/modals/DeleteAccount.tsx:231
 msgid "Check your inbox for an email with the confirmation code to enter below:"
 msgstr "Überprüfe deinen Posteingang auf eine E-Mail mit dem Bestätigungscode, den du unten eingeben musst:"
 
-#: src/view/com/modals/Threadgate.tsx:75
-#~ msgid "Choose \"Everybody\" or \"Nobody\""
-#~ msgstr "Wähle \"Alle\" oder \"Niemand\""
-
 #: src/screens/Onboarding/StepInterests/index.tsx:190
 msgid "Choose 3 or more:"
-msgstr ""
-
-#: src/view/screens/Settings/index.tsx:697
-#~ msgid "Choose a new Bluesky username or create"
-#~ msgstr "Wähle oder erstelle einen neuen Bluesky-Benutzernamen"
+msgstr "Wähle 3 oder mehr aus:"
 
 #: src/screens/Onboarding/StepInterests/index.tsx:325
 msgid "Choose at least {0} more"
-msgstr ""
+msgstr "Wähle mindestens {0} weitere aus"
 
 #: src/screens/StarterPack/Wizard/index.tsx:191
 msgid "Choose Feeds"
-msgstr ""
+msgstr "Feeds wählen"
 
 #: src/components/StarterPack/ProfileStarterPacks.tsx:290
 msgid "Choose for me"
-msgstr ""
+msgstr "Wähle für mich"
 
 #: src/screens/StarterPack/Wizard/index.tsx:187
 msgid "Choose People"
-msgstr ""
+msgstr "Menschen auswählen"
 
 #: src/view/com/auth/server-input/index.tsx:79
 msgid "Choose Service"
@@ -1011,23 +991,14 @@ msgstr "Service wählen"
 msgid "Choose the algorithms that power your custom feeds."
 msgstr "Wähle die Algorithmen aus, welche deine benutzerdefinierten Feeds generieren."
 
-#: src/view/com/auth/onboarding/WelcomeDesktop.tsx:83
-#: src/view/com/auth/onboarding/WelcomeMobile.tsx:85
-#~ msgid "Choose the algorithms that power your experience with custom feeds."
-#~ msgstr "Wähle die Algorithmen aus, welche dein Erlebnis mit benutzerdefinierten Feeds unterstützen."
-
 #: src/screens/Onboarding/StepProfile/AvatarCreatorItems.tsx:107
 msgid "Choose this color as your avatar"
-msgstr ""
+msgstr "Wähle diese Farbe als Avatar"
 
 #: src/components/dialogs/ThreadgateEditor.tsx:91
 #: src/components/dialogs/ThreadgateEditor.tsx:95
 msgid "Choose who can reply"
-msgstr ""
-
-#: src/screens/Onboarding/StepAlgoFeeds/index.tsx:104
-#~ msgid "Choose your main feeds"
-#~ msgstr "Wähle deine Haupt-Feeds"
+msgstr "Wähle aus, wer antworten darf"
 
 #: src/screens/Signup/StepInfo/index.tsx:171
 msgid "Choose your password"
@@ -1056,11 +1027,11 @@ msgstr "Suchanfrage löschen"
 
 #: src/view/screens/Settings/index.tsx:912
 msgid "Clears all legacy storage data"
-msgstr ""
+msgstr "Löscht alle veralteten Speicherdaten"
 
 #: src/view/screens/Settings/index.tsx:924
 msgid "Clears all storage data"
-msgstr ""
+msgstr "Löscht alle Speicherdaten"
 
 #: src/view/screens/Support.tsx:40
 msgid "click here"
@@ -1068,27 +1039,19 @@ msgstr "hier klicken"
 
 #: src/view/com/modals/DeleteAccount.tsx:208
 msgid "Click here for more information on deactivating your account"
-msgstr ""
+msgstr "Klicke hier, um weitere Informationen zur Deaktivierung deines Kontos zu erhalten"
 
 #: src/view/com/modals/DeleteAccount.tsx:216
 msgid "Click here for more information."
-msgstr ""
-
-#: src/screens/Feeds/NoFollowingFeed.tsx:46
-#~ msgid "Click here to add one."
-#~ msgstr ""
+msgstr "Klicke hier für weitere Informationen."
 
 #: src/components/TagMenu/index.web.tsx:138
 msgid "Click here to open tag menu for {tag}"
 msgstr "Klicke hier, um das Tag-Menü für {tag} zu öffnen"
 
-#: src/components/RichText.tsx:198
-#~ msgid "Click here to open tag menu for #{tag}"
-#~ msgstr "Klicke hier, um das Tag-Menü für #{tag} zu öffnen"
-
 #: src/components/dms/MessageItem.tsx:237
 msgid "Click to retry failed message"
-msgstr ""
+msgstr "Klicke hier, um die fehlgeschlagene Nachricht erneut zu senden"
 
 #: src/screens/Onboarding/index.tsx:32
 msgid "Climate"
@@ -1096,7 +1059,7 @@ msgstr "Klima"
 
 #: src/components/dms/ChatEmptyPill.tsx:39
 msgid "Clip 🐴 clop 🐴"
-msgstr ""
+msgstr "Klipp 🐴 klapp 🐴"
 
 #: src/components/dialogs/GifSelect.ios.tsx:250
 #: src/components/dialogs/GifSelect.tsx:268
@@ -1127,11 +1090,11 @@ msgstr "Untere Schublade schließen"
 #: src/components/dialogs/GifSelect.ios.tsx:244
 #: src/components/dialogs/GifSelect.tsx:262
 msgid "Close dialog"
-msgstr ""
+msgstr "Dialog schließen"
 
 #: src/components/dialogs/GifSelect.tsx:161
 msgid "Close GIF dialog"
-msgstr ""
+msgstr "GIF-Dialog schließen"
 
 #: src/view/com/lightbox/ImageViewing/components/ImageDefaultHeader.tsx:36
 msgid "Close image"
@@ -1143,7 +1106,7 @@ msgstr "Bildbetrachter schließen"
 
 #: src/components/dms/MessagesNUX.tsx:162
 msgid "Close modal"
-msgstr ""
+msgstr "Modalfenster schließen"
 
 #: src/view/shell/index.web.tsx:61
 msgid "Close navigation footer"
@@ -1172,7 +1135,7 @@ msgstr "Schließt den Betrachter für das Banner"
 
 #: src/view/com/notifications/FeedItem.tsx:237
 msgid "Collapse list of users"
-msgstr ""
+msgstr "Liste der Benutzer einklappen"
 
 #: src/view/com/notifications/FeedItem.tsx:437
 msgid "Collapses list of users for a given notification"
@@ -1209,10 +1172,6 @@ msgstr "Verfasse Beiträge mit einer Länge von bis zu {MAX_GRAPHEME_LENGTH} Zei
 msgid "Compose reply"
 msgstr "Antwort verfassen"
 
-#: src/screens/Onboarding/StepModeration/ModerationOption.tsx:81
-#~ msgid "Configure content filtering setting for category: {0}"
-#~ msgstr "Inhaltsfilterungseinstellung der Kategorie {0} konfigurieren"
-
 #: src/components/moderation/LabelPreference.tsx:81
 msgid "Configure content filtering setting for category: {name}"
 msgstr "Konfiguriere die Inhaltsfilterung für die Kategorie: {name}"
@@ -1233,12 +1192,6 @@ msgstr "Konfiguriert in <0>Moderationseinstellungen</0>"
 msgid "Confirm"
 msgstr "Bestätigen"
 
-#: src/view/com/modals/Confirm.tsx:75
-#: src/view/com/modals/Confirm.tsx:78
-#~ msgctxt "action"
-#~ msgid "Confirm"
-#~ msgstr "Bestätigen"
-
 #: src/view/com/modals/ChangeEmail.tsx:188
 #: src/view/com/modals/ChangeEmail.tsx:190
 msgid "Confirm Change"
@@ -1251,10 +1204,6 @@ msgstr "Bestätige die Spracheinstellungen für den Inhalt"
 #: src/view/com/modals/DeleteAccount.tsx:282
 msgid "Confirm delete account"
 msgstr "Bestätige das Löschen des Kontos"
-
-#: src/view/com/modals/ContentFilteringSettings.tsx:156
-#~ msgid "Confirm your age to enable adult content."
-#~ msgstr "Bestätige dein Alter, um Inhalte für Erwachsene zu aktivieren."
 
 #: src/screens/Moderation/index.tsx:304
 msgid "Confirm your age:"
@@ -1282,21 +1231,9 @@ msgstr "Verbinden..."
 msgid "Contact support"
 msgstr "Support kontaktieren"
 
-#: src/components/moderation/LabelsOnMe.tsx:42
-#~ msgid "content"
-#~ msgstr ""
-
 #: src/lib/moderation/useGlobalLabelStrings.ts:18
 msgid "Content Blocked"
 msgstr "Inhalt blockiert"
-
-#: src/view/screens/Moderation.tsx:83
-#~ msgid "Content filtering"
-#~ msgstr "Inhaltsfilterung"
-
-#: src/view/com/modals/ContentFilteringSettings.tsx:44
-#~ msgid "Content Filtering"
-#~ msgstr "Inhaltsfilterung"
 
 #: src/screens/Moderation/index.tsx:288
 msgid "Content filters"
@@ -1338,7 +1275,7 @@ msgstr "Fortfahren mit {0} (aktuell angemeldet)"
 
 #: src/view/com/post-thread/PostThreadLoadMore.tsx:52
 msgid "Continue thread..."
-msgstr ""
+msgstr "Fortsetzung des Threads..."
 
 #: src/screens/Onboarding/StepInterests/index.tsx:274
 #: src/screens/Onboarding/StepProfile/index.tsx:266
@@ -1346,17 +1283,9 @@ msgstr ""
 msgid "Continue to next step"
 msgstr "Weiter zum nächsten Schritt"
 
-#: src/screens/Onboarding/StepAlgoFeeds/index.tsx:158
-#~ msgid "Continue to the next step"
-#~ msgstr "Weiter zum nächsten Schritt"
-
-#: src/screens/Onboarding/StepSuggestedAccounts/index.tsx:199
-#~ msgid "Continue to the next step without following any accounts"
-#~ msgstr "Fahre mit dem nächsten Schritt fort, ohne Konten zu folgen"
-
 #: src/screens/Messages/List/ChatListItem.tsx:154
 msgid "Conversation deleted"
-msgstr ""
+msgstr "Konversation gelöscht"
 
 #: src/screens/Onboarding/index.tsx:41
 msgid "Cooking"
@@ -1382,7 +1311,7 @@ msgstr "In die Zwischenablage kopiert"
 
 #: src/components/dialogs/Embed.tsx:134
 msgid "Copied!"
-msgstr ""
+msgstr "Kopiert!"
 
 #: src/view/com/modals/AddAppPasswords.tsx:214
 msgid "Copies app password"
@@ -1395,20 +1324,20 @@ msgstr "Kopieren"
 
 #: src/view/com/modals/ChangeHandle.tsx:474
 msgid "Copy {0}"
-msgstr "{} kopieren"
+msgstr "{0} kopieren"
 
 #: src/components/dialogs/Embed.tsx:120
 #: src/components/dialogs/Embed.tsx:139
 msgid "Copy code"
-msgstr ""
+msgstr "Code kopieren"
 
 #: src/components/StarterPack/ShareDialog.tsx:123
 msgid "Copy link"
-msgstr ""
+msgstr "Link kopieren"
 
 #: src/components/StarterPack/ShareDialog.tsx:130
 msgid "Copy Link"
-msgstr ""
+msgstr "Link kopieren"
 
 #: src/view/screens/ProfileList.tsx:428
 msgid "Copy link to list"
@@ -1419,14 +1348,10 @@ msgstr "Link zur Liste kopieren"
 msgid "Copy link to post"
 msgstr "Link zum Beitrag kopieren"
 
-#: src/view/com/profile/ProfileHeader.tsx:295
-#~ msgid "Copy link to profile"
-#~ msgstr "Link zum Profil kopieren"
-
 #: src/components/dms/MessageMenu.tsx:110
 #: src/components/dms/MessageMenu.tsx:112
 msgid "Copy message text"
-msgstr ""
+msgstr "Nachrichtentext kopieren"
 
 #: src/view/com/util/forms/PostDropdownBtn.tsx:285
 #: src/view/com/util/forms/PostDropdownBtn.tsx:287
@@ -1435,7 +1360,7 @@ msgstr "Beitragstext kopieren"
 
 #: src/components/StarterPack/QrCodeDialog.tsx:168
 msgid "Copy QR code"
-msgstr ""
+msgstr "QR-Code kopieren"
 
 #: src/Navigation.tsx:264
 #: src/view/screens/CopyrightPolicy.tsx:29
@@ -1444,7 +1369,7 @@ msgstr "Urheberrechtsbestimmungen"
 
 #: src/components/dms/LeaveConvoPrompt.tsx:39
 msgid "Could not leave chat"
-msgstr ""
+msgstr "Konntest den Chat nicht verlassen"
 
 #: src/view/screens/ProfileFeed.tsx:103
 msgid "Could not load feed"
@@ -1454,21 +1379,13 @@ msgstr "Feed konnte nicht geladen werden"
 msgid "Could not load list"
 msgstr "Liste konnte nicht geladen werden"
 
-#: src/components/dms/NewChat.tsx:241
-#~ msgid "Could not load profiles. Please try again later."
-#~ msgstr ""
-
 #: src/components/dms/ConvoMenu.tsx:88
 msgid "Could not mute chat"
-msgstr ""
-
-#: src/components/dms/ConvoMenu.tsx:68
-#~ msgid "Could not unmute chat"
-#~ msgstr ""
+msgstr "Chat konnte nicht stummgeschaltet werden"
 
 #: src/components/StarterPack/ProfileStarterPacks.tsx:272
 msgid "Create"
-msgstr ""
+msgstr "Erstelle"
 
 #: src/view/com/auth/SplashScreen.tsx:57
 #: src/view/com/auth/SplashScreen.web.tsx:106
@@ -1481,17 +1398,17 @@ msgstr "Erstelle ein neues Bluesky-Konto"
 
 #: src/components/StarterPack/QrCodeDialog.tsx:151
 msgid "Create a QR code for a starter pack"
-msgstr ""
+msgstr "Erstelle einen QR-Code für ein Starterpaket"
 
 #: src/components/StarterPack/ProfileStarterPacks.tsx:165
 #: src/components/StarterPack/ProfileStarterPacks.tsx:259
 #: src/Navigation.tsx:338
 msgid "Create a starter pack"
-msgstr ""
+msgstr "Erstelle ein Starterpaket"
 
 #: src/components/StarterPack/ProfileStarterPacks.tsx:246
 msgid "Create a starter pack for me"
-msgstr ""
+msgstr "Erstelle ein Starterpaket für mich"
 
 #: src/screens/Signup/index.tsx:88
 msgid "Create Account"
@@ -1500,15 +1417,15 @@ msgstr "Konto erstellen"
 #: src/components/dialogs/Signin.tsx:86
 #: src/components/dialogs/Signin.tsx:88
 msgid "Create an account"
-msgstr ""
+msgstr "Konto erstellen"
 
 #: src/screens/Onboarding/StepProfile/index.tsx:283
 msgid "Create an avatar instead"
-msgstr ""
+msgstr "Erstelle stattdessen einen Avatar"
 
 #: src/components/StarterPack/ProfileStarterPacks.tsx:172
 msgid "Create another"
-msgstr ""
+msgstr "Erstelle ein weitere"
 
 #: src/view/com/modals/AddAppPasswords.tsx:242
 msgid "Create App Password"
@@ -1519,10 +1436,6 @@ msgstr "App-Passwort erstellen"
 msgid "Create new account"
 msgstr "Neues Konto erstellen"
 
-#: src/components/StarterPack/ShareDialog.tsx:158
-#~ msgid "Create QR code"
-#~ msgstr ""
-
 #: src/components/ReportDialog/SelectReportOptionView.tsx:101
 msgid "Create report for {0}"
 msgstr "Meldung für {0} erstellen"
@@ -1530,18 +1443,6 @@ msgstr "Meldung für {0} erstellen"
 #: src/view/screens/AppPasswords.tsx:251
 msgid "Created {0}"
 msgstr "Erstellt {0}"
-
-#: src/view/screens/ProfileFeed.tsx:616
-#~ msgid "Created by <0/>"
-#~ msgstr "Erstellt von <0/>"
-
-#: src/view/screens/ProfileFeed.tsx:614
-#~ msgid "Created by you"
-#~ msgstr "Erstellt von dir"
-
-#: src/view/com/composer/Composer.tsx:469
-#~ msgid "Creates a card with a thumbnail. The card links to {url}"
-#~ msgstr "Erzeugt eine Karte mit Vorschaubild und verlinkt auf {url}"
 
 #: src/screens/Onboarding/index.tsx:26
 #: src/screens/Onboarding/state.ts:84
