@@ -139,7 +139,7 @@ msgstr "{following} folge ich"
 
 #: src/components/dms/dialogs/SearchablePeopleList.tsx:405
 msgid "{handle} can't be messaged"
-msgstr "{handle} kann nicht benachrichtigt werden"
+msgstr "Du kannst {handle} keine Nachricht senden"
 
 #: src/screens/Profile/Header/ProfileHeaderLabeler.tsx:286
 #: src/screens/Profile/Header/ProfileHeaderLabeler.tsx:299
@@ -161,7 +161,7 @@ msgstr "{profileName} hat sich vor {0} mit einem Starterpaket bei Bluesky angeme
 
 #: src/view/screens/PreferencesFollowingFeed.tsx:67
 msgid "{value, plural, =0 {Show all replies} one {Show replies with at least # like} other {Show replies with at least # likes}}"
-msgstr "{value, plural, =0 {Show all replies} one {Show replies with at least # like} other {Show replies with at least # likes}}"
+msgstr "{value, plural, =0 {Alle Antworten anzeigen} one {Zeige Antworten mit mindestens # Like} other {Zeige Antworten mit mindestens # Likes}}"
 
 #: src/components/WhoCanReply.tsx:295
 msgid "<0/> members"
@@ -170,12 +170,14 @@ msgstr "<0/> Mitglieder"
 #: src/screens/StarterPack/Wizard/index.tsx:466
 msgctxt "profiles"
 msgid "<0>{0}, </0><1>{1}, </1>and {2, plural, one {# other} other {# others}} are included in your starter pack"
-msgstr ""
+msgstr "<0>{0}, </0><1>{1} </1>und {2, plural, one {# weitere Person} other {# weitere Personen}} sind in deinem Starterpaket enthalten"
 
 #: src/screens/StarterPack/Wizard/index.tsx:519
 msgctxt "feeds"
 msgid "<0>{0}, </0><1>{1}, </1>and {2, plural, one {# other} other {# others}} are included in your starter pack"
 msgstr ""
+
+„Folgen”, „Entdecken”, „Great Cats” und 1 weiterer Feed sind in deinem Starterpaket enthalten
 
 #: src/view/shell/Drawer.tsx:101
 msgid "<0>{0}</0> {1, plural, one {follower} other {followers}}"
@@ -5995,10 +5997,6 @@ msgstr ""
 msgid "Show"
 msgstr "Anzeigen"
 
-#: src/view/screens/PreferencesFollowingFeed.tsx:68
-#~ msgid "Show all replies"
-#~ msgstr "Alle Antworten anzeigen"
-
 #: src/view/com/util/post-embeds/GifEmbed.tsx:166
 msgid "Show alt text"
 msgstr ""
@@ -6084,10 +6082,6 @@ msgstr "Zeige Antworten von Personen, denen du folgst, vor allen anderen Antwort
 #: src/screens/Onboarding/StepFollowingFeed.tsx:71
 #~ msgid "Show replies in Following feed"
 #~ msgstr "Antworten in folgendem Feed anzeigen"
-
-#: src/view/screens/PreferencesFollowingFeed.tsx:70
-#~ msgid "Show replies with at least {value} {0}"
-#~ msgstr "Antworten mit mindestens {value} {0} anzeigen"
 
 #: src/view/screens/PreferencesFollowingFeed.tsx:187
 msgid "Show Reposts"
