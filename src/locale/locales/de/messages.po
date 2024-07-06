@@ -213,10 +213,6 @@ msgstr "Zwei-Faktor-Authentifizierung Bestätigung"
 msgid "A help tooltip"
 msgstr "Ein Hilfe-Tooltip"
 
-#: src/lib/hooks/useOTAUpdate.ts:16
-#~ msgid "A new version of the app is available. Please update to continue using the app."
-#~ msgstr "Eine neue Version der App ist verfügbar. Bitte aktualisiere die App, um sie weiter nutzen zu können."
-
 #: src/view/com/util/ViewHeader.tsx:93
 #: src/view/screens/Search/Search.tsx:684
 msgid "Access navigation links and settings"
@@ -1482,20 +1478,20 @@ msgstr "Dunkles Thema"
 
 #: src/screens/Signup/StepInfo/index.tsx:191
 msgid "Date of birth"
-msgstr ""
+msgstr "Geburtsdatum"
 
 #: src/screens/Settings/components/DeactivateAccountDialog.tsx:73
 #: src/view/screens/Settings/index.tsx:807
 msgid "Deactivate account"
-msgstr ""
+msgstr "Konto deaktivieren"
 
 #: src/view/screens/Settings/index.tsx:819
 msgid "Deactivate my account"
-msgstr ""
+msgstr "Deaktiviere mein Konto"
 
 #: src/view/screens/Settings/index.tsx:874
 msgid "Debug Moderation"
-msgstr ""
+msgstr "Fehlerbehebung Moderation"
 
 #: src/view/screens/Debug.tsx:83
 msgid "Debug panel"
@@ -1515,13 +1511,9 @@ msgstr "Löschen"
 msgid "Delete account"
 msgstr "Konto löschen"
 
-#: src/view/com/modals/DeleteAccount.tsx:87
-#~ msgid "Delete Account"
-#~ msgstr "Konto löschen"
-
 #: src/view/com/modals/DeleteAccount.tsx:105
 msgid "Delete Account <0>\"</0><1>{0}</1><2>\"</2>"
-msgstr ""
+msgstr "Lösche Konto <0>„</0><1>{0}</1><2>”</2>"
 
 #: src/view/screens/AppPasswords.tsx:244
 msgid "Delete app password"
@@ -1534,11 +1526,11 @@ msgstr "App-Passwort löschen?"
 #: src/view/screens/Settings/index.tsx:891
 #: src/view/screens/Settings/index.tsx:894
 msgid "Delete chat declaration record"
-msgstr ""
+msgstr "Lösche den Datensatz für die Chat-Erklärung"
 
 #: src/components/dms/MessageMenu.tsx:124
 msgid "Delete for me"
-msgstr ""
+msgstr "Lösche für mich"
 
 #: src/view/screens/ProfileList.tsx:471
 msgid "Delete List"
@@ -1546,11 +1538,11 @@ msgstr "Liste löschen"
 
 #: src/components/dms/MessageMenu.tsx:147
 msgid "Delete message"
-msgstr ""
+msgstr "Nachricht löschen"
 
 #: src/components/dms/MessageMenu.tsx:122
 msgid "Delete message for me"
-msgstr ""
+msgstr "Lösche die Nachricht für mich"
 
 #: src/view/com/modals/DeleteAccount.tsx:285
 msgid "Delete my account"
@@ -1568,11 +1560,11 @@ msgstr "Beitrag löschen"
 #: src/screens/StarterPack/StarterPackScreen.tsx:556
 #: src/screens/StarterPack/StarterPackScreen.tsx:712
 msgid "Delete starter pack"
-msgstr ""
+msgstr "Starterpaket löschen"
 
 #: src/screens/StarterPack/StarterPackScreen.tsx:607
 msgid "Delete starter pack?"
-msgstr ""
+msgstr "Starterpaket löschen?"
 
 #: src/view/screens/ProfileList.tsx:662
 msgid "Delete this list?"
@@ -1592,7 +1584,7 @@ msgstr "Gelöschter Beitrag."
 
 #: src/view/screens/Settings/index.tsx:892
 msgid "Deletes the chat declaration record"
-msgstr ""
+msgstr "Löscht den Datensatz für die Chat-Erklärung"
 
 #: src/view/com/modals/CreateOrEditList.tsx:289
 #: src/view/com/modals/CreateOrEditList.tsx:310
@@ -1603,7 +1595,7 @@ msgstr "Beschreibung"
 
 #: src/view/com/composer/GifAltText.tsx:140
 msgid "Descriptive alt text"
-msgstr ""
+msgstr "Beschreibender Alt-Text"
 
 #: src/view/com/composer/Composer.tsx:283
 msgid "Did you want to say anything?"
@@ -1615,27 +1607,19 @@ msgstr "Dimmen"
 
 #: src/components/dms/MessagesNUX.tsx:88
 msgid "Direct messages are here!"
-msgstr ""
+msgstr "Direkte Nachrichten sind angekommen!"
 
 #: src/view/screens/AccessibilitySettings.tsx:107
 msgid "Disable autoplay for GIFs"
-msgstr ""
+msgstr "Deaktiviere die automatische Wiedergabe für GIFs"
 
 #: src/view/screens/Settings/DisableEmail2FADialog.tsx:90
 msgid "Disable Email 2FA"
-msgstr ""
+msgstr "Deaktiviere die Zwei-Faktor-Authentifizierung per E-Mail"
 
 #: src/view/screens/AccessibilitySettings.tsx:121
 msgid "Disable haptic feedback"
-msgstr ""
-
-#: src/view/screens/Settings/index.tsx:697
-#~ msgid "Disable haptics"
-#~ msgstr ""
-
-#: src/view/screens/Settings/index.tsx:697
-#~ msgid "Disable vibrations"
-#~ msgstr ""
+msgstr "Deaktiviere haptische Rückmeldung"
 
 #: src/lib/moderation/useLabelBehaviorDescription.ts:32
 #: src/lib/moderation/useLabelBehaviorDescription.ts:42
@@ -1650,10 +1634,6 @@ msgstr "Deaktiviert"
 msgid "Discard"
 msgstr "Verwerfen"
 
-#: src/view/com/composer/Composer.tsx:145
-#~ msgid "Discard draft"
-#~ msgstr "Entwurf verwerfen"
-
 #: src/view/com/composer/Composer.tsx:648
 msgid "Discard draft?"
 msgstr "Entwurf löschen?"
@@ -1665,7 +1645,7 @@ msgstr "Apps daran hindern, abgemeldeten Nutzern mein Konto zu zeigen"
 
 #: src/tours/HomeTour.tsx:70
 msgid "Discover learns which posts you like as you browse."
-msgstr ""
+msgstr "„Discover” lernt beim Durchstöbern, welche Beiträge dir gefallen."
 
 #: src/view/com/posts/FollowingEmptyState.tsx:70
 #: src/view/com/posts/FollowingEndOfFeed.tsx:71
@@ -1674,7 +1654,7 @@ msgstr "Entdecke neue benutzerdefinierte Feeds"
 
 #: src/view/screens/Search/Explore.tsx:388
 msgid "Discover new feeds"
-msgstr ""
+msgstr "Entdecke neue Feeds"
 
 #: src/view/screens/Feeds.tsx:757
 msgid "Discover New Feeds"
@@ -1682,11 +1662,11 @@ msgstr "Entdecke neue Feeds"
 
 #: src/components/ProgressGuide/List.tsx:40
 msgid "Dismiss getting started guide"
-msgstr ""
+msgstr "Anleitung zum Einstieg schließen"
 
 #: src/view/screens/AccessibilitySettings.tsx:95
 msgid "Display larger alt text badges"
-msgstr ""
+msgstr "Zeige größeren Alt-Text-Badges"
 
 #: src/view/com/modals/EditProfile.tsx:193
 msgid "Display name"
@@ -1698,7 +1678,7 @@ msgstr "Anzeigename"
 
 #: src/view/com/modals/ChangeHandle.tsx:391
 msgid "DNS Panel"
-msgstr ""
+msgstr "DNS-Panel"
 
 #: src/lib/moderation/useGlobalLabelStrings.ts:39
 msgid "Does not include nudity."
@@ -1710,7 +1690,7 @@ msgstr "Beginnt oder endet nicht mit einem Bindestrich"
 
 #: src/view/com/modals/ChangeHandle.tsx:475
 msgid "Domain Value"
-msgstr ""
+msgstr "Domain-Wert"
 
 #: src/view/com/modals/ChangeHandle.tsx:482
 msgid "Domain verified!"
@@ -1749,13 +1729,9 @@ msgstr "Erledigt"
 msgid "Done{extraText}"
 msgstr "Erledigt{extraText}"
 
-#: src/view/com/auth/login/ChooseAccountForm.tsx:46
-#~ msgid "Double tap to sign in"
-#~ msgstr "Doppeltippen zum Anmelden"
-
 #: src/screens/StarterPack/StarterPackLandingScreen.tsx:345
 msgid "Download Bluesky"
-msgstr ""
+msgstr "Bluesky herunterladen"
 
 #: src/view/screens/Settings/index.tsx:755
 #~ msgid "Download Bluesky account data (repository)"
@@ -1769,10 +1745,6 @@ msgstr "CAR-Datei herunterladen"
 #: src/view/com/composer/text-input/TextInput.web.tsx:271
 msgid "Drop to add images"
 msgstr "Ablegen zum Hinzufügen von Bildern"
-
-#: src/screens/Onboarding/StepModeration/AdultContentEnabledPref.tsx:120
-#~ msgid "Due to Apple policies, adult content can only be enabled on the web after completing sign up."
-#~ msgstr "Aufgrund der Apple-Richtlinien können Inhalte für Erwachsene erst nach Abschluss der Registrierung auf der Website aktiviert werden."
 
 #: src/view/com/modals/ChangeHandle.tsx:252
 msgid "e.g. alice"
@@ -1820,7 +1792,7 @@ msgstr "Jeder Code funktioniert einmal. Du erhältst regelmäßig neue Einladung
 #: src/view/screens/Feeds.tsx:386
 #: src/view/screens/Feeds.tsx:454
 msgid "Edit"
-msgstr ""
+msgstr "Bearbeiten"
 
 #: src/view/com/lists/ListMembers.tsx:149
 msgctxt "action"
@@ -1834,7 +1806,7 @@ msgstr "Avatar bearbeiten"
 
 #: src/components/StarterPack/Wizard/WizardEditListDialog.tsx:117
 msgid "Edit Feeds"
-msgstr ""
+msgstr "Feeds bearbeiten"
 
 #: src/view/com/composer/photos/Gallery.tsx:151
 #: src/view/com/modals/EditImage.tsx:208
@@ -1862,7 +1834,7 @@ msgstr "Mein Profil bearbeiten"
 
 #: src/components/StarterPack/Wizard/WizardEditListDialog.tsx:115
 msgid "Edit People"
-msgstr ""
+msgstr "Personen bearbeiten"
 
 #: src/screens/Profile/Header/ProfileHeaderLabeler.tsx:181
 #: src/screens/Profile/Header/ProfileHeaderStandard.tsx:179
@@ -1874,14 +1846,9 @@ msgstr "Profil bearbeiten"
 msgid "Edit Profile"
 msgstr "Profil bearbeiten"
 
-#: src/view/com/home/HomeHeaderLayout.web.tsx:76
-#: src/view/screens/Feeds.tsx:416
-#~ msgid "Edit Saved Feeds"
-#~ msgstr "Gespeicherte Feeds bearbeiten"
-
 #: src/screens/StarterPack/StarterPackScreen.tsx:543
 msgid "Edit starter pack"
-msgstr ""
+msgstr "Starterpaket bearbeiten"
 
 #: src/view/com/modals/CreateOrEditList.tsx:234
 msgid "Edit User List"
@@ -1889,7 +1856,7 @@ msgstr "Benutzerliste bearbeiten"
 
 #: src/components/WhoCanReply.tsx:127
 msgid "Edit who can reply"
-msgstr ""
+msgstr "Bearbeite, wer antworten kann"
 
 #: src/view/com/modals/EditProfile.tsx:194
 msgid "Edit your display name"
@@ -1901,7 +1868,7 @@ msgstr "Bearbeite deine Profilbeschreibung"
 
 #: src/Navigation.tsx:343
 msgid "Edit your starter pack"
-msgstr ""
+msgstr "Bearbeite dein Starterpaket"
 
 #: src/screens/Onboarding/index.tsx:31
 #: src/screens/Onboarding/state.ts:86
@@ -1910,7 +1877,7 @@ msgstr "Bildung"
 
 #: src/components/dialogs/ThreadgateEditor.tsx:98
 msgid "Either choose \"Everybody\" or \"Nobody\""
-msgstr ""
+msgstr "Entweder „Alle” oder „Niemand” auswählen"
 
 #: src/screens/Signup/StepInfo/index.tsx:143
 #: src/view/com/modals/ChangeEmail.tsx:136
@@ -1919,7 +1886,7 @@ msgstr "E-Mail"
 
 #: src/view/screens/Settings/DisableEmail2FADialog.tsx:64
 msgid "Email 2FA disabled"
-msgstr ""
+msgstr "Zwei-Faktor-Authentifizierung per E-Mail wurde deaktiviert"
 
 #: src/screens/Login/ForgotPasswordForm.tsx:99
 msgid "Email address"
@@ -1944,17 +1911,17 @@ msgstr "E-Mail:"
 
 #: src/components/dialogs/Embed.tsx:112
 msgid "Embed HTML code"
-msgstr ""
+msgstr "HTML-Code zum Einbetten"
 
 #: src/components/dialogs/Embed.tsx:97
 #: src/view/com/util/forms/PostDropdownBtn.tsx:324
 #: src/view/com/util/forms/PostDropdownBtn.tsx:326
 msgid "Embed post"
-msgstr ""
+msgstr "Beitrag einbetten"
 
 #: src/components/dialogs/Embed.tsx:101
 msgid "Embed this post in your website. Simply copy the following snippet and paste it into the HTML code of your website."
-msgstr ""
+msgstr "Einbetten diesen Beitrag in deine Website ein. Kopiere einfach den folgenden Code und füge ihn in den HTML-Code deiner Website ein."
 
 #: src/components/dialogs/EmbedConsent.tsx:101
 msgid "Enable {0} only"
@@ -1964,23 +1931,10 @@ msgstr "Nur {0} aktivieren"
 msgid "Enable adult content"
 msgstr "Inhalte für Erwachsene aktivieren"
 
-#: src/screens/Onboarding/StepModeration/AdultContentEnabledPref.tsx:94
-#~ msgid "Enable Adult Content"
-#~ msgstr "Inhalte für Erwachsene aktivieren"
-
-#: src/screens/Onboarding/StepModeration/AdultContentEnabledPref.tsx:78
-#: src/screens/Onboarding/StepModeration/AdultContentEnabledPref.tsx:79
-#~ msgid "Enable adult content in your feeds"
-#~ msgstr "Aktiviere Inhalte für Erwachsene in deinen Feeds"
-
 #: src/components/dialogs/EmbedConsent.tsx:82
 #: src/components/dialogs/EmbedConsent.tsx:89
 msgid "Enable external media"
 msgstr "Externe Medien aktivieren"
-
-#: src/view/com/modals/EmbedConsent.tsx:97
-#~ msgid "Enable External Media"
-#~ msgstr "Externe Medien aktivieren"
 
 #: src/view/screens/PreferencesExternalEmbeds.tsx:76
 msgid "Enable media players for"
@@ -2004,13 +1958,9 @@ msgstr "Aktiviert"
 msgid "End of feed"
 msgstr "Ende des Feeds"
 
-#: src/components/Lists.tsx:52
-#~ msgid "End of list"
-#~ msgstr ""
-
 #: src/tours/Tooltip.tsx:159
 msgid "End of onboarding tour window. Do not move forward. Instead, go backward for more options, or press to skip."
-msgstr ""
+msgstr "Ende des Onboarding-Tour-Fensters. Nicht weitergehen. Gehe stattdessen zurück, um weitere Optionen zu sehen, oder drücke, um zu überspringen."
 
 #: src/view/com/modals/AddAppPasswords.tsx:160
 msgid "Enter a name for this App Password"
@@ -2064,7 +2014,7 @@ msgstr "Gib deinen Benutzernamen und dein Passwort ein"
 
 #: src/view/screens/Settings/ExportCarDialog.tsx:46
 msgid "Error occurred while saving file"
-msgstr ""
+msgstr "Beim Speichern der Datei ist ein Fehler aufgetreten"
 
 #: src/screens/Signup/StepCaptcha/index.tsx:54
 msgid "Error receiving captcha response."
@@ -2083,14 +2033,14 @@ msgstr "Alle"
 #: src/components/WhoCanReply.tsx:240
 #: src/view/com/composer/threadgate/ThreadgateBtn.tsx:44
 msgid "Everybody can reply"
-msgstr ""
+msgstr "Alle können antworten"
 
 #: src/components/dms/MessagesNUX.tsx:131
 #: src/components/dms/MessagesNUX.tsx:134
 #: src/screens/Messages/Settings.tsx:75
 #: src/screens/Messages/Settings.tsx:78
 msgid "Everyone"
-msgstr ""
+msgstr "Alle"
 
 #: src/lib/moderation/useReportOptions.ts:68
 msgid "Excessive mentions or replies"
@@ -2098,7 +2048,7 @@ msgstr "Übermäßig viele Erwähnungen oder Antworten"
 
 #: src/lib/moderation/useReportOptions.ts:81
 msgid "Excessive or unwanted messages"
-msgstr ""
+msgstr "Übermäßige oder unerwünschte Nachrichten"
 
 #: src/view/com/modals/DeleteAccount.tsx:293
 msgid "Exits account deletion process"
@@ -2127,7 +2077,7 @@ msgstr "Alt-Text erweitern"
 
 #: src/view/com/notifications/FeedItem.tsx:238
 msgid "Expand list of users"
-msgstr ""
+msgstr "Liste der Benutzer erweitern"
 
 #: src/view/com/composer/ComposerReplyTo.tsx:82
 #: src/view/com/composer/ComposerReplyTo.tsx:85
@@ -2136,11 +2086,11 @@ msgstr "Erweitere oder reduziere den gesamten Beitrag, auf den du antwortest"
 
 #: src/lib/moderation/useGlobalLabelStrings.ts:47
 msgid "Explicit or potentially disturbing media."
-msgstr ""
+msgstr "Explizite oder potenziell verstörende Medien."
 
 #: src/lib/moderation/useGlobalLabelStrings.ts:35
 msgid "Explicit sexual images."
-msgstr ""
+msgstr "Explizite sexuelle Bilder."
 
 #: src/view/screens/Settings/index.tsx:787
 msgid "Export my data"
@@ -2179,7 +2129,7 @@ msgstr "Das App-Passwort konnte nicht erstellt werden."
 #: src/screens/StarterPack/Wizard/index.tsx:230
 #: src/screens/StarterPack/Wizard/index.tsx:238
 msgid "Failed to create starter pack"
-msgstr ""
+msgstr "Starterpaket konnte nicht erstellt werden"
 
 #: src/view/com/modals/CreateOrEditList.tsx:194
 msgid "Failed to create the list. Check your internet connection and try again."
@@ -2187,7 +2137,7 @@ msgstr "Die Liste konnte nicht erstellt werden. Überprüfe deine Internetverbin
 
 #: src/components/dms/MessageMenu.tsx:73
 msgid "Failed to delete message"
-msgstr ""
+msgstr "Nachricht konnte nicht gelöscht werden"
 
 #: src/view/com/util/forms/PostDropdownBtn.tsx:152
 msgid "Failed to delete post, please try again"
@@ -2195,39 +2145,30 @@ msgstr "Beitrag konnte nicht gelöscht werden, bitte versuche es erneut"
 
 #: src/screens/StarterPack/StarterPackScreen.tsx:675
 msgid "Failed to delete starter pack"
-msgstr ""
+msgstr "Starterpaket konnte nicht gelöscht werden"
 
 #: src/view/screens/Search/Explore.tsx:426
 #: src/view/screens/Search/Explore.tsx:454
 msgid "Failed to load feeds preferences"
-msgstr ""
+msgstr "Fehler beim Laden der Einstellungen für Feeds"
 
 #: src/components/dialogs/GifSelect.ios.tsx:196
 #: src/components/dialogs/GifSelect.tsx:212
 msgid "Failed to load GIFs"
-msgstr ""
+msgstr "GIFs konnten nicht geladen werden"
 
 #: src/screens/Messages/Conversation/MessageListError.tsx:23
 msgid "Failed to load past messages"
-msgstr ""
-
-#: src/screens/Messages/Conversation/MessageListError.tsx:28
-#~ msgid "Failed to load past messages."
-#~ msgstr ""
-
-#: src/view/com/auth/onboarding/RecommendedFeeds.tsx:110
-#: src/view/com/auth/onboarding/RecommendedFeeds.tsx:143
-#~ msgid "Failed to load recommended feeds"
-#~ msgstr "Empfohlene Feeds konnten nicht geladen werden"
+msgstr "Es konnten keine vorherigen Nachrichten geladen werden"
 
 #: src/view/screens/Search/Explore.tsx:419
 #: src/view/screens/Search/Explore.tsx:447
 msgid "Failed to load suggested feeds"
-msgstr ""
+msgstr "Die vorgeschlagenen Feeds konnten nicht geladen werden."
 
 #: src/view/screens/Search/Explore.tsx:377
 msgid "Failed to load suggested follows"
-msgstr ""
+msgstr "Die vorgeschlagenen Konten, denen du folgen solltest, konnten nicht geladen werden"
 
 #: src/view/com/lightbox/Lightbox.tsx:86
 msgid "Failed to save image: {0}"
@@ -2235,16 +2176,12 @@ msgstr "Das Speichern des Bildes ist fehlgeschlagen: {0}"
 
 #: src/components/dms/MessageItem.tsx:230
 msgid "Failed to send"
-msgstr ""
-
-#: src/screens/Messages/Conversation/MessageListError.tsx:29
-#~ msgid "Failed to send message(s)."
-#~ msgstr ""
+msgstr "Konnte nicht gesendet werden"
 
 #: src/components/moderation/LabelsOnMeDialog.tsx:223
 #: src/screens/Messages/Conversation/ChatDisabled.tsx:87
 msgid "Failed to submit appeal, please try again."
-msgstr ""
+msgstr "Einspruch nicht eingereicht. Bitte erneut versuchen."
 
 #: src/view/com/util/forms/PostDropdownBtn.tsx:180
 msgid "Failed to toggle thread mute, please try again"
