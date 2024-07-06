@@ -35,16 +35,12 @@ msgstr "{0, plural, one {# Label wurde auf diesen Inhalt gesetzt} other {# Label
 
 #: src/view/com/util/post-ctrls/RepostButton.tsx:66
 msgid "{0, plural, one {# repost} other {# reposts}}"
-msgstr ""
-
-#: src/components/KnownFollowers.tsx:179
-#~ msgid "{0, plural, one {and # other} other {and # others}}"
-#~ msgstr ""
+msgstr "{0, plural, one {# Repost} other {# Reposts}}"
 
 #: src/components/ProfileHoverCard/index.web.tsx:398
 #: src/screens/Profile/Header/Metrics.tsx:23
 msgid "{0, plural, one {follower} other {followers}}"
-msgstr ""
+msgstr "{0, plural, one {Follower} other {Follower}}"
 
 #: src/components/ProfileHoverCard/index.web.tsx:402
 #: src/screens/Profile/Header/Metrics.tsx:27
