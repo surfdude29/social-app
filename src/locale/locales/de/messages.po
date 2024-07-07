@@ -366,7 +366,7 @@ msgstr "Inhaltswarnung hinzufügen"
 
 #: src/view/screens/ProfileList.tsx:871
 msgid "Add a user to this list"
-msgstr "Einen Nutzer zu dieser Liste hinzufügen"
+msgstr "Einen Benutzer zu dieser Liste hinzufügen"
 
 #: src/components/dialogs/SwitchAccount.tsx:56
 #: src/screens/Deactivated.tsx:199
@@ -545,7 +545,7 @@ msgstr ""
 
 #: src/view/com/composer/photos/Gallery.tsx:224
 msgid "Alt text describes images for blind and low-vision users, and helps give context to everyone."
-msgstr "Alt-Text beschreibt Bilder für blinde und sehbehinderte Nutzer und hilft, den Kontext für alle zu vermitteln."
+msgstr "Alt-Text beschreibt Bilder für blinde und sehbehinderte Benutzer und hilft, den Kontext für alle zu vermitteln."
 
 #: src/view/com/modals/VerifyEmail.tsx:132
 #: src/view/screens/Settings/DisableEmail2FADialog.tsx:96
@@ -905,7 +905,7 @@ msgstr ""
 
 #: src/screens/Moderation/index.tsx:557
 msgid "Bluesky will not show your profile and posts to logged-out users. Other apps may not honor this request. This does not make your account private."
-msgstr "Bluesky zeigt dein Profil und deine Beiträge nicht für abgemeldete Nutzer an. Andere Apps kommen dieser Aufforderung möglicherweise nicht nach."
+msgstr "Bluesky zeigt dein Profil und deine Beiträge nicht für abgemeldete Benutzer an. Andere Apps kommen dieser Aufforderung möglicherweise nicht nach."
 
 #: src/lib/moderation/useLabelBehaviorDescription.ts:53
 msgid "Blur images"
@@ -1141,7 +1141,7 @@ msgstr "Meinen Status prüfen"
 
 #: src/view/com/auth/onboarding/RecommendedFollows.tsx:186
 #~ msgid "Check out some recommended users. Follow them to see similar users."
-#~ msgstr "Schau dir einige empfohlene Nutzer an. Folge ihnen, um ähnliche Nutzer zu sehen."
+#~ msgstr "Schau dir einige empfohlene Benutzer an. Folge ihnen, um ähnliche Benutzer zu sehen."
 
 #: src/screens/Login/LoginForm.tsx:291
 msgid "Check your email for a login code and enter it here."
@@ -2083,7 +2083,7 @@ msgstr "z. B. Die Poster, die immer ins Schwarze treffen."
 
 #: src/view/com/modals/CreateOrEditList.tsx:302
 msgid "e.g. Users that repeatedly reply with ads."
-msgstr "z. B. Nutzer, die wiederholt mit Werbung antworten."
+msgstr "z. B. Benutzer, die wiederholt mit Werbung antworten."
 
 #: src/view/com/modals/InviteCodes.tsx:97
 msgid "Each code works once. You'll receive more invite codes periodically."
@@ -2574,7 +2574,7 @@ msgstr "Feeds"
 
 #: src/view/screens/SavedFeeds.tsx:180
 msgid "Feeds are custom algorithms that users build with a little coding expertise. <0/> for more information."
-msgstr "Feeds sind benutzerdefinierte Algorithmen, die Nutzer mit ein wenig Programmierkenntnisse erstellen. <0/> für mehr Informationen."
+msgstr "Feeds sind benutzerdefinierte Algorithmen, die Benutzer mit ein wenig Programmierkenntnisse erstellen. <0/> für mehr Informationen."
 
 #: src/screens/Onboarding/StepTopicalFeeds.tsx:80
 #~ msgid "Feeds can be topical as well!"
@@ -2616,11 +2616,11 @@ msgstr ""
 
 #: src/view/screens/Search/Search.tsx:589
 #~ msgid "Find users on Bluesky"
-#~ msgstr "Nutzer auf Bluesky finden"
+#~ msgstr "Benutzer auf Bluesky finden"
 
 #: src/view/screens/Search/Search.tsx:587
 #~ msgid "Find users with the search tool on the right"
-#~ msgstr "Finde Nutzer mit der Suchfunktion auf der rechten Seite"
+#~ msgstr "Finde Benutzer mit der Suchfunktion auf der rechten Seite"
 
 #: src/view/com/auth/onboarding/RecommendedFollowsItem.tsx:155
 #~ msgid "Finding similar accounts..."
@@ -2690,7 +2690,7 @@ msgstr ""
 #: src/view/com/profile/ProfileMenu.tsx:246
 #: src/view/com/profile/ProfileMenu.tsx:257
 msgid "Follow Account"
-msgstr "Accounts folgen"
+msgstr "Konto folgen"
 
 #: src/screens/StarterPack/StarterPackScreen.tsx:405
 #: src/screens/StarterPack/StarterPackScreen.tsx:412
@@ -2715,7 +2715,7 @@ msgstr ""
 
 #: src/view/com/auth/onboarding/RecommendedFollows.tsx:65
 #~ msgid "Follow some users to get started. We can recommend you more users based on who you find interesting."
-#~ msgstr "Folge einigen Nutzern, um loszulegen. Wir können dir weitere Nutzer empfehlen, je nachdem, wen du interessant findest."
+#~ msgstr "Folge einigen Nutzern, um loszulegen. Wir können dir weitere Benutzer empfehlen, basierend darauf, wen du interessant findest."
 
 #: src/components/KnownFollowers.tsx:169
 #~ msgid "Followed by"
@@ -2787,7 +2787,7 @@ msgstr "Folge ich"
 #: src/components/ProfileCard.tsx:301
 #: src/screens/Profile/Header/ProfileHeaderStandard.tsx:98
 msgid "Following {0}"
-msgstr "ich folge {0}"
+msgstr "Ich folge {0}"
 
 #: src/view/com/posts/AviFollowButton.tsx:53
 msgid "Following {name}"
@@ -2860,7 +2860,7 @@ msgstr "Von @{sanitizedAuthor}"
 #: src/view/com/posts/FeedItem.tsx:236
 msgctxt "from-feed"
 msgid "From <0/>"
-msgstr "Aus <0/>"
+msgstr "Von <0/>"
 
 #: src/view/com/composer/photos/SelectPhotoBtn.tsx:39
 msgid "Gallery"
@@ -2904,7 +2904,7 @@ msgstr "Eklatante Verstöße gegen Gesetze oder Nutzungsbedingungen"
 #: src/view/screens/ProfileList.tsx:970
 #: src/view/shell/desktop/LeftNav.tsx:134
 msgid "Go back"
-msgstr "Gehe zurück"
+msgstr "Zurückgehen"
 
 #: src/components/Error.tsx:103
 #: src/screens/Profile/ErrorState.tsx:62
@@ -2914,7 +2914,7 @@ msgstr "Gehe zurück"
 #: src/view/screens/ProfileFeed.tsx:117
 #: src/view/screens/ProfileList.tsx:975
 msgid "Go Back"
-msgstr "Gehe zurück"
+msgstr "Zurückgehen"
 
 #: src/screens/StarterPack/StarterPackLandingScreen.tsx:189
 msgid "Go back to previous screen"
@@ -2927,7 +2927,7 @@ msgstr ""
 #: src/screens/Onboarding/Layout.tsx:191
 #: src/screens/Signup/BackNextButtons.tsx:34
 msgid "Go back to previous step"
-msgstr "Zum vorherigen Schritt zurückkehren"
+msgstr "Zum vorherigen Schritt zurückgehen"
 
 #: src/screens/StarterPack/Wizard/index.tsx:300
 msgid "Go back to the previous step"
@@ -2944,7 +2944,7 @@ msgstr ""
 #: src/view/screens/Search/Search.tsx:827
 #: src/view/shell/desktop/Search.tsx:263
 #~ msgid "Go to @{queryMaybeHandle}"
-#~ msgstr "Gehe zu @{queryMaybeHandle}"
+#~ msgstr "Zu @{queryMaybeHandle} gehen"
 
 #: src/screens/Messages/List/ChatListItem.tsx:211
 msgid "Go to conversation with {0}"
@@ -2953,7 +2953,7 @@ msgstr ""
 #: src/screens/Login/ForgotPasswordForm.tsx:172
 #: src/view/com/modals/ChangePassword.tsx:168
 msgid "Go to next"
-msgstr "Gehe zum nächsten"
+msgstr "Zum nächsten gehen"
 
 #: src/components/dms/ConvoMenu.tsx:167
 msgid "Go to profile"
@@ -3495,7 +3495,7 @@ msgstr "Geliked von"
 
 #: src/components/LabelingServiceCard/index.tsx:72
 #~ msgid "Liked by {count} {0}"
-#~ msgstr "Geliked von {count} {0}"
+#~ msgstr "Von {count} {0} geliked"
 
 #: src/screens/Profile/Header/ProfileHeaderLabeler.tsx:287
 #: src/screens/Profile/Header/ProfileHeaderLabeler.tsx:301
@@ -3623,7 +3623,7 @@ msgstr "Sichtbarkeit für abgemeldete Benutzer"
 
 #: src/components/AccountList.tsx:58
 msgid "Login to account that is not listed"
-msgstr "Anmeldung bei einem Konto, das nicht aufgelistet ist"
+msgstr "Bei einem Konto anmelden, das nicht aufgelistet ist"
 
 #: src/components/RichText.tsx:219
 msgid "Long press to open tag menu for #{tag}"
@@ -3981,7 +3981,7 @@ msgstr "Navigiert zum nächsten Bildschirm"
 
 #: src/view/shell/Drawer.tsx:79
 msgid "Navigates to your profile"
-msgstr "Navigiert zu Deinem Profil"
+msgstr "Navigiert zu deinem Profil"
 
 #: src/components/ReportDialog/SelectReportOptionView.tsx:130
 msgid "Need to report a copyright violation?"
@@ -4233,7 +4233,7 @@ msgstr "Nicht gefunden"
 #: src/view/com/modals/VerifyEmail.tsx:254
 #: src/view/com/modals/VerifyEmail.tsx:260
 msgid "Not right now"
-msgstr "Im Moment nicht"
+msgstr "Nicht jetzt"
 
 #: src/view/com/profile/ProfileMenu.tsx:372
 #: src/view/com/util/forms/PostDropdownBtn.tsx:456
@@ -4355,7 +4355,7 @@ msgstr "Enthält nur Buchstaben, Nummern und Bindestriche"
 
 #: src/components/Lists.tsx:88
 msgid "Oops, something went wrong!"
-msgstr "Ups, da ist etwas schief gelaufen!"
+msgstr "Huch, da ist etwas schief gelaufen!"
 
 #: src/components/Lists.tsx:191
 #: src/components/StarterPack/ProfileStarterPacks.tsx:304
@@ -4474,7 +4474,7 @@ msgstr "Öffnet die Gerätefotogalerie"
 
 #: src/view/com/profile/ProfileHeader.tsx:420
 #~ msgid "Opens editor for profile display name, avatar, background image, and description"
-#~ msgstr "Öffnet den Editor für Profilanzeige, Avatar, Hintergrundbild und Beschreibung"
+#~ msgstr "Öffnet den Editor für Anzeigename, Avatar, Hintergrundbild und Beschreibung"
 
 #: src/view/screens/Settings/index.tsx:672
 msgid "Opens external embeds settings"
@@ -4483,12 +4483,12 @@ msgstr "Öffnet die Einstellungen für externe eingebettete Medien"
 #: src/view/com/auth/SplashScreen.tsx:50
 #: src/view/com/auth/SplashScreen.web.tsx:99
 msgid "Opens flow to create a new Bluesky account"
-msgstr "Öffnet den Vorgang, einen neuen Bluesky account anzulegen"
+msgstr "Öffnet den Vorgang, ein neuen Bluesky Konto anzulegen"
 
 #: src/view/com/auth/SplashScreen.tsx:65
 #: src/view/com/auth/SplashScreen.web.tsx:114
 msgid "Opens flow to sign into your existing Bluesky account"
-msgstr "Öffnet den Vorgang, sich mit einen bestehenden Bluesky Account anzumelden"
+msgstr "Öffnet den Vorgang, sich mit einem bestehenden Bluesky Konto anzumelden"
 
 #: src/view/com/profile/ProfileHeader.tsx:575
 #~ msgid "Opens followers list"
@@ -4582,7 +4582,7 @@ msgstr ""
 #: src/view/screens/Settings/index.tsx:862
 #: src/view/screens/Settings/index.tsx:872
 msgid "Opens the storybook page"
-msgstr "Öffnet die Storybook Seite"
+msgstr "Öffnet die Storybook-Seite"
 
 #: src/view/screens/Settings/index.tsx:850
 msgid "Opens the system log page"
@@ -5062,7 +5062,7 @@ msgstr ""
 
 #: src/view/com/auth/onboarding/RecommendedFollows.tsx:181
 #~ msgid "Recommended Users"
-#~ msgstr "Empfohlene Nutzer"
+#~ msgstr "Empfohlene Benutzer"
 
 #: src/screens/Messages/Conversation/MessageListError.tsx:20
 msgid "Reconnect"
@@ -5592,7 +5592,7 @@ msgstr "Suche"
 
 #: src/view/shell/desktop/Search.tsx:235
 msgid "Search for \"{query}\""
-msgstr "Suche nach \"{query}\""
+msgstr "Nach \"{query}\" suchen"
 
 #: src/view/screens/Search/Search.tsx:869
 msgid "Search for \"{searchText}\""
@@ -6157,7 +6157,7 @@ msgstr "Den Inhalt anzeigen"
 
 #: src/view/com/notifications/FeedItem.tsx:347
 #~ msgid "Show users"
-#~ msgstr "Nutzer anzeigen"
+#~ msgstr "Benutzer anzeigen"
 
 #: src/lib/moderation/useLabelBehaviorDescription.ts:58
 msgid "Show warning"
@@ -6763,7 +6763,7 @@ msgstr "Es gab ein unerwartetes Problem in der Anwendung. Bitte teile uns mit, w
 
 #: src/screens/SignupQueued.tsx:112
 msgid "There's been a rush of new users to Bluesky! We'll activate your account as soon as we can."
-msgstr "Es gab einen Ansturm neuer Nutzer auf Bluesky! Wir werden dein Konto so schnell wie möglich aktivieren."
+msgstr "Es gab einen Ansturm neuer Benutzer auf Bluesky! Wir werden dein Konto so schnell wie möglich aktivieren."
 
 #: src/screens/Onboarding/StepSuggestedAccounts/index.tsx:146
 #~ msgid "These are popular accounts you might like:"
@@ -6812,7 +6812,7 @@ msgstr "Dieser Inhalt wird von {0} gehostet. Möchtest du externe Medien aktivie
 #: src/components/moderation/ModerationDetailsDialog.tsx:77
 #: src/lib/moderation/useModerationCauseDescription.ts:79
 msgid "This content is not available because one of the users involved has blocked the other."
-msgstr "Dieser Inhalt ist nicht verfügbar, weil einer der beteiligten Nutzer den anderen blockiert hat."
+msgstr "Dieser Inhalt ist nicht verfügbar, weil einer der beteiligten Benutzer den anderen blockiert hat."
 
 #: src/view/com/posts/FeedErrorMessage.tsx:114
 msgid "This content is not viewable without a Bluesky account."
@@ -6856,7 +6856,7 @@ msgstr ""
 
 #: src/components/dialogs/BirthDateSettings.tsx:41
 msgid "This information is not shared with other users."
-msgstr "Diese Informationen werden nicht an andere Nutzer weitergegeben."
+msgstr "Diese Informationen werden nicht an andere Benutzer weitergegeben."
 
 #: src/view/com/modals/VerifyEmail.tsx:127
 msgid "This is important in case you ever need to change your email or reset your password."
@@ -7372,7 +7372,7 @@ msgstr "Benutzer"
 
 #: src/components/WhoCanReply.tsx:279
 msgid "users followed by <0/>"
-msgstr "Nutzer gefolgt von <0/>"
+msgstr "Benutzer gefolgt von <0/>"
 
 #: src/components/dms/MessagesNUX.tsx:140
 #: src/components/dms/MessagesNUX.tsx:143
