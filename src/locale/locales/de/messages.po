@@ -594,7 +594,7 @@ msgstr "Ein Problem, das hier nicht aufgelistet ist"
 #: src/view/com/profile/ProfileHeaderSuggestedFollows.tsx:188
 #: src/view/com/profile/ProfileHeaderSuggestedFollows.tsx:198
 msgid "An issue occurred, please try again."
-msgstr "Es ist ein Problem aufgetreten, bitte versuche es erneut."
+msgstr "Ein Problem ist aufgetreten, bitte versuche es erneut."
 
 #: src/screens/Onboarding/StepInterests/index.tsx:218
 msgid "an unknown error occurred"
@@ -1089,7 +1089,7 @@ msgstr "Passwort ändern"
 
 #: src/view/com/composer/select-language/SuggestedLanguage.tsx:73
 msgid "Change post language to {0}"
-msgstr "Beitragssprache in {0} ändern"
+msgstr "Beitragssprache auf {0} ändern"
 
 #: src/view/screens/Settings/index.tsx:733
 #~ msgid "Change your Bluesky password"
@@ -1375,7 +1375,7 @@ msgstr "Schließe das Onboarding ab und nutze dein Konto"
 
 #: src/screens/Signup/index.tsx:139
 msgid "Complete the challenge"
-msgstr "Beende die Herausforderung"
+msgstr "Schließe die Herausforderung ab"
 
 #: src/view/com/composer/Composer.tsx:570
 msgid "Compose posts up to {MAX_GRAPHEME_LENGTH} characters in length"
@@ -1510,7 +1510,7 @@ msgstr "Fortfahren"
 
 #: src/components/AccountList.tsx:113
 msgid "Continue as {0} (currently signed in)"
-msgstr "Fortfahren mit {0} (aktuell angemeldet)"
+msgstr "Fortfahren als {0} (noch angemeldet)"
 
 #: src/view/com/post-thread/PostThreadLoadMore.tsx:52
 msgid "Continue thread..."
@@ -1528,7 +1528,7 @@ msgstr "Weiter zum nächsten Schritt"
 
 #: src/screens/Onboarding/StepSuggestedAccounts/index.tsx:199
 #~ msgid "Continue to the next step without following any accounts"
-#~ msgstr "Fahre mit dem nächsten Schritt fort, ohne Konten zu folgen"
+#~ msgstr "Mit dem nächsten Schritt fortfahren, ohne Konten zu folgen"
 
 #: src/screens/Messages/List/ChatListItem.tsx:154
 msgid "Conversation deleted"
@@ -2043,7 +2043,7 @@ msgstr "CAR-Datei herunterladen"
 
 #: src/view/com/composer/text-input/TextInput.web.tsx:271
 msgid "Drop to add images"
-msgstr "Ablegen zum Hinzufügen von Bildern"
+msgstr "Zum Hinzufügen Bilder ablegen"
 
 #: src/screens/Onboarding/StepModeration/AdultContentEnabledPref.tsx:120
 #~ msgid "Due to Apple policies, adult content can only be enabled on the web after completing sign up."
@@ -2095,7 +2095,7 @@ msgstr "Jeder Code funktioniert einmal. Du erhältst regelmäßig neue Einladung
 #: src/view/screens/Feeds.tsx:386
 #: src/view/screens/Feeds.tsx:454
 msgid "Edit"
-msgstr ""
+msgstr "Bearbeiten"
 
 #: src/view/com/lists/ListMembers.tsx:149
 msgctxt "action"
@@ -2289,7 +2289,7 @@ msgstr ""
 
 #: src/view/com/modals/AddAppPasswords.tsx:160
 msgid "Enter a name for this App Password"
-msgstr "Gebe einen Namen für dieses App-Passwort ein"
+msgstr "Gib einen Namen für dieses App-Passwort ein"
 
 #: src/screens/Login/SetNewPasswordForm.tsx:139
 msgid "Enter a password"
@@ -2306,7 +2306,7 @@ msgstr "Bestätigungscode eingeben"
 
 #: src/view/com/modals/ChangePassword.tsx:154
 msgid "Enter the code you received to change your password."
-msgstr "Gib den Code ein, welchen du erhalten hast, um dein Passwort zu ändern."
+msgstr "Gib den Code ein, den du erhalten hast, um dein Passwort zu ändern."
 
 #: src/view/com/modals/ChangeHandle.tsx:364
 msgid "Enter the domain you want to use"
@@ -2381,7 +2381,7 @@ msgstr "Verlässt den Vorgang der Accountlöschung"
 
 #: src/view/com/modals/ChangeHandle.tsx:145
 msgid "Exits handle change process"
-msgstr "Verlässt den Vorgang des Handle-Wechsels"
+msgstr "Verlässt den Vorgang der Handle-Änderung"
 
 #: src/view/com/modals/crop-image/CropImage.web.tsx:160
 msgid "Exits image cropping process"
