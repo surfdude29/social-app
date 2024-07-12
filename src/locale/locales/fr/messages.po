@@ -6899,7 +6899,7 @@ msgstr "Vous n’avez pas encore de conversations. Démarrez en une !"
 
 #: src/view/com/feeds/ProfileFeedgens.tsx:137
 msgid "You have no feeds."
-msgstr "Vous n’avez aucun fil."
+msgstr "Vous n’avez aucun fil d’actu."
 
 #: src/view/com/lists/MyLists.tsx:90
 #: src/view/com/lists/ProfileLists.tsx:144
