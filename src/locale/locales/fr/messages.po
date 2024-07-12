@@ -4505,7 +4505,7 @@ msgstr "Supprimer de mes fils d’actu ?"
 msgid "Remove image"
 msgstr "Supprimer l’image"
 
-#: src/view/com/composer/ExternalEmbedRemoveBtn.tsx:28
+#: src/view/com/composer/ExternalEmbed.tsx:87
 msgid "Remove image preview"
 msgstr "Supprimer l’aperçu d’image"
 
