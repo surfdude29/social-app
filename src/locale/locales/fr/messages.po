@@ -4600,6 +4600,7 @@ msgstr "Réponse à un post bloqué"
 
 #: src/view/com/post/Post.tsx:195
 #: src/view/com/posts/FeedItem.tsx:454
+msgctxt "description"
 msgid "Reply to you"
 msgstr "Réponse à vous"
 
@@ -5288,6 +5289,10 @@ msgstr "Partagez ce kit de démarrage et aidez les gens à rejoindre votre commu
 #: src/components/dms/ChatEmptyPill.tsx:34
 msgid "Share your favorite feed!"
 msgstr "Partagez votre fil d’actu favori !"
+
+#: src/Navigation.tsx:241
+msgid "Shared Preferences Tester"
+msgstr "Testeur de préférences partagées"
 
 #: src/view/com/modals/LinkWarning.tsx:92
 msgid "Shares the linked website"
