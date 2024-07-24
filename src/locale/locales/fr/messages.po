@@ -2359,10 +2359,6 @@ msgstr "Suivre en retour"
 msgid "Follow more accounts to get connected to your interests and build your network."
 msgstr "Suivez plus de comptes pour vous connecter à vos centres d’intérêt et développer votre réseau."
 
-#: src/view/com/profile/ProfileCard.tsx:190
-#~ msgid "Followed by {0}"
-#~ msgstr "Suivi par {0}"
-
 #: src/components/KnownFollowers.tsx:231
 msgid "Followed by <0>{0}</0>"
 msgstr "Suivi par <0>{0}</0>"
@@ -2549,10 +2545,6 @@ msgstr "Retour"
 #: src/view/screens/ProfileList.tsx:975
 msgid "Go Back"
 msgstr "Retour"
-
-#: src/screens/StarterPack/StarterPackLandingScreen.tsx:189
-#~ msgid "Go back to previous screen"
-#~ msgstr "Retour à l’écran précédent"
 
 #: src/components/dms/ReportDialog.tsx:154
 #: src/components/ReportDialog/SelectReportOptionView.tsx:80
@@ -4595,10 +4587,6 @@ msgstr "Supprimé de mes fils d’actu"
 #: src/view/screens/ProfileList.tsx:320
 msgid "Removed from your feeds"
 msgstr "Supprimé de vos fils d’actu"
-
-#: src/view/com/composer/ExternalEmbed.tsx:88
-#~ msgid "Removes default thumbnail from {0}"
-#~ msgstr "Supprime la miniature par défaut de {0}"
 
 #: src/view/com/util/post-embeds/QuoteEmbed.tsx:239
 msgid "Removes quoted post"
