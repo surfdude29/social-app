@@ -484,7 +484,7 @@ msgstr "Un problème est survenu au démarrage du chat"
 
 #: src/components/dms/dialogs/ShareViaChatDialog.tsx:49
 msgid "An issue occurred while trying to open the chat"
-msgstr "Un problème est survenu lors de l'ouverture du chat"
+msgstr "Un problème est survenu lors de l’ouverture du chat"
 
 #: src/components/hooks/useFollowMethods.ts:35
 #: src/components/hooks/useFollowMethods.ts:50
