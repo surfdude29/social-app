@@ -480,11 +480,11 @@ msgstr "Un problème qui ne fait pas partie de ces options"
 
 #: src/components/dms/dialogs/NewChatDialog.tsx:36
 msgid "An issue occurred starting the chat"
-msgstr "Un problème est survenu au démarrage du chat"
+msgstr "Un problème est survenu au démarrage de la discussion"
 
 #: src/components/dms/dialogs/ShareViaChatDialog.tsx:49
 msgid "An issue occurred while trying to open the chat"
-msgstr "Un problème est survenu lors de l’ouverture du chat"
+msgstr "Un problème est survenu lors de l’ouverture de la discussion"
 
 #: src/components/hooks/useFollowMethods.ts:35
 #: src/components/hooks/useFollowMethods.ts:50
