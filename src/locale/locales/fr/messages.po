@@ -374,7 +374,7 @@ msgstr "Ajouter un texte alt"
 
 #: src/view/com/composer/videos/SubtitleDialog.tsx:107
 msgid "Add alt text (optional)"
-msgstr "Ajouter un texte alt "
+msgstr "Ajouter un texte alt (facultatif)"
 
 #: src/view/screens/AppPasswords.tsx:105
 #: src/view/screens/AppPasswords.tsx:147
@@ -428,10 +428,6 @@ msgstr "Ajouté à la liste"
 msgid "Added to my feeds"
 msgstr "Ajouté à mes fils d’actu"
 
-#: src/view/screens/PreferencesFollowingFeed.tsx:171
-#~ msgid "Adjust the number of likes a reply must have to be shown in your feed."
-#~ msgstr "Définissez le nombre de likes qu’une réponse doit avoir pour être affichée dans votre fil d’actu."
-
 #: src/lib/moderation/useGlobalLabelStrings.ts:34
 #: src/lib/moderation/useModerationCauseDescription.ts:144
 #: src/view/com/modals/SelfLabel.tsx:76
@@ -475,11 +471,11 @@ msgstr "Autoriser les nouveaux messages de"
 
 #: src/components/dialogs/PostInteractionSettingsDialog.tsx:359
 msgid "Allow replies from:"
-msgstr ""
+msgstr "Autoriser les réponses de :"
 
 #: src/view/screens/AppPasswords.tsx:266
 msgid "Allows access to direct messages"
-msgstr ""
+msgstr "Permet d'accéder aux messages directs"
 
 #: src/screens/Login/ForgotPasswordForm.tsx:178
 #: src/view/com/modals/ChangePassword.tsx:171
@@ -524,15 +520,11 @@ msgstr "Un e-mail a été envoyé à votre ancienne adresse, {0}. Il comprend un
 
 #: src/components/dialogs/GifSelect.tsx:254
 msgid "An error has occurred"
-msgstr ""
-
-#: src/components/dialogs/GifSelect.tsx:252
-#~ msgid "An error occured"
-#~ msgstr "Une erreur s’est produite"
+msgstr "Une erreur s’est produite"
 
 #: src/view/com/util/post-embeds/VideoEmbedInner/VideoWebControls.tsx:369
 msgid "An error occurred"
-msgstr ""
+msgstr "Une erreur s’est produite"
 
 #: src/state/queries/video/video.ts:227
 msgid "An error occurred while compressing the video."
