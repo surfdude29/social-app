@@ -1489,7 +1489,7 @@ msgstr "Impossible de masquer la discussion"
 
 #: src/view/com/composer/videos/VideoPreview.web.tsx:45
 msgid "Could not process your video"
-msgstr ""
+msgstr "Impossible de traiter votre vidéo"
 
 #: src/components/StarterPack/ProfileStarterPacks.tsx:272
 msgid "Create"
@@ -1577,7 +1577,7 @@ msgstr "Personnaliser les médias provenant de sites externes."
 
 #: src/components/dialogs/PostInteractionSettingsDialog.tsx:288
 msgid "Customize who can interact with this post."
-msgstr ""
+msgstr "Personnalisez les comptes qui peuvent interagir avec ce post."
 
 #: src/screens/Settings/AppearanceSettings.tsx:95
 #: src/screens/Settings/AppearanceSettings.tsx:97
@@ -1594,11 +1594,7 @@ msgstr "Mode sombre"
 #: src/screens/Settings/AppearanceSettings.tsx:109
 #: src/screens/Settings/AppearanceSettings.tsx:114
 msgid "Dark theme"
-msgstr ""
-
-#: src/view/screens/Settings/index.tsx:473
-#~ msgid "Dark Theme"
-#~ msgstr "Thème sombre"
+msgstr "Thème sombre"
 
 #: src/screens/Signup/StepInfo/index.tsx:191
 msgid "Date of birth"
