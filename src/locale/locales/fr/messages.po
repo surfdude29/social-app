@@ -475,7 +475,7 @@ msgstr "Autoriser les réponses de :"
 
 #: src/view/screens/AppPasswords.tsx:266
 msgid "Allows access to direct messages"
-msgstr "Permet d'accéder aux messages directs"
+msgstr "Permet d'accéder à vos messages privés"
 
 #: src/screens/Login/ForgotPasswordForm.tsx:178
 #: src/view/com/modals/ChangePassword.tsx:171
