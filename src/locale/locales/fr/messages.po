@@ -87,7 +87,7 @@ msgstr "{0, plural, one {post} other {posts}}"
 
 #: src/view/com/post-thread/PostThreadItem.tsx:419
 msgid "{0, plural, one {quote} other {quotes}}"
-msgstr ""
+msgstr "{0, plural, one {citation} other {citations}}"
 
 #: src/view/com/util/post-ctrls/PostCtrls.tsx:269
 msgid "{0, plural, one {Reply (# reply)} other {Reply (# replies)}}"
@@ -104,12 +104,12 @@ msgstr "{0, plural, one {Déliker (# like)} other {Déliker (# likes)}}"
 #. Pattern: {wordValue} in tags
 #: src/components/dialogs/MutedWords.tsx:475
 msgid "{0} <0>in <1>tags</1></0>"
-msgstr ""
+msgstr "{0} <0>dans <1>les mots-clés</1></0>"
 
 #. Pattern: {wordValue} in text, tags
 #: src/components/dialogs/MutedWords.tsx:465
 msgid "{0} <0>in <1>text & tags</1></0>"
-msgstr ""
+msgstr "{0} <0>dans <1>le texte et les mots-clés</1></0>"
 
 #: src/screens/StarterPack/StarterPackLandingScreen.tsx:228
 msgid "{0} joined this week"
@@ -117,7 +117,7 @@ msgstr "{0} personnes se sont inscrites cette semaine"
 
 #: src/view/com/util/post-embeds/VideoEmbedInner/VideoWebControls.tsx:593
 msgid "{0} of {1}"
-msgstr ""
+msgstr "{0} de {1}"
 
 #: src/screens/StarterPack/StarterPackScreen.tsx:467
 msgid "{0} people have used this starter pack!"
@@ -138,27 +138,27 @@ msgstr "Kit de démarrage de {0}"
 #. How many days have passed, displayed in a narrow form
 #: src/lib/hooks/useTimeAgo.ts:158
 msgid "{0}d"
-msgstr ""
+msgstr "{0}j"
 
 #. How many hours have passed, displayed in a narrow form
 #: src/lib/hooks/useTimeAgo.ts:148
 msgid "{0}h"
-msgstr ""
+msgstr "{0}h"
 
 #. How many minutes have passed, displayed in a narrow form
 #: src/lib/hooks/useTimeAgo.ts:138
 msgid "{0}m"
-msgstr ""
+msgstr "{0}m"
 
 #. How many months have passed, displayed in a narrow form
 #: src/lib/hooks/useTimeAgo.ts:169
 msgid "{0}mo"
-msgstr ""
+msgstr "{0}mo"
 
 #. How many seconds have passed, displayed in a narrow form
 #: src/lib/hooks/useTimeAgo.ts:128
 msgid "{0}s"
-msgstr ""
+msgstr "{0}s"
 
 #: src/components/LabelingServiceCard/index.tsx:71
 msgid "{count, plural, one {Liked by # user} other {Liked by # users}}"
@@ -204,14 +204,6 @@ msgstr "{profileName} a rejoint Bluesky il y a {0}"
 msgid "{profileName} joined Bluesky using a starter pack {0} ago"
 msgstr "{profileName} a rejoint Bluesky en utilisant un kit de démarrage il y a {0}"
 
-#: src/view/screens/PreferencesFollowingFeed.tsx:67
-#~ msgid "{value, plural, =0 {Show all replies} one {Show replies with at least # like} other {Show replies with at least # likes}}"
-#~ msgstr "{value, plural, =0 {Voir toutes les réponses} one {Voir les réponses avec au moins # like} other {Voir les réponses avec au moins # likes}}"
-
-#: src/components/WhoCanReply.tsx:296
-#~ msgid "<0/> members"
-#~ msgstr "<0/> membres"
-
 #: src/screens/StarterPack/Wizard/index.tsx:466
 msgctxt "profiles"
 msgid "<0>{0}, </0><1>{1}, </1>and {2, plural, one {# other} other {# others}} are included in your starter pack"
@@ -240,7 +232,7 @@ msgstr "<0>{0}</0> fait partie de votre kit de démarrage"
 
 #: src/components/WhoCanReply.tsx:274
 msgid "<0>{0}</0> members"
-msgstr ""
+msgstr "<0>{0}</0> membres"
 
 #: src/view/com/modals/SelfLabel.tsx:135
 msgid "<0>Not Applicable.</0> This warning is only available for posts with media attached."
@@ -256,7 +248,7 @@ msgstr "⚠Pseudo invalide"
 
 #: src/components/dialogs/MutedWords.tsx:193
 msgid "24 hours"
-msgstr ""
+msgstr "24 heures"
 
 #: src/screens/Login/LoginForm.tsx:266
 msgid "2FA Confirmation"
@@ -264,15 +256,11 @@ msgstr "Confirmation 2FA"
 
 #: src/components/dialogs/MutedWords.tsx:232
 msgid "30 days"
-msgstr ""
+msgstr "30 jours"
 
 #: src/components/dialogs/MutedWords.tsx:217
 msgid "7 days"
-msgstr ""
-
-#: src/tours/Tooltip.tsx:70
-#~ msgid "A help tooltip"
-#~ msgstr "Une infobulle d’aide"
+msgstr "7 jours"
 
 #: src/view/com/util/ViewHeader.tsx:92
 #: src/view/screens/Search/Search.tsx:684
@@ -386,7 +374,7 @@ msgstr "Ajouter un texte alt"
 
 #: src/view/com/composer/videos/SubtitleDialog.tsx:107
 msgid "Add alt text (optional)"
-msgstr ""
+msgstr "Ajouter un texte alt "
 
 #: src/view/screens/AppPasswords.tsx:105
 #: src/view/screens/AppPasswords.tsx:147
