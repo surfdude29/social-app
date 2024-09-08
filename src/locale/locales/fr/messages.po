@@ -6089,7 +6089,7 @@ msgstr "Menu de mot-clé : {displayTag}"
 
 #: src/components/dialogs/MutedWords.tsx:282
 msgid "Tags only"
-msgstr ""
+msgstr "Mots-clés seulement"
 
 #: src/view/com/modals/crop-image/CropImage.web.tsx:135
 msgid "Tall"
@@ -6101,20 +6101,16 @@ msgstr "Tapper pour annuler"
 
 #: src/view/com/util/post-embeds/VideoEmbedInner/VideoEmbedInnerNative.tsx:146
 msgid "Tap to enter full screen"
-msgstr ""
+msgstr "Tapper pour accéder au plein écran"
 
 #: src/view/com/util/post-embeds/VideoEmbedInner/VideoEmbedInnerNative.tsx:169
 msgid "Tap to toggle sound"
-msgstr ""
+msgstr "Tapper pour alterner le son"
 
 #: src/view/com/util/images/AutoSizedImage.tsx:190
 #: src/view/com/util/images/AutoSizedImage.tsx:210
 msgid "Tap to view full image"
-msgstr ""
-
-#: src/view/com/util/images/AutoSizedImage.tsx:70
-#~ msgid "Tap to view fully"
-#~ msgstr "Tapper pour voir en entier"
+msgstr "Tapper pour voir l'image complète"
 
 #: src/state/shell/progress-guide.tsx:166
 msgid "Task complete - 10 likes!"
@@ -6156,13 +6152,9 @@ msgstr "Conditions d’utilisation"
 msgid "Terms used violate community standards"
 msgstr "Termes utilisés qui violent les normes de la communauté"
 
-#: src/components/dialogs/MutedWords.tsx:323
-#~ msgid "text"
-#~ msgstr "texte"
-
 #: src/components/dialogs/MutedWords.tsx:266
 msgid "Text & tags"
-msgstr ""
+msgstr "Texte et mots-clés"
 
 #: src/components/moderation/LabelsOnMeDialog.tsx:257
 #: src/screens/Messages/Conversation/ChatDisabled.tsx:108
@@ -6176,7 +6168,7 @@ msgstr "Nous vous remercions. Votre rapport a été envoyé."
 
 #: src/components/intents/VerifyEmailIntentDialog.tsx:74
 msgid "Thanks, you have successfully verified your email address."
-msgstr ""
+msgstr "Merci, vous avez vérifié avec succès votre adresse e-mail."
 
 #: src/view/com/modals/ChangeHandle.tsx:459
 msgid "That contains the following:"
@@ -6197,7 +6189,7 @@ msgstr "Ce kit de démarrage n’a pas pu être trouvé."
 
 #: src/view/com/post-thread/PostQuotes.tsx:127
 msgid "That's all, folks!"
-msgstr ""
+msgstr "C'est tout, les ami·e·s !"
 
 #: src/screens/Profile/Header/ProfileHeaderStandard.tsx:268
 #: src/view/com/profile/ProfileMenu.tsx:353
@@ -6207,11 +6199,11 @@ msgstr "Ce compte pourra interagir avec vous après le déblocage."
 #: src/components/moderation/ModerationDetailsDialog.tsx:118
 #: src/lib/moderation/useModerationCauseDescription.ts:126
 msgid "The author of this thread has hidden this reply."
-msgstr ""
+msgstr "L'auteur de ce fil de discussion a masqué cette réponse."
 
 #: src/screens/Moderation/index.tsx:368
 msgid "The Bluesky web application"
-msgstr ""
+msgstr "L'application web Bluesky"
 
 #: src/view/screens/CommunityGuidelines.tsx:36
 msgid "The Community Guidelines have been moved to <0/>"
@@ -6223,7 +6215,7 @@ msgstr "Notre politique de droits d’auteur a été déplacée vers <0/>"
 
 #: src/view/com/posts/FeedShutdownMsg.tsx:102
 msgid "The Discover feed"
-msgstr ""
+msgstr "Le fil d’actu « Discover »"
 
 #: src/state/shell/progress-guide.tsx:167
 #: src/state/shell/progress-guide.tsx:172
@@ -6261,7 +6253,7 @@ msgstr "Notre politique de confidentialité a été déplacée vers <0/>"
 
 #: src/state/queries/video/video.ts:222
 msgid "The selected video is larger than 100MB."
-msgstr ""
+msgstr "La vidéo sélectionnée a une taille supérieure à 100 Mo."
 
 #: src/screens/StarterPack/StarterPackScreen.tsx:713
 msgid "The starter pack that you are trying to view is invalid. You may delete this starter pack instead."
@@ -6277,7 +6269,7 @@ msgstr "Nos conditions d’utilisation ont été déplacées vers"
 
 #: src/components/intents/VerifyEmailIntentDialog.tsx:85
 msgid "The verification code you have provided is invalid. Please make sure that you have used the correct verification link or request a new one."
-msgstr ""
+msgstr "Le code de vérification que vous avez fourni n'est pas valide. Veuillez vous assurer que vous avez utilisé le bon lien de vérification ou en demander un nouveau."
 
 #: src/screens/Settings/components/DeactivateAccountDialog.tsx:86
 msgid "There is no time limit for account deactivation, come back any time."
@@ -6390,13 +6382,9 @@ msgstr "Ce compte a demandé aux personnes de se connecter pour voir son profil.
 msgid "This account is blocked by one or more of your moderation lists. To unblock, please visit the lists directly and remove this user."
 msgstr "Ce compte est bloqué par un ou plusieurs de vos listes de modération. Pour le débloquer, veuillez visiter les listes directement et en retirer ce compte."
 
-#: src/components/moderation/LabelsOnMeDialog.tsx:260
-#~ msgid "This appeal will be sent to <0>{0}</0>."
-#~ msgstr "Cet appel sera envoyé à <0>{0}</0>."
-
 #: src/components/moderation/LabelsOnMeDialog.tsx:241
 msgid "This appeal will be sent to <0>{sourceName}</0>."
-msgstr ""
+msgstr "Cet appel sera envoyé à <0>{sourceName}</0>."
 
 #: src/screens/Messages/Conversation/ChatDisabled.tsx:104
 msgid "This appeal will be sent to Bluesky's moderation service."
@@ -6483,7 +6471,7 @@ msgstr "Ce lien vous conduit au site Web suivant :"
 
 #: src/screens/List/ListHiddenScreen.tsx:136
 msgid "This list - created by <0>{0}</0> - contains possible violations of Bluesky's community guidelines in its name or description."
-msgstr ""
+msgstr "Cette liste – créée par <0>{0}</0> – contient des violations possibles des directives communautaires de Bluesky dans son nom ou sa description."
 
 #: src/view/screens/ProfileList.tsx:963
 msgid "This list is empty!"
@@ -6508,15 +6496,11 @@ msgstr "Ce post n’est visible que pour les personnes connectées. Il ne sera p
 
 #: src/view/com/util/forms/PostDropdownBtn.tsx:637
 msgid "This post will be hidden from feeds and threads. This cannot be undone."
-msgstr ""
-
-#: src/view/com/util/forms/PostDropdownBtn.tsx:443
-#~ msgid "This post will be hidden from feeds."
-#~ msgstr "Ce post sera masqué des fils d’actu."
+msgstr "Ce post sera masqué des fils d’actu et des fils de discussion. Cela est irréversible."
 
 #: src/view/com/composer/useExternalLinkFetch.ts:67
 msgid "This post's author has disabled quote posts."
-msgstr ""
+msgstr "L'auteur de ce post a désactivé les citations."
 
 #: src/view/com/profile/ProfileMenu.tsx:374
 msgid "This profile is only visible to logged-in users. It won't be visible to people who aren't logged in."
@@ -6524,7 +6508,7 @@ msgstr "Ce profil n’est visible que pour les personnes connectées. Il ne sera
 
 #: src/view/com/util/forms/PostDropdownBtn.tsx:699
 msgid "This reply will be sorted into a hidden section at the bottom of your thread and will mute notifications for subsequent replies - both for yourself and others."
-msgstr ""
+msgstr "Cette réponse sera classée dans une section cachée au bas de votre fil de discussion et masquera les notifications pour les réponses suivantes – à la fois pour vous-même et pour les autres."
 
 #: src/screens/Signup/StepInfo/Policies.tsx:37
 msgid "This service has not provided terms of service or a privacy policy."
