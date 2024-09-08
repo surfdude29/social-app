@@ -588,7 +588,7 @@ msgstr "une erreur inconnue s’est produite"
 #: src/components/moderation/ModerationDetailsDialog.tsx:151
 #: src/components/moderation/ModerationDetailsDialog.tsx:147
 msgid "an unknown labeler"
-msgstr ""
+msgstr "un étiqueteur inconnu"
 
 #: src/components/WhoCanReply.tsx:295
 #: src/view/com/notifications/FeedItem.tsx:231
@@ -611,7 +611,7 @@ msgstr "Comportement antisocial"
 
 #: src/view/com/composer/threadgate/ThreadgateBtn.tsx:54
 msgid "Anybody can interact"
-msgstr ""
+msgstr "Tout le monde peut interagir"
 
 #: src/view/screens/LanguageSettings.tsx:96
 msgid "App Language"
@@ -667,11 +667,11 @@ msgstr "Affichage"
 
 #: src/view/screens/Settings/index.tsx:475
 msgid "Appearance settings"
-msgstr ""
+msgstr "Paramètres d'affichage"
 
 #: src/Navigation.tsx:326
 msgid "Appearance Settings"
-msgstr ""
+msgstr "Paramètres d'affichage"
 
 #: src/screens/Feeds/NoSavedFeedsOfAnyType.tsx:47
 #: src/screens/Home/NoFeedsPinned.tsx:93
