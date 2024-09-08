@@ -1720,15 +1720,15 @@ msgstr "Texte alt descriptif"
 #: src/view/com/util/forms/PostDropdownBtn.tsx:544
 #: src/view/com/util/forms/PostDropdownBtn.tsx:554
 msgid "Detach quote"
-msgstr ""
+msgstr "Détacher la citation"
 
 #: src/view/com/util/forms/PostDropdownBtn.tsx:687
 msgid "Detach quote post?"
-msgstr ""
+msgstr "Détacher la citation ?"
 
 #: src/components/WhoCanReply.tsx:175
 msgid "Dialog: adjust who can interact with this post"
-msgstr ""
+msgstr "Un dialogue : réglez qui peut interagir avec ce post"
 
 #: src/view/com/composer/Composer.tsx:351
 msgid "Did you want to say anything?"
@@ -1744,12 +1744,8 @@ msgid "Direct messages are here!"
 msgstr "Les messages privés sont arrivés !"
 
 #: src/view/screens/AccessibilitySettings.tsx:111
-#~ msgid "Disable autoplay for GIFs"
-#~ msgstr "Désactiver la lecture automatique des GIFs"
-
-#: src/view/screens/AccessibilitySettings.tsx:111
 msgid "Disable autoplay for videos and GIFs"
-msgstr ""
+msgstr "Désactiver la lecture automatique des vidéos et des GIFs"
 
 #: src/view/screens/Settings/DisableEmail2FADialog.tsx:90
 msgid "Disable Email 2FA"
@@ -1761,7 +1757,7 @@ msgstr "Désactiver le retour haptique"
 
 #: src/view/com/util/post-embeds/VideoEmbedInner/VideoWebControls.tsx:335
 msgid "Disable subtitles"
-msgstr ""
+msgstr "Désactiver les sous-titres"
 
 #: src/lib/moderation/useLabelBehaviorDescription.ts:32
 #: src/lib/moderation/useLabelBehaviorDescription.ts:42
@@ -1785,10 +1781,6 @@ msgstr "Abandonner le brouillon ?"
 msgid "Discourage apps from showing my account to logged-out users"
 msgstr "Empêcher les applis de montrer mon compte aux personnes non connectées"
 
-#: src/tours/HomeTour.tsx:70
-#~ msgid "Discover learns which posts you like as you browse."
-#~ msgstr "« Discover » apprend quels sont les posts que vous aimez au fur et à mesure que vous naviguez."
-
 #: src/view/com/posts/FollowingEmptyState.tsx:70
 #: src/view/com/posts/FollowingEndOfFeed.tsx:71
 msgid "Discover new custom feeds"
@@ -1802,13 +1794,9 @@ msgstr "Découvrir de nouveaux fils d’actu"
 msgid "Discover New Feeds"
 msgstr "Découvrir de nouveaux fils d’actu"
 
-#: src/view/com/profile/ProfileHeaderSuggestedFollows.tsx:108
-#~ msgid "Dismiss"
-#~ msgstr ""
-
 #: src/view/com/composer/Composer.tsx:1106
 msgid "Dismiss error"
-msgstr ""
+msgstr "Annuler l'erreur"
 
 #: src/components/ProgressGuide/List.tsx:40
 msgid "Dismiss getting started guide"
@@ -1832,7 +1820,7 @@ msgstr "Panneau DNS"
 
 #: src/components/dialogs/MutedWords.tsx:302
 msgid "Do not apply this mute word to users you follow"
-msgstr ""
+msgstr "N'appliquez pas ce mot masqué aux comptes que vous suivez"
 
 #: src/lib/moderation/useGlobalLabelStrings.ts:39
 msgid "Does not include nudity."
@@ -1897,7 +1885,7 @@ msgstr "Déposer pour ajouter des images"
 
 #: src/components/dialogs/MutedWords.tsx:153
 msgid "Duration:"
-msgstr ""
+msgstr "Durée :"
 
 #: src/view/com/modals/ChangeHandle.tsx:252
 msgid "e.g. alice"
