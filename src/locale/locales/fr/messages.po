@@ -331,7 +331,7 @@ msgstr "Compte désabonné"
 
 #: src/view/com/profile/ProfileMenu.tsx:107
 msgid "Account unmuted"
-msgstr "Compte démasqué"
+msgstr "Compte réaffiché"
 
 #: src/components/dialogs/MutedWords.tsx:328
 #: src/view/com/modals/ListAddRemoveUsers.tsx:269
@@ -3316,7 +3316,7 @@ msgstr "Liste débloquée"
 
 #: src/view/screens/ProfileList.tsx:400
 msgid "List unmuted"
-msgstr "Liste démasquée"
+msgstr "Liste réaffichée"
 
 #: src/Navigation.tsx:130
 #: src/view/screens/Profile.tsx:208
