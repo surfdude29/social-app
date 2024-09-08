@@ -6706,10 +6706,6 @@ msgctxt "action"
 msgid "Unfollow"
 msgstr "Se désabonner"
 
-#: src/view/com/profile/ProfileHeaderSuggestedFollows.tsx:247
-#~ msgid "Unfollow"
-#~ msgstr "Se désabonner"
-
 #: src/screens/Profile/Header/ProfileHeaderStandard.tsx:208
 msgid "Unfollow {0}"
 msgstr "Se désabonner de {0}"
@@ -6753,11 +6749,11 @@ msgstr "Réafficher ce fil de discussion"
 
 #: src/view/com/util/post-embeds/VideoEmbedInner/VideoWebControls.tsx:273
 msgid "Unmute video"
-msgstr ""
+msgstr "Rétablir le son de la vidéo"
 
 #: src/view/com/util/post-embeds/VideoEmbedInner/VideoEmbedInnerNative.tsx:168
 msgid "Unmuted"
-msgstr ""
+msgstr "Rétabli"
 
 #: src/view/screens/ProfileFeed.tsx:292
 #: src/view/screens/ProfileList.tsx:673
@@ -6783,7 +6779,7 @@ msgstr "Se désabonner"
 #: src/screens/List/ListHiddenScreen.tsx:184
 #: src/screens/List/ListHiddenScreen.tsx:194
 msgid "Unsubscribe from list"
-msgstr ""
+msgstr "Se désabonner de la liste"
 
 #: src/screens/Profile/Header/ProfileHeaderLabeler.tsx:196
 msgid "Unsubscribe from this labeler"
@@ -6791,11 +6787,11 @@ msgstr "Se désabonner de cet étiqueteur"
 
 #: src/screens/List/ListHiddenScreen.tsx:86
 msgid "Unsubscribed from list"
-msgstr ""
+msgstr "Désabonné de la liste"
 
 #: src/state/queries/video/video.ts:240
 msgid "Unsupported video type: {mimeType}"
-msgstr ""
+msgstr "Type de vidéo non pris en charge : {mimeType}"
 
 #: src/lib/moderation/useReportOptions.ts:77
 #: src/lib/moderation/useReportOptions.ts:90
@@ -6812,11 +6808,11 @@ msgstr "Mettre à jour pour {handle}"
 
 #: src/view/com/util/forms/PostDropdownBtn.tsx:305
 msgid "Updating quote attachment failed"
-msgstr ""
+msgstr "La mise à jour de l'attachement de la citation a échoué"
 
 #: src/view/com/util/forms/PostDropdownBtn.tsx:335
 msgid "Updating reply visibility failed"
-msgstr ""
+msgstr "La mise à jour de la visibilité de la réponse a échoué"
 
 #: src/screens/Login/SetNewPasswordForm.tsx:186
 msgid "Updating..."
@@ -6949,13 +6945,9 @@ msgstr "Pseudo ou e-mail"
 msgid "Users"
 msgstr "Comptes"
 
-#: src/components/WhoCanReply.tsx:280
-#~ msgid "users followed by <0/>"
-#~ msgstr "comptes suivis par <0/>"
-
 #: src/components/WhoCanReply.tsx:258
 msgid "users followed by <0>@{0}</0>"
-msgstr ""
+msgstr "comptes suivis par <0>@{0}</0>"
 
 #: src/components/dms/MessagesNUX.tsx:140
 #: src/components/dms/MessagesNUX.tsx:143
@@ -6978,7 +6970,7 @@ msgstr "Valeur :"
 
 #: src/view/com/composer/videos/SelectVideoBtn.tsx:104
 msgid "Verified email required"
-msgstr ""
+msgstr "Adresse e-mail vérifiée requise"
 
 #: src/view/com/modals/ChangeHandle.tsx:504
 msgid "Verify DNS Record"
@@ -6990,7 +6982,7 @@ msgstr "Confirmer l’e-mail"
 
 #: src/components/intents/VerifyEmailIntentDialog.tsx:61
 msgid "Verify email dialog"
-msgstr ""
+msgstr "Dialogue de vérification de l'adresse e-mail"
 
 #: src/view/screens/Settings/index.tsx:961
 msgid "Verify my email"
@@ -7007,7 +6999,7 @@ msgstr "Confirmer le nouvel e-mail"
 
 #: src/view/com/composer/videos/SelectVideoBtn.tsx:108
 msgid "Verify now"
-msgstr ""
+msgstr "Vérifier maintenant"
 
 #: src/view/com/modals/ChangeHandle.tsx:505
 msgid "Verify Text File"
@@ -7024,11 +7016,11 @@ msgstr "Version {appVersion} {bundleInfo}"
 #: src/view/com/util/post-embeds/VideoEmbedInner/VideoEmbedInnerNative.tsx:77
 #: src/view/com/util/post-embeds/VideoEmbedInner/VideoEmbedInnerNative.tsx:145
 msgid "Video"
-msgstr ""
+msgstr "Vidéo"
 
 #: src/state/queries/video/video.ts:138
 msgid "Video failed to process"
-msgstr ""
+msgstr "Le traitement de la vidéo a échoué"
 
 #: src/screens/Onboarding/index.tsx:39
 #: src/screens/Onboarding/state.ts:88
@@ -7037,19 +7029,15 @@ msgstr "Jeux vidéo"
 
 #: src/view/com/util/post-embeds/VideoEmbed.web.tsx:163
 msgid "Video not found."
-msgstr ""
+msgstr "Vidéo non trouvée."
 
 #: src/view/com/composer/videos/SubtitleDialog.tsx:99
 msgid "Video settings"
-msgstr ""
+msgstr "Paramètres vidéo"
 
 #: src/view/com/util/post-embeds/VideoEmbedInner/VideoEmbedInnerNative.tsx:77
 msgid "Video: {0}"
-msgstr ""
-
-#: src/view/com/composer/videos/state.ts:27
-#~ msgid "Videos cannot be larger than 100MB"
-#~ msgstr "Les vidéos ne peuvent pas dépasser 100 Mo"
+msgstr "Vidéo : {0}"
 
 #: src/screens/Profile/Header/Shell.tsx:113
 msgid "View {0}'s avatar"
@@ -7062,7 +7050,7 @@ msgstr "Voir le profil de {0}"
 
 #: src/components/dms/MessagesListHeader.tsx:160
 msgid "View {displayName}'s profile"
-msgstr ""
+msgstr "Voir le profil de {displayName}"
 
 #: src/components/ProfileHoverCard/index.web.tsx:430
 msgid "View blocked user's profile"
@@ -7070,7 +7058,7 @@ msgstr "Voir le profil du compte bloqué"
 
 #: src/view/screens/Settings/ExportCarDialog.tsx:97
 msgid "View blogpost for more details"
-msgstr ""
+msgstr "Voir l'article de blog pour plus de détails"
 
 #: src/view/screens/Log.tsx:56
 msgid "View debug entry"
@@ -7114,7 +7102,7 @@ msgstr "Voir les comptes qui a liké ce fil d’actu"
 
 #: src/screens/Moderation/index.tsx:274
 msgid "View your blocked accounts"
-msgstr ""
+msgstr "Consultez vos comptes bloqués"
 
 #: src/view/com/home/HomeHeaderLayout.web.tsx:79
 #: src/view/com/home/HomeHeaderLayoutMobile.tsx:86
@@ -7123,11 +7111,11 @@ msgstr "Consultez vos fils d’actu et explorez-en plus"
 
 #: src/screens/Moderation/index.tsx:244
 msgid "View your moderation lists"
-msgstr ""
+msgstr "Consultez vos listes de modération"
 
 #: src/screens/Moderation/index.tsx:259
 msgid "View your muted accounts"
-msgstr ""
+msgstr "Consultez vos comptes masqués"
 
 #: src/view/com/modals/LinkWarning.tsx:89
 #: src/view/com/modals/LinkWarning.tsx:95
@@ -7162,7 +7150,7 @@ msgstr "Nous estimons que votre compte sera prêt dans {estimatedTime}."
 
 #: src/components/intents/VerifyEmailIntentDialog.tsx:98
 msgid "We have sent another verification email to <0>{0}</0>."
-msgstr ""
+msgstr "Nous avons envoyé un autre e-mail de vérification à <0>{0}</0>."
 
 #: src/screens/Onboarding/StepFinished.tsx:238
 msgid "We hope you have a wonderful time. Remember, Bluesky is:"
@@ -7174,7 +7162,7 @@ msgstr "Nous n’avons plus de posts provenant des comptes que vous suivez. Voic
 
 #: src/state/queries/video/video.ts:170
 msgid "We were unable to determine if you are allowed to upload videos. Please try again."
-msgstr ""
+msgstr "Nous n'avons pas pu déterminer si vous étiez autorisé à télécharger des vidéos. Veuillez réessayer."
 
 #: src/components/dialogs/BirthDateSettings.tsx:52
 msgid "We were unable to load your birth date preferences. Please try again."
@@ -7261,7 +7249,7 @@ msgstr "Quelles langues aimeriez-vous voir apparaître dans vos fils d’actu al
 
 #: src/components/WhoCanReply.tsx:179
 msgid "Who can interact with this post?"
-msgstr ""
+msgstr "Qui peut interagir avec ce post ?"
 
 #: src/components/dms/MessagesNUX.tsx:110
 #: src/components/dms/MessagesNUX.tsx:124
@@ -7271,14 +7259,6 @@ msgstr "Qui peut discuter avec vous ?"
 #: src/components/WhoCanReply.tsx:87
 msgid "Who can reply"
 msgstr "Qui peut répondre ?"
-
-#: src/components/WhoCanReply.tsx:212
-#~ msgid "Who can reply dialog"
-#~ msgstr "Dialogue qui permet de changer qui peut répondre"
-
-#: src/components/WhoCanReply.tsx:216
-#~ msgid "Who can reply?"
-#~ msgstr "Qui peut répondre ?"
 
 #: src/screens/Home/NoFeedsPinned.tsx:79
 #: src/screens/Messages/List/index.tsx:185
@@ -7357,11 +7337,11 @@ msgstr "Oui, supprimer ce kit de démarrage"
 
 #: src/view/com/util/forms/PostDropdownBtn.tsx:692
 msgid "Yes, detach"
-msgstr ""
+msgstr "Oui, détacher"
 
 #: src/view/com/util/forms/PostDropdownBtn.tsx:702
 msgid "Yes, hide"
-msgstr ""
+msgstr "Oui, cacher"
 
 #: src/screens/Deactivated.tsx:150
 msgid "Yes, reactivate my account"
@@ -7386,7 +7366,7 @@ msgstr "Vous êtes dans la file d’attente."
 
 #: src/state/queries/video/video.ts:161
 msgid "You are not allowed to upload videos."
-msgstr ""
+msgstr "Vous n'êtes pas autorisé à télécharger des vidéos."
 
 #: src/view/com/profile/ProfileFollows.tsx:95
 msgid "You are not following anyone."
@@ -7507,7 +7487,7 @@ msgstr "Vous avez atteint la fin"
 
 #: src/state/queries/video/video-upload.shared.ts:67
 msgid "You have temporarily reached the limit for video uploads. Please try again later."
-msgstr ""
+msgstr "Vous avez temporairement atteint la limite de téléchargement des vidéos. Veuillez réessayer plus tard."
 
 #: src/components/StarterPack/ProfileStarterPacks.tsx:235
 msgid "You haven't created a starter pack yet!"
@@ -7520,7 +7500,7 @@ msgstr "Vous n’avez pas encore masqué de mot ou de mot-clé"
 #: src/components/moderation/ModerationDetailsDialog.tsx:117
 #: src/lib/moderation/useModerationCauseDescription.ts:125
 msgid "You hid this reply."
-msgstr ""
+msgstr "Vous avez caché cette réponse."
 
 #: src/components/moderation/LabelsOnMeDialog.tsx:78
 msgid "You may appeal non-self labels if you feel they were placed in error."
@@ -7532,19 +7512,11 @@ msgstr "Vous pouvez faire appel de ces étiquettes si vous estimez qu’elles on
 
 #: src/screens/StarterPack/Wizard/State.tsx:79
 msgid "You may only add up to {STARTER_PACK_MAX_SIZE} profiles"
-msgstr ""
+msgstr "Vous ne pouvez ajouter que {STARTER_PACK_MAX_SIZE} profils au maximum"
 
 #: src/screens/StarterPack/Wizard/State.tsx:97
 msgid "You may only add up to 3 feeds"
-msgstr ""
-
-#: src/screens/StarterPack/Wizard/State.tsx:95
-#~ msgid "You may only add up to 50 feeds"
-#~ msgstr "Vous ne pouvez ajouter que 50 fils d’actu au maximum"
-
-#: src/screens/StarterPack/Wizard/State.tsx:78
-#~ msgid "You may only add up to 50 profiles"
-#~ msgstr "Vous ne pouvez ajouter que 50 profils au maximum"
+msgstr "Vous ne pouvez ajouter que 3 fils d’actu au maximum"
 
 #: src/screens/Signup/StepInfo/Policies.tsx:85
 msgid "You must be 13 years of age or older to sign up."
@@ -7640,11 +7612,11 @@ msgstr "Vous avez atteint la fin de votre fil d’actu ! Trouvez d’autres com
 
 #: src/state/queries/video/video.ts:175
 msgid "You've reached your daily limit for video uploads (too many bytes)"
-msgstr ""
+msgstr "Vous avez atteint votre limite quotidienne de téléchargement de vidéos (trop d'octets)"
 
 #: src/state/queries/video/video.ts:180
 msgid "You've reached your daily limit for video uploads (too many videos)"
-msgstr ""
+msgstr "Vous avez atteint votre limite quotidienne de téléchargement de vidéos (trop de vidéos)"
 
 #: src/screens/Signup/index.tsx:146
 msgid "Your account"
@@ -7664,7 +7636,7 @@ msgstr "Votre date de naissance"
 
 #: src/view/com/util/post-embeds/VideoEmbed.web.tsx:167
 msgid "Your browser does not support the video format. Please try a different browser."
-msgstr ""
+msgstr "Votre navigateur ne prend pas en charge le format vidéo. Veuillez essayer un autre navigateur."
 
 #: src/screens/Messages/Conversation/ChatDisabled.tsx:25
 msgid "Your chats have been disabled"
