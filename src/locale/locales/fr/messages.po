@@ -1957,7 +1957,7 @@ msgstr "Modifier l’image"
 #: src/view/com/util/forms/PostDropdownBtn.tsx:590
 #: src/view/com/util/forms/PostDropdownBtn.tsx:603
 msgid "Edit interaction settings"
-msgstr ""
+msgstr "Modifier les paramètres d'interaction"
 
 #: src/view/screens/ProfileList.tsx:515
 msgid "Edit list details"
@@ -1985,7 +1985,7 @@ msgstr "Modifier les personnes"
 #: src/components/dialogs/PostInteractionSettingsDialog.tsx:66
 #: src/components/dialogs/PostInteractionSettingsDialog.tsx:204
 msgid "Edit post interaction settings"
-msgstr ""
+msgstr "Modifier les paramètres d'interaction du post"
 
 #: src/screens/Profile/Header/ProfileHeaderLabeler.tsx:184
 #: src/screens/Profile/Header/ProfileHeaderStandard.tsx:175
@@ -2026,10 +2026,6 @@ msgstr "Modifier votre kit de démarrage"
 msgid "Education"
 msgstr "Éducation"
 
-#: src/components/dialogs/ThreadgateEditor.tsx:98
-#~ msgid "Either choose \"Everybody\" or \"Nobody\""
-#~ msgstr "Choisissez soit « Tout le monde », soit « Personne »"
-
 #: src/screens/Signup/StepInfo/index.tsx:143
 #: src/view/com/modals/ChangeEmail.tsx:136
 msgid "Email"
@@ -2045,7 +2041,7 @@ msgstr "Adresse e-mail"
 
 #: src/components/intents/VerifyEmailIntentDialog.tsx:95
 msgid "Email Resent"
-msgstr ""
+msgstr "L'e-mail a été renvoyé"
 
 #: src/view/com/modals/ChangeEmail.tsx:54
 #: src/view/com/modals/ChangeEmail.tsx:83
@@ -2054,7 +2050,7 @@ msgstr "Adresse e-mail mise à jour"
 
 #: src/view/com/modals/ChangeEmail.tsx:106
 msgid "Email Updated"
-msgstr "E-mail mis à jour"
+msgstr "Adresse e-mail mis à jour"
 
 #: src/view/com/modals/VerifyEmail.tsx:85
 msgid "Email verified"
@@ -2062,7 +2058,7 @@ msgstr "Adresse e-mail vérifiée"
 
 #: src/components/intents/VerifyEmailIntentDialog.tsx:71
 msgid "Email Verified"
-msgstr ""
+msgstr "Adresse e-mail vérifiée"
 
 #: src/view/screens/Settings/index.tsx:319
 msgid "Email:"
@@ -2106,11 +2102,7 @@ msgstr "Activer les notifications prioritaires"
 
 #: src/view/com/util/post-embeds/VideoEmbedInner/VideoWebControls.tsx:336
 msgid "Enable subtitles"
-msgstr ""
-
-#: src/view/screens/PreferencesFollowingFeed.tsx:145
-#~ msgid "Enable this setting to only see replies between people you follow."
-#~ msgstr "Activez ce paramètre pour ne voir que les réponses des personnes que vous suivez."
+msgstr "Activer les sous-titres"
 
 #: src/components/dialogs/EmbedConsent.tsx:94
 msgid "Enable this source only"
@@ -2126,13 +2118,9 @@ msgstr "Activé"
 msgid "End of feed"
 msgstr "Fin du fil d’actu"
 
-#: src/tours/Tooltip.tsx:159
-#~ msgid "End of onboarding tour window. Do not move forward. Instead, go backward for more options, or press to skip."
-#~ msgstr "Fin de la fenêtre de la visite d’accueil. N’avancez pas. Au lieu de cela, revenez en arrière pour plus d’options, ou appuyez pour passer."
-
 #: src/view/com/composer/videos/SubtitleDialog.tsx:157
 msgid "Ensure you have selected a language for each subtitle file."
-msgstr ""
+msgstr "Assurez-vous d'avoir sélectionné une langue pour chaque fichier de sous-titres."
 
 #: src/view/com/modals/AddAppPasswords.tsx:161
 msgid "Enter a name for this App Password"
@@ -2207,7 +2195,7 @@ msgstr "Tout le monde peut répondre"
 
 #: src/components/WhoCanReply.tsx:213
 msgid "Everybody can reply to this post."
-msgstr ""
+msgstr "Tout le monde peut répondre à ce post."
 
 #: src/components/dms/MessagesNUX.tsx:131
 #: src/components/dms/MessagesNUX.tsx:134
@@ -2226,15 +2214,15 @@ msgstr "Messages excessifs ou non-sollicités"
 
 #: src/components/dialogs/MutedWords.tsx:311
 msgid "Exclude users you follow"
-msgstr ""
+msgstr "Exclure les comptes que vous suivez"
 
 #: src/components/dialogs/MutedWords.tsx:514
 msgid "Excludes users you follow"
-msgstr ""
+msgstr "Exclut les comptes que vous suivez"
 
 #: src/view/com/util/post-embeds/VideoEmbedInner/VideoWebControls.tsx:353
 msgid "Exit fullscreen"
-msgstr ""
+msgstr "Quitter le plein écran"
 
 #: src/view/com/modals/DeleteAccount.tsx:293
 msgid "Exits account deletion process"
@@ -2275,11 +2263,11 @@ msgstr "Expérimental : lorsque cette préférence est activée, vous ne recevr
 
 #: src/components/dialogs/MutedWords.tsx:500
 msgid "Expired"
-msgstr ""
+msgstr "Expiré"
 
 #: src/components/dialogs/MutedWords.tsx:502
 msgid "Expires {0}"
-msgstr ""
+msgstr "Expire {0}"
 
 #: src/lib/moderation/useGlobalLabelStrings.ts:47
 msgid "Explicit or potentially disturbing media."
@@ -2402,7 +2390,7 @@ msgstr "Échec de la mise à jour des paramètres"
 #: src/state/queries/video/video-upload.web.ts:68
 #: src/state/queries/video/video-upload.web.ts:78
 msgid "Failed to upload video"
-msgstr ""
+msgstr "Échec du téléchargement de la vidéo"
 
 #: src/Navigation.tsx:226
 msgid "Feed"
@@ -2464,10 +2452,6 @@ msgstr "Finalisation"
 msgid "Find accounts to follow"
 msgstr "Trouver des comptes à suivre"
 
-#: src/tours/HomeTour.tsx:88
-#~ msgid "Find more feeds and accounts to follow in the Explore page."
-#~ msgstr "Trouvez d’autres fils d’actu et comptes à suivre dans la page « Explore »."
-
 #: src/view/screens/Search/Search.tsx:439
 msgid "Find posts and users on Bluesky"
 msgstr "Trouver des posts et comptes sur Bluesky"
@@ -2483,10 +2467,6 @@ msgstr "Affine les fils de discussion."
 #: src/screens/StarterPack/Wizard/index.tsx:191
 msgid "Finish"
 msgstr "Terminer"
-
-#: src/tours/Tooltip.tsx:149
-#~ msgid "Finish tour and begin using the application"
-#~ msgstr "Terminer la visite et commencer à utiliser l’application"
 
 #: src/screens/Onboarding/index.tsx:35
 msgid "Fitness"
@@ -2570,10 +2550,6 @@ msgstr "Suivi par <0>{0}</0>, <1>{1}</1> et {2, plural, one {# autre} other {# a
 msgid "Followed users"
 msgstr "Comptes suivis"
 
-#: src/view/screens/PreferencesFollowingFeed.tsx:152
-#~ msgid "Followed users only"
-#~ msgstr "Comptes suivis uniquement"
-
 #: src/view/com/notifications/FeedItem.tsx:207
 msgid "followed you"
 msgstr "vous suit"
@@ -2627,10 +2603,6 @@ msgstr "Préférences du fil d’actu « Following »"
 #: src/view/screens/Settings/index.tsx:548
 msgid "Following Feed Preferences"
 msgstr "Préférences du fil d’actu « Following »"
-
-#: src/tours/HomeTour.tsx:59
-#~ msgid "Following shows the latest posts from people you follow."
-#~ msgstr "« Following » affiche les derniers posts des personnes que vous suivez."
 
 #: src/screens/Profile/Header/Handle.tsx:31
 msgid "Follows you"
