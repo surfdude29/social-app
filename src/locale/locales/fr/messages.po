@@ -28,7 +28,7 @@ msgstr "{0, plural, one {{formattedCount} autre} other {{formattedCount} autres}
 
 #: src/lib/hooks/useTimeAgo.ts:156
 msgid "{0, plural, one {# day} other {# days}}"
-msgstr ""
+msgstr "{0, plural, one {# jour} other {# jours}}"
 
 #: src/lib/hooks/useTimeAgo.ts:146
 msgid "{0, plural, one {# hour} other {# hours}}"
