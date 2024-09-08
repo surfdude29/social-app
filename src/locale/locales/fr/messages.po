@@ -4970,7 +4970,7 @@ msgstr "Paramètres de réponse"
 
 #: src/components/dialogs/PostInteractionSettingsDialog.tsx:340
 msgid "Reply settings are chosen by the author of the thread"
-msgstr "Les paramètres de réponse sont choisis par l’aut·eur·rice du fil de discussion."
+msgstr "Les paramètres de réponse sont choisis par l’aut·eur·rice du fil de discussion"
 
 #: src/view/com/post/Post.tsx:196
 #: src/view/com/posts/FeedItem.tsx:520
