@@ -6199,7 +6199,7 @@ msgstr "Ce compte pourra interagir avec vous après le déblocage."
 #: src/components/moderation/ModerationDetailsDialog.tsx:118
 #: src/lib/moderation/useModerationCauseDescription.ts:126
 msgid "The author of this thread has hidden this reply."
-msgstr "L'auteur de ce fil de discussion a masqué cette réponse."
+msgstr "L’aut·eur·rice de ce fil de discussion a masqué cette réponse."
 
 #: src/screens/Moderation/index.tsx:368
 msgid "The Bluesky web application"
@@ -6500,7 +6500,7 @@ msgstr "Ce post sera masqué des fils d’actu et des fils de discussion. Cela e
 
 #: src/view/com/composer/useExternalLinkFetch.ts:67
 msgid "This post's author has disabled quote posts."
-msgstr "L'auteur de ce post a désactivé les citations."
+msgstr "L’aut·eur·rice de ce post a désactivé les citations."
 
 #: src/view/com/profile/ProfileMenu.tsx:374
 msgid "This profile is only visible to logged-in users. It won't be visible to people who aren't logged in."
@@ -7452,7 +7452,7 @@ msgstr "Vous n’avez encore aucun fil d’actu enregistré."
 
 #: src/view/com/post-thread/PostThread.tsx:214
 msgid "You have blocked the author or you have been blocked by the author."
-msgstr "Vous avez bloqué cet auteur ou vous avez été bloqué par celui-ci."
+msgstr "Vous avez bloqué cet·te l’aut·eur·rice ou vous avez été bloqué par celui-ci."
 
 #: src/components/dms/MessagesListBlockedFooter.tsx:58
 msgid "You have blocked this user"
