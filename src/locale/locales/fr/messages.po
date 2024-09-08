@@ -4161,7 +4161,7 @@ msgstr "Ouvre des détails supplémentaires pour une entrée de débug"
 
 #: src/view/screens/Settings/index.tsx:476
 msgid "Opens appearance settings"
-msgstr "Ouvre les paramètres de discussion"
+msgstr "Ouvre les paramètres d'affichage"
 
 #: src/view/com/composer/photos/OpenCameraBtn.tsx:74
 msgid "Opens camera on device"
@@ -4359,7 +4359,7 @@ msgstr "Mettre en pause"
 
 #: src/view/com/util/post-embeds/VideoEmbedInner/VideoWebControls.tsx:275
 msgid "Pause video"
-msgstr ""
+msgstr "Mettre en pause la vidéo"
 
 #: src/screens/StarterPack/StarterPackScreen.tsx:171
 #: src/view/screens/Search/Search.tsx:369
@@ -4432,7 +4432,7 @@ msgstr "Lire ou mettre en pause le GIF"
 #: src/view/com/util/post-embeds/VideoEmbed.tsx:187
 #: src/view/com/util/post-embeds/VideoEmbedInner/VideoWebControls.tsx:276
 msgid "Play video"
-msgstr ""
+msgstr "Lire la vidéo"
 
 #: src/view/com/util/post-embeds/ExternalPlayerEmbed.tsx:57
 #: src/view/com/util/post-embeds/ExternalPlayerEmbed.tsx:58
@@ -4557,7 +4557,7 @@ msgstr "Post caché par vous"
 
 #: src/components/dialogs/PostInteractionSettingsDialog.tsx:283
 msgid "Post interaction settings"
-msgstr ""
+msgstr "Paramètres d'interaction du post"
 
 #: src/view/com/composer/select-language/SelectLangBtn.tsx:88
 msgid "Post language"
@@ -4581,13 +4581,9 @@ msgstr "posts"
 msgid "Posts"
 msgstr "Posts"
 
-#: src/components/dialogs/MutedWords.tsx:89
-#~ msgid "Posts can be muted based on their text, their tags, or both."
-#~ msgstr "Les posts peuvent être masqués en fonction de leur texte, de leurs mots-clés ou des deux."
-
 #: src/components/dialogs/MutedWords.tsx:115
 msgid "Posts can be muted based on their text, their tags, or both. We recommend avoiding common words that appear in many posts, since it can result in no posts being shown."
-msgstr ""
+msgstr "Les posts peuvent être masqués en fonction de leur texte, de leurs mots-clés ou des deux. Nous vous recommandons d’éviter les mots communs qui apparaissent dans de nombreux posts, car cela peut avoir pour conséquence qu’aucun post ne s’affiche."
 
 #: src/view/com/posts/FeedErrorMessage.tsx:68
 msgid "Posts hidden"
@@ -4710,10 +4706,6 @@ msgstr "Code QR a été téléchargé !"
 msgid "QR code saved to your camera roll!"
 msgstr "Code QR enregistré dans votre photothèque !"
 
-#: src/tours/Tooltip.tsx:111
-#~ msgid "Quick tip"
-#~ msgstr "Petite astuce"
-
 #: src/view/com/util/post-ctrls/RepostButton.tsx:125
 #: src/view/com/util/post-ctrls/RepostButton.tsx:152
 #: src/view/com/util/post-ctrls/RepostButton.web.tsx:85
@@ -4723,11 +4715,11 @@ msgstr "Citer le post"
 
 #: src/view/com/util/forms/PostDropdownBtn.tsx:302
 msgid "Quote post was re-attached"
-msgstr ""
+msgstr "La citation a été ré-attaché"
 
 #: src/view/com/util/forms/PostDropdownBtn.tsx:301
 msgid "Quote post was successfully detached"
-msgstr ""
+msgstr "La citation a été détachée avec succès"
 
 #: src/components/dialogs/PostInteractionSettingsDialog.tsx:313
 #: src/view/com/util/post-ctrls/RepostButton.tsx:124
@@ -4735,24 +4727,24 @@ msgstr ""
 #: src/view/com/util/post-ctrls/RepostButton.web.tsx:84
 #: src/view/com/util/post-ctrls/RepostButton.web.tsx:91
 msgid "Quote posts disabled"
-msgstr ""
+msgstr "Citations désactivées"
 
 #: src/components/dialogs/PostInteractionSettingsDialog.tsx:311
 msgid "Quote posts enabled"
-msgstr ""
+msgstr "Citations activées"
 
 #: src/components/dialogs/PostInteractionSettingsDialog.tsx:295
 msgid "Quote settings"
-msgstr ""
+msgstr "Paramètres des citations"
 
 #: src/screens/Post/PostQuotes.tsx:31
 #: src/screens/Post/PostQuotes.tsx:32
 msgid "Quotes"
-msgstr ""
+msgstr "Citations"
 
 #: src/view/com/post-thread/PostThreadItem.tsx:230
 msgid "Quotes of this post"
-msgstr ""
+msgstr "Citations de ce post"
 
 #: src/view/screens/PreferencesThreads.tsx:80
 msgid "Random (aka \"Poster's Roulette\")"
@@ -4765,7 +4757,7 @@ msgstr "Ratios"
 #: src/view/com/util/forms/PostDropdownBtn.tsx:543
 #: src/view/com/util/forms/PostDropdownBtn.tsx:553
 msgid "Re-attach quote"
-msgstr ""
+msgstr "Réattacher la citation"
 
 #: src/screens/Deactivated.tsx:144
 msgid "Reactivate your account"
@@ -4773,15 +4765,15 @@ msgstr "Réactiver votre compte"
 
 #: src/view/com/auth/SplashScreen.web.tsx:157
 msgid "Read the Bluesky blog"
-msgstr ""
+msgstr "Lisez le blog de Bluesky"
 
 #: src/screens/Signup/StepInfo/Policies.tsx:59
 msgid "Read the Bluesky Privacy Policy"
-msgstr ""
+msgstr "Lisez la politique de confidentialité de Bluesky"
 
 #: src/screens/Signup/StepInfo/Policies.tsx:49
 msgid "Read the Bluesky Terms of Service"
-msgstr ""
+msgstr "Lisez les conditions d'utilisation de Bluesky"
 
 #: src/components/dms/ReportDialog.tsx:174
 msgid "Reason:"
@@ -7267,10 +7259,6 @@ msgstr "Nous espérons que vous passerez un excellent moment. N’oubliez pas qu
 #: src/view/com/posts/DiscoverFallbackHeader.tsx:29
 msgid "We ran out of posts from your follows. Here's the latest from <0/>."
 msgstr "Nous n’avons plus de posts provenant des comptes que vous suivez. Voici le dernier de <0/>."
-
-#: src/components/dialogs/MutedWords.tsx:203
-#~ msgid "We recommend avoiding common words that appear in many posts, since it can result in no posts being shown."
-#~ msgstr "Nous vous recommandons d’éviter les mots communs qui apparaissent dans de nombreux posts, car cela peut avoir pour conséquence qu’aucun post ne s’affiche."
 
 #: src/state/queries/video/video.ts:170
 msgid "We were unable to determine if you are allowed to upload videos. Please try again."
