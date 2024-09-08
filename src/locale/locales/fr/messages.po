@@ -998,11 +998,11 @@ msgstr "Impossible d'interagir avec un compte bloqué"
 
 #: src/view/com/composer/videos/SubtitleDialog.tsx:133
 msgid "Captions (.vtt)"
-msgstr ""
+msgstr "Sous-titres (.vtt)"
 
 #: src/view/com/composer/videos/SubtitleDialog.tsx:54
 msgid "Captions & alt text"
-msgstr ""
+msgstr "Sous-titres et texte alt"
 
 #: src/view/com/modals/VerifyEmail.tsx:160
 msgid "Change"
@@ -1083,14 +1083,6 @@ msgstr "Vérifiez votre boîte e-mail pour un code de connexion et saisissez-le 
 msgid "Check your inbox for an email with the confirmation code to enter below:"
 msgstr "Consultez votre boîte de réception, vous avez du recevoir un e-mail contenant un code de confirmation à saisir ci-dessous :"
 
-#: src/screens/Onboarding/StepInterests/index.tsx:191
-#~ msgid "Choose 3 or more:"
-#~ msgstr "Choisissez 3 ou plus :"
-
-#: src/screens/Onboarding/StepInterests/index.tsx:326
-#~ msgid "Choose at least {0} more"
-#~ msgstr "Choisissez au moins {0} de plus"
-
 #: src/screens/StarterPack/Wizard/index.tsx:190
 msgid "Choose Feeds"
 msgstr "Choisissez des fils d’actu"
@@ -1115,22 +1107,9 @@ msgstr "Choisissez les algorithmes qui alimentent vos fils d’actu personnalis�
 msgid "Choose this color as your avatar"
 msgstr "Choisir cette couleur comme avatar"
 
-#: src/components/dialogs/ThreadgateEditor.tsx:91
-#: src/components/dialogs/ThreadgateEditor.tsx:95
-#~ msgid "Choose who can reply"
-#~ msgstr "Choisissez qui peut répondre"
-
 #: src/screens/Signup/StepInfo/index.tsx:171
 msgid "Choose your password"
 msgstr "Choisissez votre mot de passe"
-
-#: src/view/screens/Settings/index.tsx:912
-#~ msgid "Clear all legacy storage data"
-#~ msgstr "Effacer toutes les données de stockage existantes"
-
-#: src/view/screens/Settings/index.tsx:915
-#~ msgid "Clear all legacy storage data (restart after this)"
-#~ msgstr "Effacer toutes les données de stockage existantes (redémarrer ensuite)"
 
 #: src/view/screens/Settings/index.tsx:876
 msgid "Clear all storage data"
@@ -1144,10 +1123,6 @@ msgstr "Effacer toutes les données de stockage (redémarrer ensuite)"
 #: src/view/screens/Search/Search.tsx:824
 msgid "Clear search query"
 msgstr "Effacer la recherche"
-
-#: src/view/screens/Settings/index.tsx:913
-#~ msgid "Clears all legacy storage data"
-#~ msgstr "Efface toutes les données de stockage existantes"
 
 #: src/view/screens/Settings/index.tsx:877
 msgid "Clears all storage data"
@@ -1171,11 +1146,11 @@ msgstr "Cliquez ici pour ouvrir le menu de mot-clé pour {tag}"
 
 #: src/components/dialogs/PostInteractionSettingsDialog.tsx:303
 msgid "Click to disable quote posts of this post."
-msgstr ""
+msgstr "Cliquez pour désactiver les citations de ce post."
 
 #: src/components/dialogs/PostInteractionSettingsDialog.tsx:304
 msgid "Click to enable quote posts of this post."
-msgstr ""
+msgstr "Cliquez pour activer les citations de ce post."
 
 #: src/components/dms/MessageItem.tsx:232
 msgid "Click to retry failed message"
@@ -1301,10 +1276,6 @@ msgstr "Permet d’écrire des posts de {MAX_GRAPHEME_LENGTH} caractères maximu
 #: src/view/com/post-thread/PostThreadComposePrompt.tsx:29
 msgid "Compose reply"
 msgstr "Rédiger une réponse"
-
-#: src/view/com/composer/videos/VideoTranscodeProgress.tsx:51
-#~ msgid "Compressing..."
-#~ msgstr ""
 
 #: src/components/moderation/LabelPreference.tsx:81
 msgid "Configure content filtering setting for category: {name}"
@@ -1499,10 +1470,6 @@ msgstr "Copier le code QR"
 #: src/view/screens/CopyrightPolicy.tsx:29
 msgid "Copyright Policy"
 msgstr "Politique sur les droits d’auteur"
-
-#: src/view/com/composer/videos/state.ts:31
-#~ msgid "Could not compress video"
-#~ msgstr "Impossible de compresser la vidéo"
 
 #: src/components/dms/LeaveConvoPrompt.tsx:39
 msgid "Could not leave chat"
