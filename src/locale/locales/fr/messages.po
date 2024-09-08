@@ -3629,7 +3629,7 @@ msgstr "Masquer ce mot dans les mots-clés uniquement"
 
 #: src/components/dialogs/MutedWords.tsx:170
 msgid "Mute this word until you unmute it"
-msgstr "Masquer ce mot jusqu'à ce que vous le démasquer"
+msgstr "Masquer ce mot jusqu'à ce que vous le réafficher"
 
 #: src/view/com/util/forms/PostDropdownBtn.tsx:465
 #: src/view/com/util/forms/PostDropdownBtn.tsx:471
