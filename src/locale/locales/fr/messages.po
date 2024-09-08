@@ -2627,7 +2627,7 @@ msgstr "Pour des raisons de sécurité, vous ne pourrez plus afficher ceci. Si v
 
 #: src/components/dialogs/MutedWords.tsx:178
 msgid "Forever"
-msgstr ""
+msgstr "Pour toujours"
 
 #: src/screens/Login/index.tsx:129
 #: src/screens/Login/index.tsx:144
@@ -2657,7 +2657,7 @@ msgstr "Tiré de <0/>"
 
 #: src/view/com/util/post-embeds/VideoEmbedInner/VideoWebControls.tsx:354
 msgid "Fullscreen"
-msgstr ""
+msgstr "Plein écran"
 
 #: src/view/com/composer/photos/SelectPhotoBtn.tsx:39
 msgid "Gallery"
@@ -2752,10 +2752,6 @@ msgstr "Aller à la suite"
 msgid "Go to profile"
 msgstr "Voir le profil"
 
-#: src/tours/Tooltip.tsx:138
-#~ msgid "Go to the next step of the tour"
-#~ msgstr "Passer à l’étape suivante de la visite"
-
 #: src/components/dms/ConvoMenu.tsx:164
 msgid "Go to user's profile"
 msgstr "Voir le profil du compte"
@@ -2807,7 +2803,7 @@ msgstr "Voici le mot de passe de votre appli."
 
 #: src/components/ListCard.tsx:128
 msgid "Hidden list"
-msgstr ""
+msgstr "Liste cachée"
 
 #: src/components/moderation/ContentHider.tsx:116
 #: src/components/moderation/LabelPreference.tsx:134
@@ -2825,25 +2821,20 @@ msgctxt "action"
 msgid "Hide"
 msgstr "Cacher"
 
-#: src/view/com/util/forms/PostDropdownBtn.tsx:390
-#: src/view/com/util/forms/PostDropdownBtn.tsx:392
-#~ msgid "Hide post"
-#~ msgstr "Cacher ce post"
-
 #: src/view/com/util/forms/PostDropdownBtn.tsx:501
 #: src/view/com/util/forms/PostDropdownBtn.tsx:507
 msgid "Hide post for me"
-msgstr ""
+msgstr "Cacher ce post pour moi"
 
 #: src/view/com/util/forms/PostDropdownBtn.tsx:518
 #: src/view/com/util/forms/PostDropdownBtn.tsx:528
 msgid "Hide reply for everyone"
-msgstr ""
+msgstr "Cacher la réponse pour tout le monde"
 
 #: src/view/com/util/forms/PostDropdownBtn.tsx:500
 #: src/view/com/util/forms/PostDropdownBtn.tsx:506
 msgid "Hide reply for me"
-msgstr ""
+msgstr "Cacher la réponse pour moi"
 
 #: src/components/moderation/ContentHider.tsx:68
 #: src/components/moderation/PostHider.tsx:79
@@ -2857,7 +2848,7 @@ msgstr "Cacher ce post ?"
 #: src/view/com/util/forms/PostDropdownBtn.tsx:635
 #: src/view/com/util/forms/PostDropdownBtn.tsx:697
 msgid "Hide this reply?"
-msgstr ""
+msgstr "Cacher cette réponse ?"
 
 #: src/view/com/notifications/FeedItem.tsx:464
 msgid "Hide user list"
@@ -2893,7 +2884,7 @@ msgstr "Hmm, nous n’avons pas pu charger ce service de modération."
 
 #: src/state/queries/video/video.ts:165
 msgid "Hold up! We’re gradually giving access to video, and you’re still waiting in line. Check back soon!"
-msgstr ""
+msgstr "Attendez ! Nous donnons progressivement accès à la vidéo et vous faites toujours la queue. Revenez bientôt !"
 
 #: src/Navigation.tsx:550
 #: src/Navigation.tsx:570
@@ -2988,7 +2979,7 @@ msgstr "Usurpation d’identité ou fausses déclarations concernant l’identit
 
 #: src/lib/moderation/useReportOptions.ts:68
 msgid "Impersonation, misinformation, or false claims"
-msgstr ""
+msgstr "Usurpation d'identité, désinformation ou fausses déclarations"
 
 #: src/lib/moderation/useReportOptions.ts:91
 msgid "Inappropriate messages or explicit links"
@@ -3036,7 +3027,7 @@ msgstr "Entrez votre pseudo"
 
 #: src/view/com/composer/threadgate/ThreadgateBtn.tsx:55
 msgid "Interaction limited"
-msgstr ""
+msgstr "Interaction limitée"
 
 #: src/components/dms/MessagesNUX.tsx:82
 msgid "Introducing Direct Messages"
@@ -3057,7 +3048,7 @@ msgstr "Pseudo ou mot de passe incorrect"
 
 #: src/components/intents/VerifyEmailIntentDialog.tsx:82
 msgid "Invalid Verification Code"
-msgstr ""
+msgstr "Code de vérification invalide"
 
 #: src/view/com/modals/InviteCodes.tsx:94
 msgid "Invite a Friend"
@@ -3097,7 +3088,7 @@ msgstr "Il n’y a que vous pour l’instant ! Ajoutez d’autres personnes à 
 
 #: src/view/com/composer/Composer.tsx:1125
 msgid "Job ID: {0}"
-msgstr ""
+msgstr "Job ID : {0}"
 
 #: src/view/com/auth/SplashScreen.web.tsx:164
 msgid "Jobs"
@@ -3171,7 +3162,7 @@ msgstr "En savoir plus"
 
 #: src/view/com/auth/SplashScreen.web.tsx:152
 msgid "Learn more about Bluesky"
-msgstr ""
+msgstr "En savoir plus sur Bluesky"
 
 #: src/components/moderation/ContentHider.tsx:66
 #: src/components/moderation/ContentHider.tsx:131
@@ -3220,10 +3211,6 @@ msgstr "Quitter Bluesky"
 #: src/screens/SignupQueued.tsx:134
 msgid "left to go."
 msgstr "devant vous dans la file."
-
-#: src/view/screens/Settings/index.tsx:310
-#~ msgid "Legacy storage cleared, you need to restart the app now."
-#~ msgstr "Stockage ancien effacé, vous devez redémarrer l’application maintenant."
 
 #: src/components/StarterPack/ProfileStarterPacks.tsx:295
 msgid "Let me choose"
@@ -3309,11 +3296,11 @@ msgstr "Liste supprimée"
 
 #: src/screens/List/ListHiddenScreen.tsx:126
 msgid "List has been hidden"
-msgstr ""
+msgstr "La liste a été cachée"
 
 #: src/view/screens/ProfileList.tsx:159
 msgid "List Hidden"
-msgstr ""
+msgstr "Liste cachée"
 
 #: src/view/screens/ProfileList.tsx:386
 msgid "List muted"
@@ -3489,11 +3476,11 @@ msgstr "Compte trompeur"
 
 #: src/lib/moderation/useReportOptions.ts:67
 msgid "Misleading Post"
-msgstr ""
+msgstr "Post trompeur"
 
 #: src/screens/Settings/AppearanceSettings.tsx:78
 msgid "Mode"
-msgstr ""
+msgstr "Mode"
 
 #: src/Navigation.tsx:135
 #: src/screens/Moderation/index.tsx:105
@@ -3538,7 +3525,7 @@ msgstr "Listes de modération"
 
 #: src/components/moderation/LabelPreference.tsx:247
 msgid "moderation settings"
-msgstr ""
+msgstr "paramètres de modération"
 
 #: src/view/screens/Settings/index.tsx:521
 msgid "Moderation settings"
@@ -3608,17 +3595,9 @@ msgstr "Masquer tous les posts {displayTag}"
 msgid "Mute conversation"
 msgstr "Masquer la conversation"
 
-#: src/components/dialogs/MutedWords.tsx:148
-#~ msgid "Mute in tags only"
-#~ msgstr "Masquer dans les mots-clés uniquement"
-
-#: src/components/dialogs/MutedWords.tsx:133
-#~ msgid "Mute in text & tags"
-#~ msgstr "Masquer dans le texte et les mots-clés"
-
 #: src/components/dialogs/MutedWords.tsx:253
 msgid "Mute in:"
-msgstr ""
+msgstr "Masquer dans :"
 
 #: src/view/screens/ProfileList.tsx:734
 msgid "Mute list"
@@ -3630,15 +3609,15 @@ msgstr "Masquer ces comptes ?"
 
 #: src/components/dialogs/MutedWords.tsx:185
 msgid "Mute this word for 24 hours"
-msgstr ""
+msgstr "Masquer ce mot pour 24 hours"
 
 #: src/components/dialogs/MutedWords.tsx:224
 msgid "Mute this word for 30 days"
-msgstr ""
+msgstr "Masquer ce mot pour 30 jours"
 
 #: src/components/dialogs/MutedWords.tsx:209
 msgid "Mute this word for 7 days"
-msgstr ""
+msgstr "Masquer ce mot pour 7 jours"
 
 #: src/components/dialogs/MutedWords.tsx:258
 msgid "Mute this word in post text and tags"
@@ -3650,7 +3629,7 @@ msgstr "Masquer ce mot dans les mots-clés uniquement"
 
 #: src/components/dialogs/MutedWords.tsx:170
 msgid "Mute this word until you unmute it"
-msgstr ""
+msgstr "Masquer ce mot jusqu'à ce que vous le remettiez en sourdine"
 
 #: src/view/com/util/forms/PostDropdownBtn.tsx:465
 #: src/view/com/util/forms/PostDropdownBtn.tsx:471
