@@ -4765,15 +4765,15 @@ msgstr "Réactiver votre compte"
 
 #: src/view/com/auth/SplashScreen.web.tsx:157
 msgid "Read the Bluesky blog"
-msgstr "Lisez le blog de Bluesky"
+msgstr "Lire le blog de Bluesky"
 
 #: src/screens/Signup/StepInfo/Policies.tsx:59
 msgid "Read the Bluesky Privacy Policy"
-msgstr "Lisez la politique de confidentialité de Bluesky"
+msgstr "Lire la politique de confidentialité de Bluesky"
 
 #: src/screens/Signup/StepInfo/Policies.tsx:49
 msgid "Read the Bluesky Terms of Service"
-msgstr "Lisez les conditions d'utilisation de Bluesky"
+msgstr "Lire les conditions d'utilisation de Bluesky"
 
 #: src/components/dms/ReportDialog.tsx:174
 msgid "Reason:"
@@ -4818,7 +4818,7 @@ msgstr "Supprimer compte"
 
 #: src/view/com/composer/ExternalEmbedRemoveBtn.tsx:28
 msgid "Remove attachment"
-msgstr ""
+msgstr "Supprimer la pièce jointe"
 
 #: src/view/com/util/UserAvatar.tsx:387
 msgid "Remove Avatar"
@@ -4857,19 +4857,15 @@ msgstr "Supprimer de mes fils d’actu ?"
 
 #: src/view/com/util/AccountDropdownBtn.tsx:53
 msgid "Remove from quick access?"
-msgstr ""
+msgstr "Supprimer de l'accès rapide ?"
 
 #: src/screens/List/ListHiddenScreen.tsx:156
 msgid "Remove from saved feeds"
-msgstr ""
+msgstr "Supprimer des fils d'actu enregistrés"
 
 #: src/view/com/composer/photos/Gallery.tsx:174
 msgid "Remove image"
 msgstr "Supprimer l’image"
-
-#: src/view/com/composer/ExternalEmbedRemoveBtn.tsx:28
-#~ msgid "Remove image preview"
-#~ msgstr "Supprimer l’aperçu d’image"
 
 #: src/components/dialogs/MutedWords.tsx:523
 msgid "Remove mute word from your list"
@@ -4894,7 +4890,7 @@ msgstr "Supprimer le repost"
 
 #: src/view/com/composer/videos/SubtitleDialog.tsx:260
 msgid "Remove subtitle file"
-msgstr ""
+msgstr "Supprimer le fichier de sous-titres"
 
 #: src/view/com/posts/FeedErrorMessage.tsx:211
 msgid "Remove this feed from your saved feeds"
@@ -4902,11 +4898,11 @@ msgstr "Supprimer ce fil d’actu de vos fils d’actu enregistrés"
 
 #: src/view/com/util/post-embeds/QuoteEmbed.tsx:105
 msgid "Removed by author"
-msgstr ""
+msgstr "Supprimé par l'auteur"
 
 #: src/view/com/util/post-embeds/QuoteEmbed.tsx:103
 msgid "Removed by you"
-msgstr ""
+msgstr "Supprimé par vous"
 
 #: src/view/com/modals/ListAddRemoveUsers.tsx:200
 #: src/view/com/modals/UserAddRemoveLists.tsx:164
@@ -4920,7 +4916,7 @@ msgstr "Supprimé de mes fils d’actu"
 #: src/screens/List/ListHiddenScreen.tsx:94
 #: src/screens/List/ListHiddenScreen.tsx:160
 msgid "Removed from saved feeds"
-msgstr ""
+msgstr "Supprimé de vos fils d’actu enregistrés"
 
 #: src/view/com/posts/FeedShutdownMsg.tsx:44
 #: src/view/screens/ProfileFeed.tsx:192
@@ -4934,11 +4930,7 @@ msgstr "Supprime le post cité"
 
 #: src/view/com/composer/ExternalEmbedRemoveBtn.tsx:29
 msgid "Removes the attachment"
-msgstr ""
-
-#: src/view/com/composer/ExternalEmbedRemoveBtn.tsx:29
-#~ msgid "Removes the image preview"
-#~ msgstr "Supprime l’aperçu de l’image"
+msgstr "Supprime la pièce jointe"
 
 #: src/view/com/posts/FeedShutdownMsg.tsx:129
 #: src/view/com/posts/FeedShutdownMsg.tsx:133
@@ -4955,20 +4947,12 @@ msgstr "Les réponses sont désactivées"
 
 #: src/components/WhoCanReply.tsx:215
 msgid "Replies to this post are disabled."
-msgstr ""
-
-#: src/components/WhoCanReply.tsx:243
-#~ msgid "Replies to this thread are disabled"
-#~ msgstr "Les réponses à ce fil de discussion sont désactivées"
+msgstr "Les réponses à ce post sont désactivées."
 
 #: src/view/com/composer/Composer.tsx:640
 msgctxt "action"
 msgid "Reply"
 msgstr "Répondre"
-
-#: src/view/screens/PreferencesFollowingFeed.tsx:142
-#~ msgid "Reply Filters"
-#~ msgstr "Filtres de réponse"
 
 #: src/components/moderation/ModerationDetailsDialog.tsx:115
 #: src/lib/moderation/useModerationCauseDescription.ts:123
