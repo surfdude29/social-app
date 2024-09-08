@@ -528,7 +528,7 @@ msgstr "Une erreur s’est produite"
 
 #: src/state/queries/video/video.ts:227
 msgid "An error occurred while compressing the video."
-msgstr ""
+msgstr "Une erreur s'est produite lors de la compression de la vidéo."
 
 #: src/components/StarterPack/ProfileStarterPacks.tsx:315
 msgid "An error occurred while generating your starter pack. Want to try again?"
@@ -536,11 +536,11 @@ msgstr "Une erreur s’est produite lors de la génération de votre kit de dém
 
 #: src/view/com/util/post-embeds/VideoEmbed.tsx:213
 msgid "An error occurred while loading the video. Please try again later."
-msgstr ""
+msgstr "Une erreur s'est produite lors du chargement de la vidéo. Veuillez réessayer plus tard."
 
 #: src/view/com/util/post-embeds/VideoEmbed.web.tsx:170
 msgid "An error occurred while loading the video. Please try again."
-msgstr ""
+msgstr "Une erreur s'est produite lors du chargement de la vidéo. Veuillez réessayer."
 
 #: src/components/StarterPack/QrCodeDialog.tsx:71
 #: src/components/StarterPack/ShareDialog.tsx:79
@@ -549,7 +549,7 @@ msgstr "Une erreur s’est produite lors de l’enregistrement du code QR !"
 
 #: src/view/com/composer/videos/SelectVideoBtn.tsx:61
 msgid "An error occurred while selecting the video"
-msgstr ""
+msgstr "Une erreur s'est produite lors de la sélection de la vidéo"
 
 #: src/screens/StarterPack/StarterPackScreen.tsx:336
 #: src/screens/StarterPack/StarterPackScreen.tsx:358
@@ -558,7 +558,7 @@ msgstr "Une erreur s’est produite en essayant de suivre tous les comptes"
 
 #: src/state/queries/video/video.ts:194
 msgid "An error occurred while uploading the video."
-msgstr ""
+msgstr "Une erreur s'est produite lors du téléchargement de la vidéo."
 
 #: src/lib/moderation/useReportOptions.ts:28
 msgid "An issue not included in these options"
