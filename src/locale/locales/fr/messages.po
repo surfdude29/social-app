@@ -994,7 +994,7 @@ msgstr "Annule l’ouverture du site web lié"
 #: src/view/com/util/post-ctrls/PostCtrls.tsx:155
 #: src/view/com/util/post-ctrls/PostCtrls.tsx:191
 msgid "Cannot interact with a blocked user"
-msgstr ""
+msgstr "Impossible d'interagir avec un compte bloqué"
 
 #: src/view/com/composer/videos/SubtitleDialog.tsx:133
 msgid "Captions (.vtt)"
