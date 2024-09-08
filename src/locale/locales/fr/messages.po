@@ -6553,19 +6553,15 @@ msgstr "Ce compte ne suit personne."
 
 #: src/components/dialogs/MutedWords.tsx:435
 msgid "This will delete \"{0}\" from your muted words. You can always add it back later."
-msgstr ""
-
-#: src/components/dialogs/MutedWords.tsx:283
-#~ msgid "This will delete {0} from your muted words. You can always add it back later."
-#~ msgstr "Cela supprimera {0} de vos mots masqués. Vous pourrez toujours le réintégrer plus tard."
+msgstr "Cela supprimera « {0} » de vos mots masqués. Vous pourrez toujours le réintégrer plus tard."
 
 #: src/view/com/util/AccountDropdownBtn.tsx:55
 msgid "This will remove @{0} from the quick access list."
-msgstr ""
+msgstr "Cela supprimera @{0} de la liste d'accès rapide."
 
 #: src/view/com/util/forms/PostDropdownBtn.tsx:689
 msgid "This will remove your post from this quote post for all users, and replace it with a placeholder."
-msgstr ""
+msgstr "Cela supprimera votre post de cette citation pour tous les comptes, et le remplacera par un espace réservé."
 
 #: src/view/screens/Settings/index.tsx:560
 msgid "Thread preferences"
@@ -6575,10 +6571,6 @@ msgstr "Préférences des fils de discussion"
 #: src/view/screens/Settings/index.tsx:570
 msgid "Thread Preferences"
 msgstr "Préférences des fils de discussion"
-
-#: src/components/WhoCanReply.tsx:109
-#~ msgid "Thread settings updated"
-#~ msgstr "Paramètres du fil de discussion mis à jour"
 
 #: src/view/screens/PreferencesThreads.tsx:113
 msgid "Threaded Mode"
@@ -6598,15 +6590,11 @@ msgstr "Pour signaler une conversation, veuillez signaler un de ses messages via
 
 #: src/view/com/composer/videos/SelectVideoBtn.tsx:106
 msgid "To upload videos to Bluesky, you must first verify your email."
-msgstr ""
+msgstr "Pour télécharger des vidéos sur Bluesky, vous devez d'abord vérifier votre e-mail."
 
 #: src/components/ReportDialog/SelectLabelerView.tsx:33
 msgid "To whom would you like to send this report?"
 msgstr "À qui souhaitez-vous envoyer ce rapport ?"
-
-#: src/components/dialogs/MutedWords.tsx:112
-#~ msgid "Toggle between muted word options."
-#~ msgstr "Basculer entre les options pour les mots masqués."
 
 #: src/view/com/util/forms/DropdownButton.tsx:255
 msgid "Toggle dropdown"
