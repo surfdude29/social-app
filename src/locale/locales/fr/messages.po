@@ -3116,7 +3116,7 @@ msgstr "Étiqueté par {0}."
 
 #: src/components/moderation/ContentHider.tsx:145
 msgid "Labeled by the author."
-msgstr "Étiqueté par l’auteur."
+msgstr "Étiqueté par l’aut·eur·rice."
 
 #: src/view/screens/Profile.tsx:207
 msgid "Labels"
@@ -3887,7 +3887,7 @@ msgstr "Personne"
 
 #: src/components/WhoCanReply.tsx:237
 msgid "No one but the author can quote this post."
-msgstr "Personne d'autre que l'auteur ne peut citer ce post."
+msgstr "Personne d'autre que l’aut·eur·rice ne peut citer ce post."
 
 #: src/screens/Profile/Sections/Feed.tsx:64
 msgid "No posts yet."
@@ -4898,7 +4898,7 @@ msgstr "Supprimer ce fil d’actu de vos fils d’actu enregistrés"
 
 #: src/view/com/util/post-embeds/QuoteEmbed.tsx:105
 msgid "Removed by author"
-msgstr "Supprimé par l'auteur"
+msgstr "Supprimé par l’aut·eur·rice"
 
 #: src/view/com/util/post-embeds/QuoteEmbed.tsx:103
 msgid "Removed by you"
@@ -4957,7 +4957,7 @@ msgstr "Répondre"
 #: src/components/moderation/ModerationDetailsDialog.tsx:115
 #: src/lib/moderation/useModerationCauseDescription.ts:123
 msgid "Reply Hidden by Thread Author"
-msgstr "Réponse cachée par l'auteur du fil de discussion"
+msgstr "Réponse cachée par l’aut·eur·rice du fil de discussion"
 
 #: src/components/moderation/ModerationDetailsDialog.tsx:114
 #: src/lib/moderation/useModerationCauseDescription.ts:122
@@ -4970,7 +4970,7 @@ msgstr "Paramètres de réponse"
 
 #: src/components/dialogs/PostInteractionSettingsDialog.tsx:340
 msgid "Reply settings are chosen by the author of the thread"
-msgstr "Les paramètres de réponse sont choisis par l'auteur du fil de discussion."
+msgstr "Les paramètres de réponse sont choisis par l’aut·eur·rice du fil de discussion."
 
 #: src/view/com/post/Post.tsx:196
 #: src/view/com/posts/FeedItem.tsx:520
@@ -6455,7 +6455,7 @@ msgstr "Cette étiquette a été apposée par <0>{0}</0>."
 
 #: src/components/moderation/ModerationDetailsDialog.tsx:142
 msgid "This label was applied by the author."
-msgstr "Cette étiquette a été apposée par l’auteur·ice."
+msgstr "Cette étiquette a été apposée par l’aut·eur·rice."
 
 #: src/components/moderation/LabelsOnMeDialog.tsx:161
 msgid "This label was applied by you."
