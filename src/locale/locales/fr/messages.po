@@ -4957,20 +4957,20 @@ msgstr "Répondre"
 #: src/components/moderation/ModerationDetailsDialog.tsx:115
 #: src/lib/moderation/useModerationCauseDescription.ts:123
 msgid "Reply Hidden by Thread Author"
-msgstr ""
+msgstr "Réponse cachée par l'auteur du fil de discussion"
 
 #: src/components/moderation/ModerationDetailsDialog.tsx:114
 #: src/lib/moderation/useModerationCauseDescription.ts:122
 msgid "Reply Hidden by You"
-msgstr ""
+msgstr "Réponse cachée par vous"
 
 #: src/components/dialogs/PostInteractionSettingsDialog.tsx:355
 msgid "Reply settings"
-msgstr ""
+msgstr "Paramètres de réponse"
 
 #: src/components/dialogs/PostInteractionSettingsDialog.tsx:340
 msgid "Reply settings are chosen by the author of the thread"
-msgstr ""
+msgstr "Les paramètres de réponse sont choisis par l'auteur du fil de discussion."
 
 #: src/view/com/post/Post.tsx:196
 #: src/view/com/posts/FeedItem.tsx:520
@@ -4986,7 +4986,7 @@ msgstr "Réponse à un post bloqué"
 #: src/view/com/posts/FeedItem.tsx:513
 msgctxt "description"
 msgid "Reply to a post"
-msgstr ""
+msgstr "Réponse à un post"
 
 #: src/view/com/post/Post.tsx:194
 #: src/view/com/posts/FeedItem.tsx:517
@@ -4996,11 +4996,11 @@ msgstr "Réponse à vous"
 
 #: src/view/com/util/forms/PostDropdownBtn.tsx:332
 msgid "Reply visibility updated"
-msgstr ""
+msgstr "Visibilité de la réponse mise à jour"
 
 #: src/view/com/util/forms/PostDropdownBtn.tsx:331
 msgid "Reply was successfully hidden"
-msgstr ""
+msgstr "La réponse a été cachée avec succès"
 
 #: src/components/dms/MessageMenu.tsx:132
 #: src/components/dms/MessagesListBlockedFooter.tsx:77
@@ -5150,11 +5150,11 @@ msgstr "Renvoyer l’e-mail"
 
 #: src/components/intents/VerifyEmailIntentDialog.tsx:130
 msgid "Resend Email"
-msgstr ""
+msgstr "Renvoyer l’e-mail"
 
 #: src/components/intents/VerifyEmailIntentDialog.tsx:123
 msgid "Resend Verification Email"
-msgstr ""
+msgstr "Renvoyer l'e-mail de vérification"
 
 #: src/view/com/modals/ChangePassword.tsx:186
 msgid "Reset code"
@@ -5397,7 +5397,7 @@ msgstr "Voir les posts <0>{displayTag}</0> de ce compte"
 
 #: src/view/com/auth/SplashScreen.web.tsx:162
 msgid "See jobs at Bluesky"
-msgstr ""
+msgstr "Voir les offres d'emploi chez Bluesky"
 
 #: src/view/screens/SavedFeeds.tsx:188
 msgid "See this guide"
@@ -5405,7 +5405,7 @@ msgstr "Voir ce guide"
 
 #: src/view/com/util/post-embeds/VideoEmbedInner/VideoWebControls.tsx:587
 msgid "Seek slider"
-msgstr ""
+msgstr "Curseur de recherche"
 
 #: src/view/com/util/Selector.tsx:106
 msgid "Select {item}"
@@ -5441,11 +5441,11 @@ msgstr "Sélectionner le GIF « {0} »"
 
 #: src/components/dialogs/MutedWords.tsx:142
 msgid "Select how long to mute this word for."
-msgstr ""
+msgstr "Sélectionnez la durée pendant laquelle vous souhaitez masquer ce mot."
 
 #: src/view/com/composer/videos/SubtitleDialog.tsx:245
 msgid "Select language..."
-msgstr ""
+msgstr "Sélectionner la langue…"
 
 #: src/view/screens/LanguageSettings.tsx:303
 msgid "Select languages"
@@ -5461,7 +5461,7 @@ msgstr "Sélectionne l’option {i} sur {numItems}"
 
 #: src/view/com/composer/videos/SubtitleFilePicker.tsx:57
 msgid "Select subtitle file (.vtt)"
-msgstr ""
+msgstr "Sélectionnez le fichier de sous-titres (.vtt)"
 
 #: src/screens/Onboarding/StepProfile/AvatarCreatorItems.tsx:83
 msgid "Select the {emojiName} emoji as your avatar"
@@ -5481,7 +5481,7 @@ msgstr "Sélectionner une vidéo"
 
 #: src/components/dialogs/MutedWords.tsx:242
 msgid "Select what content this mute word should apply to."
-msgstr ""
+msgstr "Sélectionnez le contenu auquel ce mot masqué doit s'appliquer."
 
 #: src/view/screens/LanguageSettings.tsx:285
 msgid "Select which languages you want your subscribed feeds to include. If none are selected, all languages will be shown."
@@ -5598,26 +5598,6 @@ msgstr "Créez votre compte"
 #: src/view/com/modals/ChangeHandle.tsx:261
 msgid "Sets Bluesky username"
 msgstr "Définit le pseudo Bluesky"
-
-#: src/view/screens/Settings/index.tsx:463
-#~ msgid "Sets color theme to dark"
-#~ msgstr "Change le thème de couleur en sombre"
-
-#: src/view/screens/Settings/index.tsx:456
-#~ msgid "Sets color theme to light"
-#~ msgstr "Change le thème de couleur en clair"
-
-#: src/view/screens/Settings/index.tsx:450
-#~ msgid "Sets color theme to system setting"
-#~ msgstr "Change le thème de couleur en fonction du paramètre système"
-
-#: src/view/screens/Settings/index.tsx:489
-#~ msgid "Sets dark theme to the dark theme"
-#~ msgstr "Change le thème sombre comme étant le plus sombre"
-
-#: src/view/screens/Settings/index.tsx:482
-#~ msgid "Sets dark theme to the dim theme"
-#~ msgstr "Change le thème sombre comme étant le thème atténué"
 
 #: src/screens/Login/ForgotPasswordForm.tsx:113
 msgid "Sets email for password reset"
@@ -5753,10 +5733,6 @@ msgstr "Afficher le badge"
 msgid "Show badge and filter from feeds"
 msgstr "Afficher les badges et filtrer des fils d’actu"
 
-#: src/screens/Profile/Header/ProfileHeaderStandard.tsx:215
-#~ msgid "Show follows similar to {0}"
-#~ msgstr "Afficher les suivis similaires à {0}"
-
 #: src/view/com/post-thread/PostThreadShowHiddenReplies.tsx:23
 msgid "Show hidden replies"
 msgstr "Afficher les réponses cachées"
@@ -5768,7 +5744,7 @@ msgstr "En montrer moins comme ça"
 
 #: src/screens/List/ListHiddenScreen.tsx:172
 msgid "Show list anyway"
-msgstr ""
+msgstr "Afficher quand même la liste"
 
 #: src/view/com/post-thread/PostThreadItem.tsx:590
 #: src/view/com/post/Post.tsx:234
@@ -5804,7 +5780,7 @@ msgstr "Afficher les réponses des personnes que vous suivez avant toutes les au
 #: src/view/com/util/forms/PostDropdownBtn.tsx:517
 #: src/view/com/util/forms/PostDropdownBtn.tsx:527
 msgid "Show reply for everyone"
-msgstr ""
+msgstr "Afficher la réponse pour tout le monde"
 
 #: src/view/screens/PreferencesFollowingFeed.tsx:84
 msgid "Show Reposts"
@@ -5871,7 +5847,7 @@ msgstr "Déconnexion"
 #: src/view/screens/Settings/index.tsx:420
 #: src/view/screens/Settings/index.tsx:430
 msgid "Sign out of all accounts"
-msgstr ""
+msgstr "Se déconnecter de tous les comptes"
 
 #: src/view/shell/bottom-bar/BottomBar.tsx:302
 #: src/view/shell/bottom-bar/BottomBar.tsx:303
@@ -5911,10 +5887,6 @@ msgstr "s’est inscrit·e avec votre kit de démarrage"
 #: src/screens/StarterPack/StarterPackLandingScreen.tsx:315
 msgid "Signup without a starter pack"
 msgstr "S’inscrire sans kit de démarrage"
-
-#: src/view/com/profile/ProfileHeaderSuggestedFollows.tsx:102
-#~ msgid "Similar accounts"
-#~ msgstr ""
 
 #: src/screens/Onboarding/StepInterests/index.tsx:245
 #: src/screens/StarterPack/Wizard/index.tsx:191
@@ -5971,13 +5943,9 @@ msgstr "Trier les réponses"
 msgid "Sort replies to the same post by:"
 msgstr "Trier les réponses au même post par :"
 
-#: src/components/moderation/LabelsOnMeDialog.tsx:169
-#~ msgid "Source: <0>{0}</0>"
-#~ msgstr "Source : <0>{0}</0>"
-
 #: src/components/moderation/LabelsOnMeDialog.tsx:163
 msgid "Source: <0>{sourceName}</0>"
-msgstr ""
+msgstr "Source : <0>{sourceName}</0>"
 
 #: src/lib/moderation/useReportOptions.ts:72
 #: src/lib/moderation/useReportOptions.ts:85
@@ -6008,10 +5976,6 @@ msgstr "Démarrer une discussion avec {displayName}"
 #: src/components/dms/MessagesNUX.tsx:161
 msgid "Start chatting"
 msgstr "Démarrer les discussions"
-
-#: src/tours/Tooltip.tsx:99
-#~ msgid "Start of onboarding tour window. Do not move backward. Instead, go forward for more options, or press to skip."
-#~ msgstr "Début de la fenêtre de la visite d’accueil. Ne revenez pas en arrière. Allez plutôt vers l’avant pour plus d’options, ou appuyez pour passer."
 
 #: src/Navigation.tsx:358
 #: src/Navigation.tsx:363
@@ -6102,10 +6066,6 @@ msgstr "Soutien"
 msgid "Switch Account"
 msgstr "Changer de compte"
 
-#: src/tours/HomeTour.tsx:48
-#~ msgid "Switch between feeds to control your experience."
-#~ msgstr "Basculez d’un fil d’actu à l’autre pour contrôler votre expérience."
-
 #: src/view/screens/Settings/index.tsx:126
 msgid "Switch to {0}"
 msgstr "Basculer sur {0}"
@@ -6122,10 +6082,6 @@ msgstr "Système"
 #: src/view/screens/Settings/index.tsx:817
 msgid "System log"
 msgstr "Journal système"
-
-#: src/components/dialogs/MutedWords.tsx:323
-#~ msgid "tag"
-#~ msgstr "mot-clé"
 
 #: src/components/TagMenu/index.tsx:89
 msgid "Tag menu: {displayTag}"
