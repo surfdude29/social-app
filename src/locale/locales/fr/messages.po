@@ -2829,12 +2829,12 @@ msgstr "Cacher ce post pour moi"
 #: src/view/com/util/forms/PostDropdownBtn.tsx:518
 #: src/view/com/util/forms/PostDropdownBtn.tsx:528
 msgid "Hide reply for everyone"
-msgstr "Cacher la réponse pour tout le monde"
+msgstr "Cacher cette réponse pour tout le monde"
 
 #: src/view/com/util/forms/PostDropdownBtn.tsx:500
 #: src/view/com/util/forms/PostDropdownBtn.tsx:506
 msgid "Hide reply for me"
-msgstr "Cacher la réponse pour moi"
+msgstr "Cacher cette réponse pour moi"
 
 #: src/components/moderation/ContentHider.tsx:68
 #: src/components/moderation/PostHider.tsx:79
