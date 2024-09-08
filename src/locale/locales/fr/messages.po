@@ -3629,7 +3629,7 @@ msgstr "Masquer ce mot dans les mots-clés uniquement"
 
 #: src/components/dialogs/MutedWords.tsx:170
 msgid "Mute this word until you unmute it"
-msgstr "Masquer ce mot jusqu'à ce que vous le remettiez en sourdine"
+msgstr "Masquer ce mot jusqu'à ce que vous le démasquer"
 
 #: src/view/com/util/forms/PostDropdownBtn.tsx:465
 #: src/view/com/util/forms/PostDropdownBtn.tsx:471
@@ -3887,7 +3887,7 @@ msgstr "Personne"
 
 #: src/components/WhoCanReply.tsx:237
 msgid "No one but the author can quote this post."
-msgstr ""
+msgstr "Personne d'autre que l'auteur ne peut citer ce post."
 
 #: src/screens/Profile/Sections/Feed.tsx:64
 msgid "No posts yet."
@@ -3930,10 +3930,6 @@ msgstr "Non merci"
 #: src/components/dialogs/PostInteractionSettingsDialog.tsx:375
 msgid "Nobody"
 msgstr "Personne"
-
-#: src/view/com/composer/threadgate/ThreadgateBtn.tsx:46
-#~ msgid "Nobody can reply"
-#~ msgstr "Personne ne peut répondre"
 
 #: src/components/LikedByList.tsx:79
 #: src/components/LikesDialog.tsx:99
@@ -4040,31 +4036,19 @@ msgstr "OK"
 
 #: src/screens/Login/PasswordUpdatedForm.tsx:44
 msgid "Okay"
-msgstr "D’accord"
+msgstr "OK"
 
 #: src/view/screens/PreferencesThreads.tsx:72
 msgid "Oldest replies first"
 msgstr "Plus anciennes réponses en premier"
 
-#: src/components/StarterPack/QrCode.tsx:69
-#~ msgid "on"
-#~ msgstr "sur"
-
-#: src/lib/hooks/useTimeAgo.ts:81
-#~ msgid "on {str}"
-#~ msgstr "le {str}"
-
 #: src/components/StarterPack/QrCode.tsx:70
 msgid "on<0><1/><2><3/></2></0>"
-msgstr ""
+msgstr "sur<0><1/><2><3/></2></0>"
 
 #: src/view/screens/Settings/index.tsx:226
 msgid "Onboarding reset"
 msgstr "Réinitialiser le didacticiel"
-
-#: src/tours/Tooltip.tsx:118
-#~ msgid "Onboarding tour step {0}: {1}"
-#~ msgstr "Étape de la visite d’accueil {0} : {1}"
 
 #: src/view/com/composer/Composer.tsx:667
 msgid "One or more images is missing alt text."
@@ -4074,13 +4058,9 @@ msgstr "Une ou plusieurs images n’ont pas de texte alt."
 msgid "Only .jpg and .png files are supported"
 msgstr "Seuls les fichiers .jpg et .png sont acceptés"
 
-#: src/components/WhoCanReply.tsx:245
-#~ msgid "Only {0} can reply"
-#~ msgstr "Seul {0} peut répondre"
-
 #: src/components/WhoCanReply.tsx:217
 msgid "Only {0} can reply."
-msgstr ""
+msgstr "Seul {0} peut répondre."
 
 #: src/screens/Signup/StepHandle.tsx:152
 msgid "Only contains letters, numbers, and hyphens"
@@ -4088,7 +4068,7 @@ msgstr "Ne contient que des lettres, des chiffres et des traits d’union"
 
 #: src/view/com/composer/videos/SubtitleFilePicker.tsx:31
 msgid "Only WebVTT (.vtt) files are supported"
-msgstr ""
+msgstr "Seuls les fichiers WebVTT (.vtt) sont pris en charge"
 
 #: src/components/Lists.tsx:88
 msgid "Oops, something went wrong!"
@@ -4181,7 +4161,7 @@ msgstr "Ouvre des détails supplémentaires pour une entrée de débug"
 
 #: src/view/screens/Settings/index.tsx:476
 msgid "Opens appearance settings"
-msgstr ""
+msgstr "Ouvre les paramètres de discussion"
 
 #: src/view/com/composer/photos/OpenCameraBtn.tsx:74
 msgid "Opens camera on device"
@@ -4310,7 +4290,7 @@ msgstr "Ajoutez des informations supplémentaires ci-dessous (optionnel) :"
 
 #: src/components/dialogs/MutedWords.tsx:299
 msgid "Options:"
-msgstr ""
+msgstr "Options :"
 
 #: src/components/dialogs/PostInteractionSettingsDialog.tsx:388
 msgid "Or combine these options:"
@@ -4334,7 +4314,7 @@ msgstr "Autre compte"
 
 #: src/view/screens/Settings/index.tsx:379
 msgid "Other accounts"
-msgstr ""
+msgstr "Autres comptes"
 
 #: src/view/com/composer/select-language/SelectLangBtn.tsx:92
 msgid "Other..."
