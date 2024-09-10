@@ -4431,7 +4431,7 @@ msgstr "Respostas mais antigas primeiro"
 
 #: src/components/StarterPack/QrCode.tsx:70
 msgid "on<0><1/><2><3/></2></0>"
-msgstr ""
+msgstr "no<0><1/><2><3/></2></0>"
 
 #: src/view/screens/Settings/index.tsx:226
 msgid "Onboarding reset"
@@ -5266,7 +5266,7 @@ msgstr "Remover conta"
 
 #: src/view/com/composer/ExternalEmbedRemoveBtn.tsx:28
 msgid "Remove attachment"
-msgstr ""
+msgstr "Remover anexo"
 
 #: src/view/com/util/UserAvatar.tsx:387
 msgid "Remove Avatar"
@@ -5386,7 +5386,7 @@ msgstr "Remove o post citado"
 
 #: src/view/com/composer/ExternalEmbedRemoveBtn.tsx:29
 msgid "Removes the attachment"
-msgstr ""
+msgstr "Remove o anexo"
 
 #: src/view/com/composer/ExternalEmbedRemoveBtn.tsx:29
 #~ msgid "Removes the image preview"
@@ -5637,11 +5637,11 @@ msgstr "Reenviar e-mail"
 
 #: src/components/intents/VerifyEmailIntentDialog.tsx:130
 msgid "Resend Email"
-msgstr ""
+msgstr "Reenviar E-mail"
 
 #: src/components/intents/VerifyEmailIntentDialog.tsx:123
 msgid "Resend Verification Email"
-msgstr ""
+msgstr "Reenviar E-mail de Verificação"
 
 #: src/view/com/modals/ChangePassword.tsx:186
 msgid "Reset code"
@@ -6743,7 +6743,7 @@ msgstr "Toque para alternar o som"
 #: src/view/com/util/images/AutoSizedImage.tsx:190
 #: src/view/com/util/images/AutoSizedImage.tsx:210
 msgid "Tap to view full image"
-msgstr ""
+msgstr "Toque para ver a imagem completa"
 
 #: src/view/com/util/images/AutoSizedImage.tsx:70
 #~ msgid "Tap to view fully"
@@ -6809,7 +6809,7 @@ msgstr "Obrigado. Sua denúncia foi enviada."
 
 #: src/components/intents/VerifyEmailIntentDialog.tsx:74
 msgid "Thanks, you have successfully verified your email address."
-msgstr ""
+msgstr "Obrigado, você verificou seu endereço de e-mail com sucesso."
 
 #: src/view/com/modals/ChangeHandle.tsx:459
 msgid "That contains the following:"
@@ -6914,7 +6914,7 @@ msgstr "Os Termos de Serviço foram movidos para"
 
 #: src/components/intents/VerifyEmailIntentDialog.tsx:85
 msgid "The verification code you have provided is invalid. Please make sure that you have used the correct verification link or request a new one."
-msgstr ""
+msgstr "O código de verificação que você forneceu é inválido. Certifique-se de que você usou o link de verificação correto ou solicite um novo."
 
 #: src/screens/Onboarding/StepAlgoFeeds/index.tsx:141
 #~ msgid "There are many feeds to try:"
@@ -7433,7 +7433,7 @@ msgstr "Descurtir este feed"
 #: src/view/com/util/post-embeds/VideoEmbedInner/VideoWebControls.tsx:344
 msgctxt "video"
 msgid "Unmute"
-msgstr ""
+msgstr "Dessilenciar"
 
 #: src/components/TagMenu/index.tsx:263
 #: src/view/screens/ProfileList.tsx:689
@@ -7713,7 +7713,7 @@ msgstr "Verificar e-mail"
 
 #: src/components/intents/VerifyEmailIntentDialog.tsx:61
 msgid "Verify email dialog"
-msgstr ""
+msgstr "Caixa de diálogo verificar e-mail"
 
 #: src/view/screens/Settings/index.tsx:961
 msgid "Verify my email"
@@ -7772,11 +7772,7 @@ msgstr "Configurações de vídeo"
 
 #: src/view/com/util/post-embeds/VideoEmbedInner/VideoEmbedInnerNative.tsx:77
 msgid "Video: {0}"
-msgstr ""
-
-#: src/view/com/composer/videos/state.ts:27
-#~ msgid "Videos cannot be larger than 50MB"
-#~ msgstr "Vídeos não podem ter mais de 100 MB"
+msgstr "Vídeo: {0}"
 
 #: src/screens/Profile/Header/Shell.tsx:113
 msgid "View {0}'s avatar"
@@ -7889,7 +7885,7 @@ msgstr "Estimamos que sua conta estará pronta em mais ou menos {estimatedTime}.
 
 #: src/components/intents/VerifyEmailIntentDialog.tsx:98
 msgid "We have sent another verification email to <0>{0}</0>."
-msgstr ""
+msgstr "Enviamos outro e-mail de verificação para <0>{0}</0>."
 
 #: src/screens/Onboarding/StepFinished.tsx:238
 msgid "We hope you have a wonderful time. Remember, Bluesky is:"
