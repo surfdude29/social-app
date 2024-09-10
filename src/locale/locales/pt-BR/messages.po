@@ -2578,7 +2578,7 @@ msgstr "Falha ao alternar o silenciamento do tópico, tente novamente"
 
 #: src/components/FeedCard.tsx:273
 msgid "Failed to update feeds"
-msgstr "Falha ao atualizar os feeds\""
+msgstr "Falha ao atualizar os feeds"
 
 #: src/components/dms/MessagesNUX.tsx:60
 #: src/screens/Messages/Settings.tsx:35
