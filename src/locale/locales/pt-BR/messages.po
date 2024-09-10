@@ -34,6 +34,10 @@ msgstr "{0, plural, one {# dia} other {# dias}}"
 msgid "{0, plural, one {# hour} other {# hours}}"
 msgstr "{0, plural, one {# hora} other {# horas}}"
 
+#: src/components/moderation/LabelsOnMe.tsx:55
+#~ msgid "{0, plural, one {# label has been placed on this account} other {# labels has been placed on this account}}"
+#~ msgstr "{0, plural, one {# rótulo aplicado nesta conta} other {# rótulos aplicados nesta conta}}"
+
 #: src/components/moderation/LabelsOnMe.tsx:54
 msgid "{0, plural, one {# label has been placed on this account} other {# labels have been placed on this account}}"
 msgstr "{0, plural, one {# rótulo foi colocado nesta conta} other {# rótulos foram colocado nesta conta}}"
@@ -41,6 +45,10 @@ msgstr "{0, plural, one {# rótulo foi colocado nesta conta} other {# rótulos f
 #: src/components/moderation/LabelsOnMe.tsx:60
 msgid "{0, plural, one {# label has been placed on this content} other {# labels have been placed on this content}}"
 msgstr "{0, plural, one {# rótulo foi colocado neste conteúdo} other {# rótulos foram colocado neste conteúdo}}"
+
+#: src/components/moderation/LabelsOnMe.tsx:61
+#~ msgid "{0, plural, one {# label has been placed on this content} other {# labels has been placed on this content}}"
+#~ msgstr "{0, plural, one {# rótulo aplicado neste conteúdo} other {# rótulos aplicados neste conteúdo}}"
 
 #: src/lib/hooks/useTimeAgo.ts:136
 msgid "{0, plural, one {# minute} other {# minutes}}"
@@ -57,6 +65,10 @@ msgstr "{0, plural, one {# repostagem} other {# repostagens}}"
 #: src/lib/hooks/useTimeAgo.ts:126
 msgid "{0, plural, one {# second} other {# seconds}}"
 msgstr "{0, plural, one {# segundo} other {# segundos}}"
+
+#: src/components/KnownFollowers.tsx:179
+#~ msgid "{0, plural, one {and # other} other {and # others}}"
+#~ msgstr "{0, plural, one {e # outro} other {e # outros}}"
 
 #: src/components/ProfileHoverCard/index.web.tsx:398
 #: src/screens/Profile/Header/Metrics.tsx:23
@@ -123,6 +135,10 @@ msgstr "{0} de {1}"
 msgid "{0} people have used this starter pack!"
 msgstr "{0} pessoas já usaram este pacote inicial!"
 
+#: src/view/screens/ProfileList.tsx:286
+#~ msgid "{0} your feeds"
+#~ msgstr "{0} seus feeds"
+
 #: src/view/com/util/UserAvatar.tsx:419
 msgid "{0}'s avatar"
 msgstr "Avatar de {0}"
@@ -164,6 +180,26 @@ msgstr "{0}s"
 msgid "{count, plural, one {Liked by # user} other {Liked by # users}}"
 msgstr "{count, plural, one {Curtido por # usuário} other {Curtido por # usuários}}"
 
+#: src/lib/hooks/useTimeAgo.ts:69
+#~ msgid "{diff, plural, one {day} other {days}}"
+#~ msgstr "{diff, plural, one {dia} other {dias}}"
+
+#: src/lib/hooks/useTimeAgo.ts:64
+#~ msgid "{diff, plural, one {hour} other {hours}}"
+#~ msgstr "{diff, plural, one {hora} other {horas}}"
+
+#: src/lib/hooks/useTimeAgo.ts:59
+#~ msgid "{diff, plural, one {minute} other {minutes}}"
+#~ msgstr "{diff, plural, one {minuto} other {minutos}}"
+
+#: src/lib/hooks/useTimeAgo.ts:75
+#~ msgid "{diff, plural, one {month} other {months}}"
+#~ msgstr "{diff, plural, one {mês} other {meses}}"
+
+#: src/lib/hooks/useTimeAgo.ts:54
+#~ msgid "{diffSeconds, plural, one {second} other {seconds}}"
+#~ msgstr "{diffSeconds, plural, one {segundo} other {segundos}}"
+
 #: src/lib/generate-starterpack.ts:108
 #: src/screens/StarterPack/Wizard/index.tsx:174
 msgid "{displayName}'s Starter Pack"
@@ -204,6 +240,18 @@ msgstr "{profileName} juntou-se ao Bluesky há {0}"
 msgid "{profileName} joined Bluesky using a starter pack {0} ago"
 msgstr "{profileName} juntou-se ao Bluesky utilizando um pacote inicial há {0}"
 
+#: src/view/screens/PreferencesFollowingFeed.tsx:67
+#~ msgid "{value, plural, =0 {Show all replies} one {Show replies with at least # like} other {Show replies with at least # likes}}"
+#~ msgstr "{value, plural, =0 {Mostrar todas as respostas} one {Show replies with at least # curtida} other {Show replies with at least # curtidas}}"
+
+#: src/components/WhoCanReply.tsx:296
+#~ msgid "<0/> members"
+#~ msgstr "<0/> membros"
+
+#: src/screens/StarterPack/Wizard/index.tsx:485
+#~ msgid "<0>{0} </0>and<1> </1><2>{1} </2>are included in your starter pack"
+#~ msgstr "<0>{0} </0>e<1> </1><2>{1} </2>estão incluídos no seu pacote inicial"
+
 #: src/screens/StarterPack/Wizard/index.tsx:466
 msgctxt "profiles"
 msgid "<0>{0}, </0><1>{1}, </1>and {2, plural, one {# other} other {# others}} are included in your starter pack"
@@ -213,6 +261,10 @@ msgstr "<0>{0}, </0><1>{1}, </1>e {2, plural, one {# outro} other {# outros}} es
 msgctxt "feeds"
 msgid "<0>{0}, </0><1>{1}, </1>and {2, plural, one {# other} other {# others}} are included in your starter pack"
 msgstr "<0>{0}, </0><1>{1}, </1>e {2, plural, one {# outro} other {# outros}} estão incluídos no seu pacote inicial"
+
+#: src/screens/StarterPack/Wizard/index.tsx:497
+#~ msgid "<0>{0}, </0><1>{1}, </1>and {2} {3, plural, one {other} other {others}} are included in your starter pack"
+#~ msgstr "<0>{0}, </0><1>{1}, </1>e {2} {3, plural, one {outro} other {outros}} estão incluídos no seu pacote inicial"
 
 #: src/view/shell/Drawer.tsx:109
 msgid "<0>{0}</0> {1, plural, one {follower} other {followers}}"
@@ -226,6 +278,10 @@ msgstr "<0>{0}</0> {1, plural, one {seguindo} other {seguindo}}"
 msgid "<0>{0}</0> and<1> </1><2>{1} </2>are included in your starter pack"
 msgstr "<0>{0}</0> e<1> </1><2>{1} </2>estão incluídos no seu pacote inicial"
 
+#: src/view/shell/Drawer.tsx:96
+#~ msgid "<0>{0}</0> following"
+#~ msgstr "<0>{0}</0> seguindo"
+
 #: src/screens/StarterPack/Wizard/index.tsx:500
 msgid "<0>{0}</0> is included in your starter pack"
 msgstr "<0>{0}</0> está incluído no seu pacote inicial"
@@ -233,6 +289,23 @@ msgstr "<0>{0}</0> está incluído no seu pacote inicial"
 #: src/components/WhoCanReply.tsx:274
 msgid "<0>{0}</0> members"
 msgstr "<0>{0}</0> membros"
+
+#: src/components/ProfileHoverCard/index.web.tsx:437
+#~ msgid "<0>{followers} </0><1>{pluralizedFollowers}</1>"
+#~ msgstr "<0>{followers} </0><1>{pluralizedFollowers}</1>"
+
+#: src/components/ProfileHoverCard/index.web.tsx:449
+#: src/screens/Profile/Header/Metrics.tsx:45
+#~ msgid "<0>{following} </0><1>following</1>"
+#~ msgstr "<0>{following} </0><1>seguindo</1>"
+
+#: src/view/com/auth/onboarding/RecommendedFeeds.tsx:31
+#~ msgid "<0>Choose your</0><1>Recommended</1><2>Feeds</2>"
+#~ msgstr "<0>Escolha seus</0><2>Feeds</2><1>recomendados</1>"
+
+#: src/view/com/auth/onboarding/RecommendedFollows.tsx:38
+#~ msgid "<0>Follow some</0><1>Recommended</1><2>Users</2>"
+#~ msgstr "<0>Siga alguns</0><2>Usuários</2><1>recomendados</1>"
 
 #: src/view/com/modals/SelfLabel.tsx:135
 msgid "<0>Not Applicable.</0> This warning is only available for posts with media attached."
