@@ -3954,7 +3954,7 @@ msgstr "Conta Enganosa"
 
 #: src/lib/moderation/useReportOptions.ts:67
 msgid "Misleading Post"
-msgstr "Postagem enganosa"
+msgstr "Postagem Enganosa"
 
 #: src/screens/Settings/AppearanceSettings.tsx:78
 msgid "Mode"
