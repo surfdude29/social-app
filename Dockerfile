@@ -8,6 +8,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 ENV NODE_VERSION=18
 ENV NVM_DIR=/usr/share/nvm
 
+
 # Go
 ENV GODEBUG="netdns=go"
 ENV GOOS="linux"
