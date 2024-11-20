@@ -95,9 +95,9 @@ module.exports = function (config) {
           CFBundleSpokenName: 'Blue Sky',
           CFBundleAllowMixedLocalizations: true,
           CFBundleLocalizations:
-            ['en', 'ca', 'de', 'es', 'fi', 'fr', 'ga', 'hi', 'hu', 'id', 'it',
-             'ja', 'ko', 'pl', 'pt-BR', 'ru', 'th', 'tr', 'uk', 'zh-CN',
-             'zh-HK', 'zh-TW'],
+            ['en', 'ca', 'de', 'es', 'fi', 'fr', 'ga', 'hi', 'hu', 'id',
+             'it', 'ja', 'ko', 'pl', 'pt-BR', 'ru', 'th', 'tr', 'uk',
+             'zh-CN', 'zh-HK', 'zh-TW'],
         },
         associatedDomains: ASSOCIATED_DOMAINS,
         splash: {
