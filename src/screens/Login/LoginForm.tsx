@@ -6,16 +6,21 @@ import {
   TextInput,
   View,
 } from 'react-native'
-import {ComAtprotoServerDescribeServer} from '@atproto/api'
+import {
+  ComAtprotoServerCreateSession,
+  ComAtprotoServerDescribeServer,
+} from '@atproto/api'
 import {msg, Trans} from '@lingui/macro'
 import {useLingui} from '@lingui/react'
 
-import {useAnalytics} from '#/lib/analytics/analytics'
+import {useRequestNotificationsPermission} from '#/lib/notifications/notifications'
 import {isNetworkError} from '#/lib/strings/errors'
 import {cleanError} from '#/lib/strings/errors'
 import {createFullHandle} from '#/lib/strings/handles'
 import {logger} from '#/logger'
+import {useSetHasCheckedForStarterPack} from '#/state/preferences/used-starter-packs'
 import {useSessionApi} from '#/state/session'
+import {useLoggedOutViewControls} from '#/state/shell/logged-out'
 import {atoms as a, useTheme} from '#/alf'
 import {Button, ButtonIcon, ButtonText} from '#/components/Button'
 import {FormError} from '#/components/forms/FormError'
@@ -23,6 +28,7 @@ import {HostingProvider} from '#/components/forms/HostingProvider'
 import * as TextField from '#/components/forms/TextField'
 import {At_Stroke2_Corner0_Rounded as At} from '#/components/icons/At'
 import {Lock_Stroke2_Corner0_Rounded as Lock} from '#/components/icons/Lock'
+import {Ticket_Stroke2_Corner0_Rounded as Ticket} from '#/components/icons/Ticket'
 import {Loader} from '#/components/Loader'
 import {Text} from '#/components/Typography'
 import {FormContainer} from './FormContainer'
@@ -50,25 +56,39 @@ export const LoginForm = ({
   onPressBack: () => void
   onPressForgotPassword: () => void
 }) => {
-  const {track} = useAnalytics()
   const t = useTheme()
   const [isProcessing, setIsProcessing] = useState<boolean>(false)
-  const [identifier, setIdentifier] = useState<string>(initialHandle)
-  const [password, setPassword] = useState<string>('')
-  const passwordInputRef = useRef<TextInput>(null)
+  const [isAuthFactorTokenNeeded, setIsAuthFactorTokenNeeded] =
+    useState<boolean>(false)
+  const identifierValueRef = useRef<string>(initialHandle || '')
+  const passwordValueRef = useRef<string>('')
+  const authFactorTokenValueRef = useRef<string>('')
+  const passwordRef = useRef<TextInput>(null)
   const {_} = useLingui()
   const {login} = useSessionApi()
+  const requestNotificationsPermission = useRequestNotificationsPermission()
+  const {setShowLoggedOut} = useLoggedOutViewControls()
+  const setHasCheckedForStarterPack = useSetHasCheckedForStarterPack()
 
   const onPressSelectService = React.useCallback(() => {
     Keyboard.dismiss()
-    track('Signin:PressedSelectService')
-  }, [track])
+  }, [])
 
   const onPressNext = async () => {
     if (isProcessing) return
     Keyboard.dismiss()
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
     setError('')
+
+    const identifier = identifierValueRef.current.toLowerCase().trim()
+    const password = passwordValueRef.current
+    const authFactorToken = authFactorTokenValueRef.current
+
+    if (!identifier || !password) {
+      setError(_(msg`Invalid username or password`))
+      return
+    }
+
     setIsProcessing(true)
 
     try {
@@ -100,14 +120,27 @@ export const LoginForm = ({
           service: serviceUrl,
           identifier: fullIdent,
           password,
+          authFactorToken: authFactorToken.trim(),
         },
         'LoginForm',
       )
+      setShowLoggedOut(false)
+      setHasCheckedForStarterPack(true)
+      requestNotificationsPermission('Login')
     } catch (e: any) {
       const errMsg = e.toString()
       LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
       setIsProcessing(false)
-      if (errMsg.includes('Authentication Required')) {
+      if (
+        e instanceof ComAtprotoServerCreateSession.AuthFactorTokenRequiredError
+      ) {
+        setIsAuthFactorTokenNeeded(true)
+      } else if (errMsg.includes('Token is invalid')) {
+        logger.debug('Failed to login due to invalid 2fa token', {
+          error: errMsg,
+        })
+        setError(_(msg`Invalid 2FA confirmation code.`))
+      } else if (errMsg.includes('Authentication Required')) {
         logger.debug('Failed to login due to invalid credentials', {
           error: errMsg,
         })
@@ -126,13 +159,12 @@ export const LoginForm = ({
     }
   }
 
-  const isReady = !!serviceDescription && !!identifier && !!password
   return (
-    <FormContainer testID="loginForm" title={<Trans>Sign in</Trans>}>
+    <FormContainer testID="loginForm" titleText={<Trans>Sign in</Trans>}>
       <View>
-        <TextField.Label>
+        <TextField.LabelText>
           <Trans>Hosting provider</Trans>
-        </TextField.Label>
+        </TextField.LabelText>
         <HostingProvider
           serviceUrl={serviceUrl}
           onSelectServiceUrl={setServiceUrl}
@@ -140,9 +172,9 @@ export const LoginForm = ({
         />
       </View>
       <View>
-        <TextField.Label>
+        <TextField.LabelText>
           <Trans>Account</Trans>
-        </TextField.Label>
+        </TextField.LabelText>
         <View style={[a.gap_sm]}>
           <TextField.Root>
             <TextField.Icon icon={At} />
@@ -155,14 +187,14 @@ export const LoginForm = ({
               autoComplete="username"
               returnKeyType="next"
               textContentType="username"
+              defaultValue={initialHandle || ''}
+              onChangeText={v => {
+                identifierValueRef.current = v
+              }}
               onSubmitEditing={() => {
-                passwordInputRef.current?.focus()
+                passwordRef.current?.focus()
               }}
               blurOnSubmit={false} // prevents flickering due to onSubmitEditing going to next field
-              value={identifier}
-              onChangeText={str =>
-                setIdentifier((str || '').toLowerCase().trim())
-              }
               editable={!isProcessing}
               accessibilityHint={_(
                 msg`Input the username or email address you used at signup`,
@@ -174,7 +206,7 @@ export const LoginForm = ({
             <TextField.Icon icon={Lock} />
             <TextField.Input
               testID="loginPasswordInput"
-              inputRef={passwordInputRef}
+              inputRef={passwordRef}
               label={_(msg`Password`)}
               autoCapitalize="none"
               autoCorrect={false}
@@ -184,16 +216,13 @@ export const LoginForm = ({
               secureTextEntry={true}
               textContentType="password"
               clearButtonMode="while-editing"
-              value={password}
-              onChangeText={setPassword}
+              onChangeText={v => {
+                passwordValueRef.current = v
+              }}
               onSubmitEditing={onPressNext}
               blurOnSubmit={false} // HACK: https://github.com/facebook/react-native/issues/21911#issuecomment-558343069 Keyboard blur behavior is now handled in onSubmitEditing
               editable={!isProcessing}
-              accessibilityHint={
-                identifier === ''
-                  ? _(msg`Input your password`)
-                  : _(msg`Input the password tied to ${identifier}`)
-              }
+              accessibilityHint={_(msg`Input your password`)}
             />
             <Button
               testID="forgotPasswordButton"
@@ -215,13 +244,45 @@ export const LoginForm = ({
           </TextField.Root>
         </View>
       </View>
+      {isAuthFactorTokenNeeded && (
+        <View>
+          <TextField.LabelText>
+            <Trans>2FA Confirmation</Trans>
+          </TextField.LabelText>
+          <TextField.Root>
+            <TextField.Icon icon={Ticket} />
+            <TextField.Input
+              testID="loginAuthFactorTokenInput"
+              label={_(msg`Confirmation code`)}
+              autoCapitalize="none"
+              autoFocus
+              autoCorrect={false}
+              autoComplete="off"
+              returnKeyType="done"
+              textContentType="username"
+              blurOnSubmit={false} // prevents flickering due to onSubmitEditing going to next field
+              onChangeText={v => {
+                authFactorTokenValueRef.current = v
+              }}
+              onSubmitEditing={onPressNext}
+              editable={!isProcessing}
+              accessibilityHint={_(
+                msg`Input the code which has been emailed to you`,
+              )}
+            />
+          </TextField.Root>
+          <Text style={[a.text_sm, t.atoms.text_contrast_medium, a.mt_sm]}>
+            <Trans>Check your email for a login code and enter it here.</Trans>
+          </Text>
+        </View>
+      )}
       <FormError error={error} />
       <View style={[a.flex_row, a.align_center, a.pt_md]}>
         <Button
           label={_(msg`Back`)}
           variant="solid"
           color="secondary"
-          size="medium"
+          size="large"
           onPress={onPressBack}>
           <ButtonText>
             <Trans>Back</Trans>
@@ -235,9 +296,11 @@ export const LoginForm = ({
             accessibilityHint={_(msg`Retries login`)}
             variant="solid"
             color="secondary"
-            size="medium"
+            size="large"
             onPress={onPressRetryConnect}>
-            {_(msg`Retry`)}
+            <ButtonText>
+              <Trans>Retry</Trans>
+            </ButtonText>
           </Button>
         ) : !serviceDescription ? (
           <>
@@ -246,20 +309,21 @@ export const LoginForm = ({
               <Trans>Connecting...</Trans>
             </Text>
           </>
-        ) : isReady ? (
+        ) : (
           <Button
+            testID="loginNextButton"
             label={_(msg`Next`)}
             accessibilityHint={_(msg`Navigates to the next screen`)}
             variant="solid"
             color="primary"
-            size="medium"
+            size="large"
             onPress={onPressNext}>
             <ButtonText>
               <Trans>Next</Trans>
             </ButtonText>
             {isProcessing && <ButtonIcon icon={Loader} />}
           </Button>
-        ) : undefined}
+        )}
       </View>
     </FormContainer>
   )

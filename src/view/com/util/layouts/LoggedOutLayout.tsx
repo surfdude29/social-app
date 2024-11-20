@@ -1,19 +1,25 @@
 import React from 'react'
-import {StyleSheet, View} from 'react-native'
+import {ScrollView, StyleSheet, View} from 'react-native'
+
+import {useColorSchemeStyle} from '#/lib/hooks/useColorSchemeStyle'
+import {useIsKeyboardVisible} from '#/lib/hooks/useIsKeyboardVisible'
+import {usePalette} from '#/lib/hooks/usePalette'
+import {useWebMediaQueries} from '#/lib/hooks/useWebMediaQueries'
+import {isWeb} from '#/platform/detection'
+import {atoms as a} from '#/alf'
 import {Text} from '../text/Text'
-import {usePalette} from 'lib/hooks/usePalette'
-import {useWebMediaQueries} from 'lib/hooks/useWebMediaQueries'
-import {useColorSchemeStyle} from 'lib/hooks/useColorSchemeStyle'
 
 export const LoggedOutLayout = ({
   leadin,
   title,
   description,
   children,
+  scrollable,
 }: React.PropsWithChildren<{
   leadin: string
   title: string
   description: string
+  scrollable?: boolean
 }>) => {
   const {isMobile, isTabletOrMobile} = useWebMediaQueries()
   const pal = usePalette('default')
@@ -24,8 +30,24 @@ export const LoggedOutLayout = ({
     borderLeftWidth: 1,
   })
 
+  const [isKeyboardVisible] = useIsKeyboardVisible()
+
   if (isMobile) {
-    return <View style={{paddingTop: 10}}>{children}</View>
+    if (scrollable) {
+      return (
+        <ScrollView
+          style={a.flex_1}
+          keyboardShouldPersistTaps="handled"
+          keyboardDismissMode="none"
+          contentContainerStyle={[
+            {paddingBottom: isKeyboardVisible ? 300 : 0},
+          ]}>
+          <View style={a.pt_md}>{children}</View>
+        </ScrollView>
+      )
+    } else {
+      return <View style={a.pt_md}>{children}</View>
+    }
   }
   return (
     <View style={styles.container}>
@@ -50,9 +72,23 @@ export const LoggedOutLayout = ({
           {description}
         </Text>
       </View>
-      <View style={[styles.content, contentBg]}>
-        <View style={styles.contentWrapper}>{children}</View>
-      </View>
+      {scrollable ? (
+        <View style={[styles.scrollableContent, contentBg]}>
+          <ScrollView
+            style={a.flex_1}
+            contentContainerStyle={styles.scrollViewContentContainer}
+            keyboardShouldPersistTaps="handled"
+            keyboardDismissMode="on-drag">
+            <View style={[styles.contentWrapper, isWeb && a.my_auto]}>
+              {children}
+            </View>
+          </ScrollView>
+        </View>
+      ) : (
+        <View style={[styles.content, contentBg]}>
+          <View style={styles.contentWrapper}>{children}</View>
+        </View>
+      )}
     </View>
   )
 }
@@ -74,7 +110,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 40,
     justifyContent: 'center',
   },
-
+  scrollableContent: {
+    flex: 2,
+  },
+  scrollViewContentContainer: {
+    flex: 1,
+    paddingHorizontal: 40,
+  },
   leadinText: {
     fontSize: 36,
     fontWeight: '800',

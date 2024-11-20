@@ -1,16 +1,12 @@
-import React, {useEffect} from 'react'
-import {observer} from 'mobx-react-lite'
-import {Animated, Easing, Platform, StyleSheet, View} from 'react-native'
-import {ComposePost} from '../com/composer/Composer'
-import {useComposerState} from 'state/shell/composer'
-import {useAnimatedValue} from 'lib/hooks/useAnimatedValue'
-import {usePalette} from 'lib/hooks/usePalette'
+import {useEffect} from 'react'
+import {Animated, Easing, StyleSheet, View} from 'react-native'
 
-export const Composer = observer(function ComposerImpl({
-  winHeight,
-}: {
-  winHeight: number
-}) {
+import {useAnimatedValue} from '#/lib/hooks/useAnimatedValue'
+import {usePalette} from '#/lib/hooks/usePalette'
+import {useComposerState} from '#/state/shell/composer'
+import {ComposePost} from '../com/composer/Composer'
+
+export function Composer({winHeight}: {winHeight: number}) {
   const state = useComposerState()
   const pal = usePalette('default')
   const initInterp = useAnimatedValue(0)
@@ -57,10 +53,11 @@ export const Composer = observer(function ComposerImpl({
         mention={state.mention}
         text={state.text}
         imageUris={state.imageUris}
+        videoUri={state.videoUri}
       />
     </Animated.View>
   )
-})
+}
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -68,10 +65,5 @@ const styles = StyleSheet.create({
     top: 0,
     bottom: 0,
     width: '100%',
-    ...Platform.select({
-      ios: {
-        paddingTop: 24,
-      },
-    }),
   },
 })

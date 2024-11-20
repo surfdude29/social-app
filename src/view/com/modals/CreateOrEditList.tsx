@@ -1,4 +1,4 @@
-import React, {useState, useCallback, useMemo} from 'react'
+import {useCallback, useMemo, useState} from 'react'
 import {
   ActivityIndicator,
   KeyboardAvoidingView,
@@ -8,35 +8,31 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native'
-import {
-  AppBskyGraphDefs,
-  AppBskyRichtextFacet,
-  RichText as RichTextAPI,
-} from '@atproto/api'
-import LinearGradient from 'react-native-linear-gradient'
 import {Image as RNImage} from 'react-native-image-crop-picker'
-import {Text} from '../util/text/Text'
-import {ErrorMessage} from '../util/error/ErrorMessage'
-import * as Toast from '../util/Toast'
-import {s, colors, gradients} from 'lib/styles'
-import {enforceLen} from 'lib/strings/helpers'
-import {compressIfNeeded} from 'lib/media/manip'
-import {EditableUserAvatar} from '../util/UserAvatar'
-import {usePalette} from 'lib/hooks/usePalette'
-import {useTheme} from 'lib/ThemeContext'
-import {useAnalytics} from 'lib/analytics/analytics'
-import {useWebMediaQueries} from 'lib/hooks/useWebMediaQueries'
-import {cleanError, isNetworkError} from 'lib/strings/errors'
-import {Trans, msg} from '@lingui/macro'
+import {LinearGradient} from 'expo-linear-gradient'
+import {AppBskyGraphDefs, RichText as RichTextAPI} from '@atproto/api'
+import {msg, Trans} from '@lingui/macro'
 import {useLingui} from '@lingui/react'
+
+import {usePalette} from '#/lib/hooks/usePalette'
+import {useWebMediaQueries} from '#/lib/hooks/useWebMediaQueries'
+import {compressIfNeeded} from '#/lib/media/manip'
+import {cleanError, isNetworkError} from '#/lib/strings/errors'
+import {enforceLen} from '#/lib/strings/helpers'
+import {richTextToString} from '#/lib/strings/rich-text-helpers'
+import {shortenLinks, stripInvalidMentions} from '#/lib/strings/rich-text-manip'
+import {colors, gradients, s} from '#/lib/styles'
+import {useTheme} from '#/lib/ThemeContext'
 import {useModalControls} from '#/state/modals'
 import {
   useListCreateMutation,
   useListMetadataMutation,
 } from '#/state/queries/list'
-import {richTextToString} from '#/lib/strings/rich-text-helpers'
-import {shortenLinks} from '#/lib/strings/rich-text-manip'
-import {getAgent} from '#/state/session'
+import {useAgent} from '#/state/session'
+import {ErrorMessage} from '../util/error/ErrorMessage'
+import {Text} from '../util/text/Text'
+import * as Toast from '../util/Toast'
+import {EditableUserAvatar} from '../util/UserAvatar'
 
 const MAX_NAME = 64 // todo
 const MAX_DESCRIPTION = 300 // todo
@@ -57,10 +53,10 @@ export function Component({
   const [error, setError] = useState<string>('')
   const pal = usePalette('default')
   const theme = useTheme()
-  const {track} = useAnalytics()
   const {_} = useLingui()
   const listCreateMutation = useListCreateMutation()
   const listMetadataMutation = useListMetadataMutation()
+  const agent = useAgent()
 
   const activePurpose = useMemo(() => {
     if (list?.purpose) {
@@ -122,7 +118,6 @@ export function Component({
         setAvatar(undefined)
         return
       }
-      track('CreateList:AvatarSelected')
       try {
         const finalImg = await compressIfNeeded(img, 1000000)
         setNewAvatar(finalImg)
@@ -131,15 +126,10 @@ export function Component({
         setError(cleanError(e))
       }
     },
-    [track, setNewAvatar, setAvatar, setError],
+    [setNewAvatar, setAvatar, setError],
   )
 
   const onPressSave = useCallback(async () => {
-    if (isCurateList) {
-      track('CreateList:SaveCurateList')
-    } else {
-      track('CreateList:SaveModList')
-    }
     const nameTrimmed = name.trim()
     if (!nameTrimmed) {
       setError(_(msg`Name is required`))
@@ -155,19 +145,9 @@ export function Component({
         {cleanNewlines: true},
       )
 
-      await richText.detectFacets(getAgent())
+      await richText.detectFacets(agent)
       richText = shortenLinks(richText)
-
-      // filter out any mention facets that didn't map to a user
-      richText.facets = richText.facets?.filter(facet => {
-        const mention = facet.features.find(feature =>
-          AppBskyRichtextFacet.isMention(feature),
-        )
-        if (mention && !mention.did) {
-          return false
-        }
-        return true
-      })
+      richText = stripInvalidMentions(richText)
 
       if (list) {
         await listMetadataMutation.mutateAsync({
@@ -212,7 +192,6 @@ export function Component({
     }
     setProcessing(false)
   }, [
-    track,
     setProcessing,
     setError,
     error,
@@ -227,6 +206,7 @@ export function Component({
     listMetadataMutation,
     listCreateMutation,
     _,
+    agent,
   ])
 
   return (
@@ -370,7 +350,7 @@ export function Component({
 const styles = StyleSheet.create({
   title: {
     textAlign: 'center',
-    fontWeight: 'bold',
+    fontWeight: '600',
     fontSize: 24,
     marginBottom: 18,
   },
@@ -384,7 +364,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   label: {
-    fontWeight: 'bold',
+    fontWeight: '600',
   },
   form: {
     paddingHorizontal: 6,

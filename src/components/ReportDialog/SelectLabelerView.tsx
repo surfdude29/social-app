@@ -1,18 +1,14 @@
-import React from 'react'
 import {View} from 'react-native'
+import {AppBskyLabelerDefs} from '@atproto/api'
 import {msg, Trans} from '@lingui/macro'
 import {useLingui} from '@lingui/react'
-import {AppBskyLabelerDefs} from '@atproto/api'
 
-export {useDialogControl as useReportDialogControl} from '#/components/Dialog'
 import {getLabelingServiceTitle} from '#/lib/moderation'
-
-import {atoms as a, useTheme, useBreakpoints} from '#/alf'
-import {Text} from '#/components/Typography'
+import {atoms as a, useBreakpoints, useTheme} from '#/alf'
 import {Button, useButtonContext} from '#/components/Button'
 import {Divider} from '#/components/Divider'
 import * as LabelingServiceCard from '#/components/LabelingServiceCard'
-
+import {Text} from '#/components/Typography'
 import {ReportDialogProps} from './types'
 
 export function SelectLabelerView({
@@ -38,7 +34,7 @@ export function SelectLabelerView({
 
       <Divider />
 
-      <View style={[a.gap_xs, {marginHorizontal: a.p_md.padding * -1}]}>
+      <View style={[a.gap_sm]}>
         {props.labelers.map(labeler => {
           return (
             <Button
@@ -63,17 +59,14 @@ function LabelerButton({
   const {hovered, pressed} = useButtonContext()
   const interacted = hovered || pressed
 
-  const styles = React.useMemo(() => {
-    return {
-      interacted: {
-        backgroundColor: t.palette.contrast_50,
-      },
-    }
-  }, [t])
-
   return (
     <LabelingServiceCard.Outer
-      style={[a.p_md, a.rounded_sm, interacted && styles.interacted]}>
+      style={[
+        a.p_md,
+        a.rounded_sm,
+        t.atoms.bg_contrast_25,
+        interacted && t.atoms.bg_contrast_50,
+      ]}>
       <LabelingServiceCard.Avatar avatar={labeler.creator.avatar} />
       <LabelingServiceCard.Content>
         <LabelingServiceCard.Title
@@ -82,8 +75,7 @@ function LabelerButton({
             handle: labeler.creator.handle,
           })}
         />
-        <Text
-          style={[t.atoms.text_contrast_medium, a.text_sm, a.font_semibold]}>
+        <Text style={[t.atoms.text_contrast_medium, a.text_sm, a.font_bold]}>
           @{labeler.creator.handle}
         </Text>
       </LabelingServiceCard.Content>

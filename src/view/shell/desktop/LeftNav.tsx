@@ -1,52 +1,72 @@
 import React from 'react'
 import {StyleSheet, TouchableOpacity, View} from 'react-native'
-import {PressableWithHover} from 'view/com/util/PressableWithHover'
+import {
+  FontAwesomeIcon,
+  FontAwesomeIconStyle,
+} from '@fortawesome/react-native-fontawesome'
+import {msg, Trans} from '@lingui/macro'
+import {useLingui} from '@lingui/react'
 import {
   useLinkProps,
   useNavigation,
   useNavigationState,
 } from '@react-navigation/native'
-import {
-  FontAwesomeIcon,
-  FontAwesomeIconStyle,
-} from '@fortawesome/react-native-fontawesome'
-import {Text} from 'view/com/util/text/Text'
-import {UserAvatar} from 'view/com/util/UserAvatar'
-import {Link} from 'view/com/util/Link'
-import {LoadingPlaceholder} from 'view/com/util/LoadingPlaceholder'
-import {usePalette} from 'lib/hooks/usePalette'
-import {useWebMediaQueries} from 'lib/hooks/useWebMediaQueries'
-import {s, colors} from 'lib/styles'
-import {
-  HomeIcon,
-  HomeIconSolid,
-  MagnifyingGlassIcon2,
-  MagnifyingGlassIcon2Solid,
-  BellIcon,
-  BellIconSolid,
-  UserIcon,
-  UserIconSolid,
-  CogIcon,
-  CogIconSolid,
-  ComposeIcon2,
-  ListIcon,
-  HashtagIcon,
-  HandIcon,
-} from 'lib/icons'
-import {getCurrentRoute, isTab, isStateAtTabRoot} from 'lib/routes/helpers'
-import {NavigationProp, CommonNavigatorParams} from 'lib/routes/types'
-import {router} from '../../../routes'
-import {makeProfileLink} from 'lib/routes/links'
-import {useLingui} from '@lingui/react'
-import {Trans, msg} from '@lingui/macro'
+
+import {usePalette} from '#/lib/hooks/usePalette'
+import {useWebMediaQueries} from '#/lib/hooks/useWebMediaQueries'
+import {getCurrentRoute, isStateAtTabRoot, isTab} from '#/lib/routes/helpers'
+import {makeProfileLink} from '#/lib/routes/links'
+import {CommonNavigatorParams, NavigationProp} from '#/lib/routes/types'
+import {isInvalidHandle} from '#/lib/strings/handles'
+import {emitSoftReset} from '#/state/events'
+import {useFetchHandle} from '#/state/queries/handle'
+import {useUnreadMessageCount} from '#/state/queries/messages/list-converations'
+import {useUnreadNotifications} from '#/state/queries/notifications/unread'
 import {useProfileQuery} from '#/state/queries/profile'
 import {useSession} from '#/state/session'
-import {useUnreadNotifications} from '#/state/queries/notifications/unread'
 import {useComposerControls} from '#/state/shell/composer'
-import {useFetchHandle} from '#/state/queries/handle'
-import {emitSoftReset} from '#/state/events'
+import {Link} from '#/view/com/util/Link'
+import {LoadingPlaceholder} from '#/view/com/util/LoadingPlaceholder'
+import {PressableWithHover} from '#/view/com/util/PressableWithHover'
+import {UserAvatar} from '#/view/com/util/UserAvatar'
 import {NavSignupCard} from '#/view/shell/NavSignupCard'
-import {isInvalidHandle} from '#/lib/strings/handles'
+import {atoms as a, useBreakpoints, useTheme} from '#/alf'
+import {Button, ButtonIcon, ButtonText} from '#/components/Button'
+import {
+  Bell_Filled_Corner0_Rounded as BellFilled,
+  Bell_Stroke2_Corner0_Rounded as Bell,
+} from '#/components/icons/Bell'
+import {
+  BulletList_Filled_Corner0_Rounded as ListFilled,
+  BulletList_Stroke2_Corner0_Rounded as List,
+} from '#/components/icons/BulletList'
+import {EditBig_Stroke2_Corner0_Rounded as EditBig} from '#/components/icons/EditBig'
+import {
+  Hashtag_Filled_Corner0_Rounded as HashtagFilled,
+  Hashtag_Stroke2_Corner0_Rounded as Hashtag,
+} from '#/components/icons/Hashtag'
+import {
+  HomeOpen_Filled_Corner0_Rounded as HomeFilled,
+  HomeOpen_Stoke2_Corner0_Rounded as Home,
+} from '#/components/icons/HomeOpen'
+import {MagnifyingGlass_Filled_Stroke2_Corner0_Rounded as MagnifyingGlassFilled} from '#/components/icons/MagnifyingGlass'
+import {MagnifyingGlass2_Stroke2_Corner0_Rounded as MagnifyingGlass} from '#/components/icons/MagnifyingGlass2'
+import {
+  Message_Stroke2_Corner0_Rounded as Message,
+  Message_Stroke2_Corner0_Rounded_Filled as MessageFilled,
+} from '#/components/icons/Message'
+import {
+  SettingsGear2_Filled_Corner0_Rounded as SettingsFilled,
+  SettingsGear2_Stroke2_Corner0_Rounded as Settings,
+} from '#/components/icons/SettingsGear2'
+import {
+  UserCircle_Filled_Corner0_Rounded as UserCircleFilled,
+  UserCircle_Stroke2_Corner0_Rounded as UserCircle,
+} from '#/components/icons/UserCircle'
+import {Text} from '#/components/Typography'
+import {router} from '../../../routes'
+
+const NAV_ICON_WIDTH = 28
 
 function ProfileCard() {
   const {currentAccount} = useSession()
@@ -81,12 +101,18 @@ function ProfileCard() {
   )
 }
 
+const HIDDEN_BACK_BNT_ROUTES = ['StarterPackWizard', 'StarterPackEdit']
+
 function BackBtn() {
   const {isTablet} = useWebMediaQueries()
   const pal = usePalette('default')
   const navigation = useNavigation<NavigationProp>()
   const {_} = useLingui()
-  const shouldShow = useNavigationState(state => !isStateAtTabRoot(state))
+  const shouldShow = useNavigationState(
+    state =>
+      !isStateAtTabRoot(state) &&
+      !HIDDEN_BACK_BNT_ROUTES.includes(getCurrentRoute(state).name),
+  )
 
   const onPressBack = React.useCallback(() => {
     if (navigation.canGoBack()) {
@@ -124,9 +150,11 @@ interface NavItemProps {
   label: string
 }
 function NavItem({count, href, icon, iconFilled, label}: NavItemProps) {
-  const pal = usePalette('default')
+  const t = useTheme()
+  const {_} = useLingui()
   const {currentAccount} = useSession()
-  const {isDesktop, isTablet} = useWebMediaQueries()
+  const {gtMobile, gtTablet} = useBreakpoints()
+  const isTablet = gtMobile && !gtTablet
   const [pathName] = React.useMemo(() => router.matchPath(href), [href])
   const currentRouteInfo = useNavigationState(state => {
     if (!state) {
@@ -158,35 +186,72 @@ function NavItem({count, href, icon, iconFilled, label}: NavItemProps) {
 
   return (
     <PressableWithHover
-      style={styles.navItemWrapper}
-      hoverStyle={pal.viewLight}
+      style={[
+        a.flex_row,
+        a.align_center,
+        a.p_md,
+        a.rounded_sm,
+        a.gap_sm,
+        a.outline_inset_1,
+      ]}
+      hoverStyle={t.atoms.bg_contrast_25}
       // @ts-ignore the function signature differs on web -prf
       onPress={onPressWrapped}
       // @ts-ignore web only -prf
       href={href}
       dataSet={{noUnderline: 1}}
-      accessibilityRole="tab"
+      role="link"
       accessibilityLabel={label}
       accessibilityHint="">
       <View
         style={[
-          styles.navItemIconWrapper,
-          isTablet && styles.navItemIconWrapperTablet,
+          a.align_center,
+          a.justify_center,
+          a.z_10,
+          {
+            width: 24,
+            height: 24,
+          },
+          isTablet && {
+            width: 40,
+            height: 40,
+          },
         ]}>
         {isCurrent ? iconFilled : icon}
         {typeof count === 'string' && count ? (
           <Text
-            type="button"
+            accessibilityLabel={_(msg`${count} unread items`)}
+            accessibilityHint=""
+            accessible={true}
             style={[
-              styles.navItemCount,
-              isTablet && styles.navItemCountTablet,
+              a.absolute,
+              a.text_xs,
+              a.font_bold,
+              a.rounded_full,
+              a.text_center,
+              {
+                top: '-10%',
+                left: count.length === 1 ? '50%' : '40%',
+                backgroundColor: t.palette.primary_500,
+                color: t.palette.white,
+                lineHeight: a.text_sm.fontSize,
+                paddingHorizontal: 4,
+                paddingVertical: 1,
+                minWidth: 16,
+              },
+              isTablet && [
+                {
+                  top: '10%',
+                  left: count.length === 1 ? '50%' : '40%',
+                },
+              ],
             ]}>
             {count}
           </Text>
         ) : null}
       </View>
-      {isDesktop && (
-        <Text type="title" style={[isCurrent ? s.bold : s.normal, pal.text]}>
+      {gtTablet && (
+        <Text style={[a.text_xl, isCurrent ? a.font_heavy : a.font_normal]}>
           {label}
         </Text>
       )}
@@ -243,26 +308,45 @@ function ComposeBtn() {
     return null
   }
   return (
-    <View style={styles.newPostBtnContainer}>
-      <TouchableOpacity
+    <View style={[a.flex_row, a.pl_md, a.pt_xl]}>
+      <Button
         disabled={isFetchingHandle}
-        style={styles.newPostBtn}
+        label={_(msg`Compose new post`)}
         onPress={onPressCompose}
-        accessibilityRole="button"
-        accessibilityLabel={_(msg`New post`)}
-        accessibilityHint="">
-        <View style={styles.newPostBtnIconWrapper}>
-          <ComposeIcon2
-            size={19}
-            strokeWidth={2}
-            style={styles.newPostBtnLabel}
-          />
-        </View>
-        <Text type="button" style={styles.newPostBtnLabel}>
+        size="large"
+        variant="solid"
+        color="primary"
+        style={[a.rounded_full]}>
+        <ButtonIcon icon={EditBig} position="left" />
+        <ButtonText>
           <Trans context="action">New Post</Trans>
-        </Text>
-      </TouchableOpacity>
+        </ButtonText>
+      </Button>
     </View>
+  )
+}
+
+function ChatNavItem() {
+  const pal = usePalette('default')
+  const {_} = useLingui()
+  const numUnreadMessages = useUnreadMessageCount()
+
+  return (
+    <NavItem
+      href="/messages"
+      count={numUnreadMessages.numUnread}
+      icon={
+        <Message style={pal.text} aria-hidden={true} width={NAV_ICON_WIDTH} />
+      }
+      iconFilled={
+        <MessageFilled
+          style={pal.text}
+          aria-hidden={true}
+          width={NAV_ICON_WIDTH}
+        />
+      }
+      label={_(msg`Chat`)}
+    />
   )
 }
 
@@ -271,7 +355,7 @@ export function DesktopLeftNav() {
   const pal = usePalette('default')
   const {_} = useLingui()
   const {isDesktop, isTablet} = useWebMediaQueries()
-  const numUnread = useUnreadNotifications()
+  const numUnreadNotifications = useUnreadNotifications()
 
   if (!hasSession && !isDesktop) {
     return null
@@ -279,6 +363,7 @@ export function DesktopLeftNav() {
 
   return (
     <View
+      role="navigation"
       style={[
         styles.leftNav,
         isTablet && styles.leftNavTablet,
@@ -288,7 +373,7 @@ export function DesktopLeftNav() {
       {hasSession ? (
         <ProfileCard />
       ) : isDesktop ? (
-        <View style={{paddingHorizontal: 12}}>
+        <View style={[a.pt_xl]}>
           <NavSignupCard />
         </View>
       ) : null}
@@ -299,11 +384,17 @@ export function DesktopLeftNav() {
 
           <NavItem
             href="/"
-            icon={<HomeIcon size={isDesktop ? 24 : 28} style={pal.text} />}
+            icon={
+              <Home
+                aria-hidden={true}
+                width={NAV_ICON_WIDTH}
+                style={pal.text}
+              />
+            }
             iconFilled={
-              <HomeIconSolid
-                strokeWidth={4}
-                size={isDesktop ? 24 : 28}
+              <HomeFilled
+                aria-hidden={true}
+                width={NAV_ICON_WIDTH}
                 style={pal.text}
               />
             }
@@ -312,107 +403,90 @@ export function DesktopLeftNav() {
           <NavItem
             href="/search"
             icon={
-              <MagnifyingGlassIcon2
-                strokeWidth={2}
-                size={isDesktop ? 24 : 26}
+              <MagnifyingGlass
                 style={pal.text}
+                aria-hidden={true}
+                width={NAV_ICON_WIDTH}
               />
             }
             iconFilled={
-              <MagnifyingGlassIcon2Solid
-                strokeWidth={2}
-                size={isDesktop ? 24 : 26}
+              <MagnifyingGlassFilled
                 style={pal.text}
+                aria-hidden={true}
+                width={NAV_ICON_WIDTH}
               />
             }
             label={_(msg`Search`)}
           />
           <NavItem
-            href="/feeds"
-            icon={
-              <HashtagIcon
-                strokeWidth={2.25}
-                style={pal.text as FontAwesomeIconStyle}
-                size={isDesktop ? 24 : 28}
-              />
-            }
-            iconFilled={
-              <HashtagIcon
-                strokeWidth={4}
-                style={pal.text as FontAwesomeIconStyle}
-                size={isDesktop ? 24 : 28}
-              />
-            }
-            label={_(msg`Feeds`)}
-          />
-          <NavItem
             href="/notifications"
-            count={numUnread}
+            count={numUnreadNotifications}
             icon={
-              <BellIcon
-                strokeWidth={2}
-                size={isDesktop ? 24 : 26}
+              <Bell
+                aria-hidden={true}
+                width={NAV_ICON_WIDTH}
                 style={pal.text}
               />
             }
             iconFilled={
-              <BellIconSolid
-                strokeWidth={1.5}
-                size={isDesktop ? 24 : 26}
+              <BellFilled
+                aria-hidden={true}
+                width={NAV_ICON_WIDTH}
                 style={pal.text}
               />
             }
             label={_(msg`Notifications`)}
           />
+          <ChatNavItem />
           <NavItem
-            href="/lists"
+            href="/feeds"
             icon={
-              <ListIcon
-                style={pal.text}
-                size={isDesktop ? 26 : 30}
-                strokeWidth={2}
+              <Hashtag
+                style={pal.text as FontAwesomeIconStyle}
+                aria-hidden={true}
+                width={NAV_ICON_WIDTH}
               />
             }
             iconFilled={
-              <ListIcon
+              <HashtagFilled
+                style={pal.text as FontAwesomeIconStyle}
+                aria-hidden={true}
+                width={NAV_ICON_WIDTH}
+              />
+            }
+            label={_(msg`Feeds`)}
+          />
+          <NavItem
+            href="/lists"
+            icon={
+              <List
                 style={pal.text}
-                size={isDesktop ? 26 : 30}
-                strokeWidth={3}
+                aria-hidden={true}
+                width={NAV_ICON_WIDTH}
+              />
+            }
+            iconFilled={
+              <ListFilled
+                style={pal.text}
+                aria-hidden={true}
+                width={NAV_ICON_WIDTH}
               />
             }
             label={_(msg`Lists`)}
           />
           <NavItem
-            href="/moderation"
-            icon={
-              <HandIcon
-                style={pal.text}
-                size={isDesktop ? 24 : 27}
-                strokeWidth={5.5}
-              />
-            }
-            iconFilled={
-              <FontAwesomeIcon
-                icon="hand"
-                style={pal.text as FontAwesomeIconStyle}
-                size={isDesktop ? 23 : 26}
-              />
-            }
-            label={_(msg`Moderation`)}
-          />
-          <NavItem
             href={currentAccount ? makeProfileLink(currentAccount) : '/'}
             icon={
-              <UserIcon
-                strokeWidth={1.75}
-                size={isDesktop ? 28 : 30}
+              <UserCircle
+                aria-hidden={true}
+                width={NAV_ICON_WIDTH}
                 style={pal.text}
               />
             }
             iconFilled={
-              <UserIconSolid
-                strokeWidth={1.75}
-                size={isDesktop ? 28 : 30}
+              <UserCircleFilled
+                aria-hidden={true}
+                width={NAV_ICON_WIDTH}
                 style={pal.text}
               />
             }
@@ -421,16 +495,16 @@ export function DesktopLeftNav() {
           <NavItem
             href="/settings"
             icon={
-              <CogIcon
-                strokeWidth={1.75}
-                size={isDesktop ? 28 : 32}
+              <Settings
+                aria-hidden={true}
+                width={NAV_ICON_WIDTH}
                 style={pal.text}
               />
             }
             iconFilled={
-              <CogIconSolid
-                strokeWidth={1.5}
-                size={isDesktop ? 28 : 32}
+              <SettingsFilled
+                aria-hidden={true}
+                width={NAV_ICON_WIDTH}
                 style={pal.text}
               />
             }
@@ -481,68 +555,5 @@ const styles = StyleSheet.create({
     right: 12,
     width: 30,
     height: 30,
-  },
-
-  navItemWrapper: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 12,
-    padding: 12,
-    borderRadius: 8,
-    gap: 10,
-  },
-  navItemIconWrapper: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: 28,
-    height: 28,
-    marginTop: 2,
-    zIndex: 1,
-  },
-  navItemIconWrapperTablet: {
-    width: 40,
-    height: 40,
-  },
-  navItemCount: {
-    position: 'absolute',
-    top: 0,
-    left: 15,
-    backgroundColor: colors.blue3,
-    color: colors.white,
-    fontSize: 12,
-    fontWeight: 'bold',
-    paddingHorizontal: 4,
-    borderRadius: 6,
-  },
-  navItemCountTablet: {
-    left: 18,
-    fontSize: 14,
-  },
-
-  newPostBtnContainer: {
-    flexDirection: 'row',
-  },
-  newPostBtn: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 24,
-    paddingTop: 10,
-    paddingBottom: 12, // visually aligns the text vertically inside the button
-    paddingLeft: 16,
-    paddingRight: 18, // looks nicer like this
-    backgroundColor: colors.blue3,
-    marginLeft: 12,
-    marginTop: 20,
-    marginBottom: 10,
-    gap: 8,
-  },
-  newPostBtnIconWrapper: {
-    marginTop: 2, // aligns the icon visually with the text
-  },
-  newPostBtnLabel: {
-    color: colors.white,
-    fontSize: 16,
-    fontWeight: '600',
   },
 })

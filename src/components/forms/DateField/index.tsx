@@ -1,5 +1,5 @@
 import React from 'react'
-import {View} from 'react-native'
+import {Keyboard, View} from 'react-native'
 import DatePicker from 'react-native-date-picker'
 import {msg, Trans} from '@lingui/macro'
 import {useLingui} from '@lingui/react'
@@ -13,7 +13,7 @@ import * as TextField from '#/components/forms/TextField'
 import {DateFieldButton} from './index.shared'
 
 export * as utils from '#/components/forms/DateField/utils'
-export const Label = TextField.Label
+export const LabelText = TextField.LabelText
 
 /**
  * Date-only input. Accepts a date in the format YYYY-MM-DD, and reports date
@@ -49,7 +49,10 @@ export function DateField({
       <DateFieldButton
         label={label}
         value={value}
-        onPress={control.open}
+        onPress={() => {
+          Keyboard.dismiss()
+          control.open()
+        }}
         isInvalid={isInvalid}
         accessibilityHint={accessibilityHint}
       />
@@ -73,7 +76,7 @@ export function DateField({
             <Button
               label={_(msg`Done`)}
               onPress={() => control.close()}
-              size="medium"
+              size="large"
               color="primary"
               variant="solid">
               <ButtonText>

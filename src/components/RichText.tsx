@@ -1,17 +1,34 @@
 import React from 'react'
-import {RichText as RichTextAPI, AppBskyRichtextFacet} from '@atproto/api'
-import {useLingui} from '@lingui/react'
+import {TextStyle} from 'react-native'
+import {AppBskyRichtextFacet, RichText as RichTextAPI} from '@atproto/api'
 import {msg} from '@lingui/macro'
+import {useLingui} from '@lingui/react'
+import {useNavigation} from '@react-navigation/native'
 
-import {atoms as a, TextStyleProp, flatten, useTheme, web, native} from '#/alf'
-import {InlineLink} from '#/components/Link'
-import {Text, TextProps} from '#/components/Typography'
-import {toShortUrl} from 'lib/strings/url-helpers'
-import {TagMenu, useTagMenuControl} from '#/components/TagMenu'
+import {NavigationProp} from '#/lib/routes/types'
+import {toShortUrl} from '#/lib/strings/url-helpers'
 import {isNative} from '#/platform/detection'
+import {atoms as a, flatten, native, TextStyleProp, useTheme, web} from '#/alf'
 import {useInteractionState} from '#/components/hooks/useInteractionState'
+import {InlineLinkText, LinkProps} from '#/components/Link'
+import {ProfileHoverCard} from '#/components/ProfileHoverCard'
+import {TagMenu, useTagMenuControl} from '#/components/TagMenu'
+import {Text, TextProps} from '#/components/Typography'
 
 const WORD_WRAP = {wordWrap: 1}
+
+export type RichTextProps = TextStyleProp &
+  Pick<TextProps, 'selectable'> & {
+    value: RichTextAPI | string
+    testID?: string
+    numberOfLines?: number
+    disableLinks?: boolean
+    enableTags?: boolean
+    authorHandle?: string
+    onLinkPress?: LinkProps['onPress']
+    interactiveStyle?: TextStyle
+    emojiMultiplier?: number
+  }
 
 export function RichText({
   testID,
@@ -22,36 +39,37 @@ export function RichText({
   selectable,
   enableTags = false,
   authorHandle,
-}: TextStyleProp &
-  Pick<TextProps, 'selectable'> & {
-    value: RichTextAPI | string
-    testID?: string
-    numberOfLines?: number
-    disableLinks?: boolean
-    enableTags?: boolean
-    authorHandle?: string
-  }) {
+  onLinkPress,
+  interactiveStyle,
+  emojiMultiplier = 1.85,
+}: RichTextProps) {
   const richText = React.useMemo(
     () =>
       value instanceof RichTextAPI ? value : new RichTextAPI({text: value}),
     [value],
   )
-  const styles = [a.leading_snug, flatten(style)]
+
+  const flattenedStyle = flatten(style)
+  const plainStyles = [a.leading_snug, flattenedStyle]
+  const interactiveStyles = [
+    a.leading_snug,
+    a.pointer_events_auto,
+    flatten(interactiveStyle),
+    flattenedStyle,
+  ]
 
   const {text, facets} = richText
 
   if (!facets?.length) {
-    if (text.length <= 5 && /^\p{Extended_Pictographic}+$/u.test(text)) {
+    if (isOnlyEmoji(text)) {
+      const fontSize =
+        (flattenedStyle.fontSize ?? a.text_sm.fontSize) * emojiMultiplier
       return (
         <Text
+          emoji
           selectable={selectable}
           testID={testID}
-          style={[
-            {
-              fontSize: 26,
-              lineHeight: 30,
-            },
-          ]}
+          style={[plainStyles, {fontSize}]}
           // @ts-ignore web only -prf
           dataSet={WORD_WRAP}>
           {text}
@@ -60,9 +78,10 @@ export function RichText({
     }
     return (
       <Text
+        emoji
         selectable={selectable}
         testID={testID}
-        style={styles}
+        style={plainStyles}
         numberOfLines={numberOfLines}
         // @ts-ignore web only -prf
         dataSet={WORD_WRAP}>
@@ -84,30 +103,35 @@ export function RichText({
       !disableLinks
     ) {
       els.push(
-        <InlineLink
-          selectable={selectable}
-          key={key}
-          to={`/profile/${mention.did}`}
-          style={[...styles, {pointerEvents: 'auto'}]}
-          // @ts-ignore TODO
-          dataSet={WORD_WRAP}>
-          {segment.text}
-        </InlineLink>,
+        <ProfileHoverCard key={key} inline did={mention.did}>
+          <InlineLinkText
+            selectable={selectable}
+            to={`/profile/${mention.did}`}
+            style={interactiveStyles}
+            // @ts-ignore TODO
+            dataSet={WORD_WRAP}
+            onPress={onLinkPress}>
+            {segment.text}
+          </InlineLinkText>
+        </ProfileHoverCard>,
       )
     } else if (link && AppBskyRichtextFacet.validateLink(link).success) {
       if (disableLinks) {
         els.push(toShortUrl(segment.text))
       } else {
         els.push(
-          <InlineLink
+          <InlineLinkText
             selectable={selectable}
             key={key}
             to={link.uri}
-            style={[...styles, {pointerEvents: 'auto'}]}
+            style={interactiveStyles}
             // @ts-ignore TODO
-            dataSet={WORD_WRAP}>
+            dataSet={WORD_WRAP}
+            shareOnLongPress
+            onPress={onLinkPress}
+            emoji>
             {toShortUrl(segment.text)}
-          </InlineLink>,
+          </InlineLinkText>,
         )
       }
     } else if (
@@ -121,13 +145,17 @@ export function RichText({
           key={key}
           text={segment.text}
           tag={tag.tag}
-          style={styles}
+          style={interactiveStyles}
           selectable={selectable}
           authorHandle={authorHandle}
         />,
       )
     } else {
-      els.push(segment.text)
+      els.push(
+        <Text key={key} emoji style={plainStyles}>
+          {segment.text}
+        </Text>,
+      )
     }
     key++
   }
@@ -136,7 +164,7 @@ export function RichText({
     <Text
       selectable={selectable}
       testID={testID}
-      style={styles}
+      style={plainStyles}
       numberOfLines={numberOfLines}
       // @ts-ignore web only -prf
       dataSet={WORD_WRAP}>
@@ -171,8 +199,15 @@ function RichTextTag({
     onIn: onPressIn,
     onOut: onPressOut,
   } = useInteractionState()
+  const navigation = useNavigation<NavigationProp>()
 
-  const open = React.useCallback(() => {
+  const navigateToPage = React.useCallback(() => {
+    navigation.push('Hashtag', {
+      tag: encodeURIComponent(tag),
+    })
+  }, [navigation, tag])
+
+  const openDialog = React.useCallback(() => {
     control.open()
   }, [control])
 
@@ -185,12 +220,14 @@ function RichTextTag({
     <React.Fragment>
       <TagMenu control={control} tag={tag} authorHandle={authorHandle}>
         <Text
+          emoji
           selectable={selectable}
           {...native({
             accessibilityLabel: _(msg`Hashtag: #${tag}`),
-            accessibilityHint: _(msg`Click here to open tag menu for #${tag}`),
+            accessibilityHint: _(msg`Long press to open tag menu for #${tag}`),
             accessibilityRole: isNative ? 'button' : undefined,
-            onPress: open,
+            onPress: navigateToPage,
+            onLongPress: openDialog,
             onPressIn: onPressIn,
             onPressOut: onPressOut,
           })}
@@ -202,23 +239,27 @@ function RichTextTag({
           onFocus={onFocus}
           onBlur={onBlur}
           style={[
-            style,
-            {
-              pointerEvents: 'auto',
-              color: t.palette.primary_500,
-            },
             web({
               cursor: 'pointer',
             }),
+            {color: t.palette.primary_500},
             (hovered || focused || pressed) && {
               ...web({outline: 0}),
               textDecorationLine: 'underline',
               textDecorationColor: t.palette.primary_500,
             },
+            style,
           ]}>
           {text}
         </Text>
       </TagMenu>
     </React.Fragment>
+  )
+}
+
+export function isOnlyEmoji(text: string) {
+  return (
+    text.length <= 15 &&
+    /^[\p{Emoji_Presentation}\p{Extended_Pictographic}]+$/u.test(text)
   )
 }

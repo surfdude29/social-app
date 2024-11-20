@@ -1,7 +1,8 @@
 /// <reference lib="dom" />
 
-import {CameraOpts, CropperOptions} from './types'
 import {Image as RNImage} from 'react-native-image-crop-picker'
+
+import {CameraOpts, CropperOptions} from './types'
 export {openPicker} from './picker.shared'
 import {unstable__openModal} from '#/state/modals'
 
@@ -16,6 +17,12 @@ export async function openCropper(opts: CropperOptions): Promise<RNImage> {
     unstable__openModal({
       name: 'crop-image',
       uri: opts.path,
+      dimensions:
+        opts.width && opts.height
+          ? {width: opts.width, height: opts.height}
+          : undefined,
+      aspect: opts.webAspectRatio,
+      circular: opts.webCircularCrop,
       onSelect: (img?: RNImage) => {
         if (img) {
           resolve(img)

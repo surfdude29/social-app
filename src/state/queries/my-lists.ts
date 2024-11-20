@@ -1,19 +1,22 @@
 import {AppBskyGraphDefs} from '@atproto/api'
-import {useQuery, QueryClient} from '@tanstack/react-query'
+import {QueryClient, useQuery} from '@tanstack/react-query'
 
 import {accumulate} from '#/lib/async/accumulate'
-import {useSession, getAgent} from '#/state/session'
 import {STALE} from '#/state/queries'
+import {useAgent, useSession} from '#/state/session'
 
 export type MyListsFilter =
   | 'all'
   | 'curate'
   | 'mod'
   | 'all-including-subscribed'
-export const RQKEY = (filter: MyListsFilter) => ['my-lists', filter]
+
+const RQKEY_ROOT = 'my-lists'
+export const RQKEY = (filter: MyListsFilter) => [RQKEY_ROOT, filter]
 
 export function useMyListsQuery(filter: MyListsFilter) {
   const {currentAccount} = useSession()
+  const agent = useAgent()
   return useQuery<AppBskyGraphDefs.ListView[]>({
     staleTime: STALE.MINUTES.ONE,
     queryKey: RQKEY(filter),
@@ -21,8 +24,8 @@ export function useMyListsQuery(filter: MyListsFilter) {
       let lists: AppBskyGraphDefs.ListView[] = []
       const promises = [
         accumulate(cursor =>
-          getAgent()
-            .app.bsky.graph.getLists({
+          agent.app.bsky.graph
+            .getLists({
               actor: currentAccount!.did,
               cursor,
               limit: 50,
@@ -36,8 +39,8 @@ export function useMyListsQuery(filter: MyListsFilter) {
       if (filter === 'all-including-subscribed' || filter === 'mod') {
         promises.push(
           accumulate(cursor =>
-            getAgent()
-              .app.bsky.graph.getListMutes({
+            agent.app.bsky.graph
+              .getListMutes({
                 cursor,
                 limit: 50,
               })
@@ -49,8 +52,8 @@ export function useMyListsQuery(filter: MyListsFilter) {
         )
         promises.push(
           accumulate(cursor =>
-            getAgent()
-              .app.bsky.graph.getListBlocks({
+            agent.app.bsky.graph
+              .getListBlocks({
                 cursor,
                 limit: 50,
               })
@@ -91,6 +94,6 @@ export function invalidate(qc: QueryClient, filter?: MyListsFilter) {
   if (filter) {
     qc.invalidateQueries({queryKey: RQKEY(filter)})
   } else {
-    qc.invalidateQueries({queryKey: ['my-lists']})
+    qc.invalidateQueries({queryKey: [RQKEY_ROOT]})
   }
 }

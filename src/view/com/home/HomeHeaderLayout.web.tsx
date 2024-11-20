@@ -1,20 +1,19 @@
 import React from 'react'
 import {StyleSheet, View} from 'react-native'
 import Animated from 'react-native-reanimated'
-import {usePalette} from 'lib/hooks/usePalette'
-import {useWebMediaQueries} from 'lib/hooks/useWebMediaQueries'
-import {HomeHeaderLayoutMobile} from './HomeHeaderLayoutMobile'
-import {Logo} from '#/view/icons/Logo'
-import {Link} from '../util/Link'
-import {
-  FontAwesomeIcon,
-  FontAwesomeIconStyle,
-} from '@fortawesome/react-native-fontawesome'
-import {useLingui} from '@lingui/react'
 import {msg} from '@lingui/macro'
-import {CogIcon} from '#/lib/icons'
-import {useMinimalShellMode} from 'lib/hooks/useMinimalShellMode'
+import {useLingui} from '@lingui/react'
+
+import {useMinimalShellHeaderTransform} from '#/lib/hooks/useMinimalShellTransform'
+import {useWebMediaQueries} from '#/lib/hooks/useWebMediaQueries'
+import {useKawaiiMode} from '#/state/preferences/kawaii'
+import {useSession} from '#/state/session'
 import {useShellLayout} from '#/state/shell/shell-layout'
+import {Logo} from '#/view/icons/Logo'
+import {atoms as a, useTheme} from '#/alf'
+import {Hashtag_Stroke2_Corner0_Rounded as FeedsIcon} from '#/components/icons/Hashtag'
+import {Link} from '#/components/Link'
+import {HomeHeaderLayoutMobile} from './HomeHeaderLayoutMobile'
 
 export function HomeHeaderLayout(props: {
   children: React.ReactNode
@@ -35,43 +34,70 @@ function HomeHeaderLayoutDesktopAndTablet({
   children: React.ReactNode
   tabBarAnchor: JSX.Element | null | undefined
 }) {
-  const pal = usePalette('default')
-  const {headerMinimalShellTransform} = useMinimalShellMode()
+  const t = useTheme()
+  const headerMinimalShellTransform = useMinimalShellHeaderTransform()
   const {headerHeight} = useShellLayout()
+  const {hasSession} = useSession()
   const {_} = useLingui()
+  const kawaii = useKawaiiMode()
 
   return (
     <>
-      <View style={[pal.view, pal.border, styles.bar, styles.topBar]}>
-        <Link
-          href="/settings/following-feed"
-          hitSlop={10}
-          accessibilityRole="button"
-          accessibilityLabel={_(msg`Following Feed Preferences`)}
-          accessibilityHint="">
-          <FontAwesomeIcon
-            icon="sliders"
-            style={pal.textLight as FontAwesomeIconStyle}
-          />
-        </Link>
-        <Logo width={28} />
-        <Link
-          href="/settings/saved-feeds"
-          hitSlop={10}
-          accessibilityRole="button"
-          accessibilityLabel={_(msg`Edit Saved Feeds`)}
-          accessibilityHint={_(msg`Opens screen to edit Saved Feeds`)}>
-          <CogIcon size={22} strokeWidth={2} style={pal.textLight} />
-        </Link>
-      </View>
+      {hasSession && (
+        <View
+          style={[
+            a.relative,
+            a.flex_row,
+            a.justify_end,
+            a.align_center,
+            a.pt_lg,
+            a.px_md,
+            a.pb_2xs,
+            t.atoms.bg,
+            t.atoms.border_contrast_low,
+            styles.bar,
+            kawaii && {paddingTop: 22, paddingBottom: 16},
+          ]}>
+          <View
+            style={[
+              a.absolute,
+              a.inset_0,
+              a.pt_lg,
+              a.m_auto,
+              kawaii && {paddingTop: 4, paddingBottom: 0},
+              {
+                width: kawaii ? 84 : 28,
+              },
+            ]}>
+            <Logo width={kawaii ? 60 : 28} />
+          </View>
+
+          <Link
+            to="/feeds"
+            hitSlop={10}
+            label={_(msg`View your feeds and explore more`)}
+            size="small"
+            variant="ghost"
+            color="secondary"
+            shape="square"
+            style={[
+              a.justify_center,
+              {
+                marginTop: -4,
+              },
+            ]}>
+            <FeedsIcon size="md" fill={t.atoms.text_contrast_medium.color} />
+          </Link>
+        </View>
+      )}
       {tabBarAnchor}
       <Animated.View
         onLayout={e => {
-          headerHeight.value = e.nativeEvent.layout.height
+          headerHeight.set(e.nativeEvent.layout.height)
         }}
         style={[
-          pal.view,
-          pal.border,
+          t.atoms.bg,
+          t.atoms.border_contrast_low,
           styles.bar,
           styles.tabBar,
           headerMinimalShellTransform,

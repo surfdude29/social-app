@@ -6,23 +6,24 @@ import {
   StyleSheet,
   View,
 } from 'react-native'
-import {Svg, Circle, Path} from 'react-native-svg'
-import {ScrollView, TextInput} from './util'
+import {Circle, Path, Svg} from 'react-native-svg'
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome'
-import {Text} from '../util/text/Text'
-import {Button} from '../util/forms/Button'
-import {ErrorMessage} from '../util/error/ErrorMessage'
-import * as Toast from '../util/Toast'
-import {s, colors} from 'lib/styles'
-import {usePalette} from 'lib/hooks/usePalette'
-import {isWeb} from 'platform/detection'
-import {useWebMediaQueries} from 'lib/hooks/useWebMediaQueries'
-import {cleanError} from 'lib/strings/errors'
-import {Trans, msg} from '@lingui/macro'
+import {msg, Trans} from '@lingui/macro'
 import {useLingui} from '@lingui/react'
-import {useModalControls} from '#/state/modals'
-import {useSession, useSessionApi, getAgent} from '#/state/session'
+
+import {usePalette} from '#/lib/hooks/usePalette'
+import {useWebMediaQueries} from '#/lib/hooks/useWebMediaQueries'
+import {cleanError} from '#/lib/strings/errors'
+import {colors, s} from '#/lib/styles'
 import {logger} from '#/logger'
+import {isWeb} from '#/platform/detection'
+import {useModalControls} from '#/state/modals'
+import {useAgent, useSession} from '#/state/session'
+import {ErrorMessage} from '../util/error/ErrorMessage'
+import {Button} from '../util/forms/Button'
+import {Text} from '../util/text/Text'
+import * as Toast from '../util/Toast'
+import {ScrollView, TextInput} from './util'
 
 export const snapPoints = ['90%']
 
@@ -32,10 +33,16 @@ enum Stages {
   ConfirmCode,
 }
 
-export function Component({showReminder}: {showReminder?: boolean}) {
+export function Component({
+  showReminder,
+  onSuccess,
+}: {
+  showReminder?: boolean
+  onSuccess?: () => void
+}) {
   const pal = usePalette('default')
+  const agent = useAgent()
   const {currentAccount} = useSession()
-  const {updateCurrentAccount} = useSessionApi()
   const {_} = useLingui()
   const [stage, setStage] = useState<Stages>(
     showReminder ? Stages.Reminder : Stages.Email,
@@ -57,7 +64,7 @@ export function Component({showReminder}: {showReminder?: boolean}) {
     setError('')
     setIsProcessing(true)
     try {
-      await getAgent().com.atproto.server.requestEmailConfirmation()
+      await agent.com.atproto.server.requestEmailConfirmation()
       setStage(Stages.ConfirmCode)
     } catch (e) {
       setError(cleanError(String(e)))
@@ -70,13 +77,14 @@ export function Component({showReminder}: {showReminder?: boolean}) {
     setError('')
     setIsProcessing(true)
     try {
-      await getAgent().com.atproto.server.confirmEmail({
+      await agent.com.atproto.server.confirmEmail({
         email: (currentAccount?.email || '').trim(),
         token: confirmationCode.trim(),
       })
-      updateCurrentAccount({emailConfirmed: true})
+      await agent.resumeSession(agent.session!)
       Toast.show(_(msg`Email verified`))
       closeModal()
+      onSuccess?.()
     } catch (e) {
       setError(cleanError(String(e)))
     } finally {
@@ -165,7 +173,7 @@ export function Component({showReminder}: {showReminder?: boolean}) {
             accessibilityLabel={_(msg`Confirmation code`)}
             accessibilityHint=""
             autoCapitalize="none"
-            autoComplete="off"
+            autoComplete="one-time-code"
             autoCorrect={false}
           />
         ) : undefined}

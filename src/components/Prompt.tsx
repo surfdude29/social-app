@@ -1,15 +1,18 @@
 import React from 'react'
-import {View} from 'react-native'
+import {GestureResponderEvent, View} from 'react-native'
 import {msg} from '@lingui/macro'
 import {useLingui} from '@lingui/react'
 
-import {useTheme, atoms as a, useBreakpoints} from '#/alf'
-import {Text} from '#/components/Typography'
+import {atoms as a, useBreakpoints, useTheme} from '#/alf'
 import {Button, ButtonColor, ButtonText} from '#/components/Button'
-
 import * as Dialog from '#/components/Dialog'
+import {Text} from '#/components/Typography'
+import {BottomSheetViewProps} from '../../modules/bottom-sheet'
 
-export {useDialogControl as usePromptControl} from '#/components/Dialog'
+export {
+  type DialogControlProps as PromptControlProps,
+  useDialogControl as usePromptControl,
+} from '#/components/Dialog'
 
 const Context = React.createContext<{
   titleId: string
@@ -23,9 +26,11 @@ export function Outer({
   children,
   control,
   testID,
+  nativeOptions,
 }: React.PropsWithChildren<{
-  control: Dialog.DialogOuterProps['control']
+  control: Dialog.DialogControlProps
   testID?: string
+  nativeOptions?: Omit<BottomSheetViewProps, 'children'>
 }>) {
   const {gtMobile} = useBreakpoints()
   const titleId = React.useId()
@@ -37,14 +42,18 @@ export function Outer({
   )
 
   return (
-    <Dialog.Outer control={control} testID={testID}>
+    <Dialog.Outer
+      control={control}
+      testID={testID}
+      nativeOptions={{preventExpansion: true, ...nativeOptions}}>
+      <Dialog.Handle />
       <Context.Provider value={context}>
-        <Dialog.Handle />
-
         <Dialog.ScrollableInner
           accessibilityLabelledBy={titleId}
           accessibilityDescribedBy={descriptionId}
-          style={[gtMobile ? {width: 'auto', maxWidth: 400} : a.w_full]}>
+          style={[
+            gtMobile ? {width: 'auto', maxWidth: 400, minWidth: 200} : a.w_full,
+          ]}>
           {children}
         </Dialog.ScrollableInner>
       </Context.Provider>
@@ -52,21 +61,27 @@ export function Outer({
   )
 }
 
-export function Title({children}: React.PropsWithChildren<{}>) {
+export function TitleText({children}: React.PropsWithChildren<{}>) {
   const {titleId} = React.useContext(Context)
   return (
-    <Text nativeID={titleId} style={[a.text_2xl, a.font_bold, a.pb_sm]}>
+    <Text
+      nativeID={titleId}
+      style={[a.text_2xl, a.font_bold, a.pb_sm, a.leading_snug]}>
       {children}
     </Text>
   )
 }
 
-export function Description({children}: React.PropsWithChildren<{}>) {
+export function DescriptionText({
+  children,
+  selectable,
+}: React.PropsWithChildren<{selectable?: boolean}>) {
   const t = useTheme()
   const {descriptionId} = React.useContext(Context)
   return (
     <Text
       nativeID={descriptionId}
+      selectable={selectable}
       style={[a.text_md, a.leading_snug, t.atoms.text_contrast_high, a.pb_lg]}>
       {children}
     </Text>
@@ -80,7 +95,7 @@ export function Actions({children}: React.PropsWithChildren<{}>) {
     <View
       style={[
         a.w_full,
-        a.gap_sm,
+        a.gap_md,
         a.justify_end,
         gtMobile
           ? [a.flex_row, a.flex_row_reverse, a.justify_start]
@@ -92,15 +107,13 @@ export function Actions({children}: React.PropsWithChildren<{}>) {
 }
 
 export function Cancel({
-  children,
   cta,
-}: React.PropsWithChildren<{
+}: {
   /**
-   * Optional i18n string, used in lieu of `children` for simple buttons. If
-   * undefined (and `children` is undefined), it will default to "Cancel".
+   * Optional i18n string. If undefined, it will default to "Cancel".
    */
   cta?: string
-}>) {
+}) {
   const {_} = useLingui()
   const {gtMobile} = useBreakpoints()
   const {close} = Dialog.useDialogContext()
@@ -112,47 +125,54 @@ export function Cancel({
     <Button
       variant="solid"
       color="secondary"
-      size={gtMobile ? 'small' : 'medium'}
+      size={gtMobile ? 'small' : 'large'}
       label={cta || _(msg`Cancel`)}
       onPress={onPress}>
-      {children ? children : <ButtonText>{cta || _(msg`Cancel`)}</ButtonText>}
+      <ButtonText>{cta || _(msg`Cancel`)}</ButtonText>
     </Button>
   )
 }
 
 export function Action({
-  children,
   onPress,
   color = 'primary',
   cta,
   testID,
-}: React.PropsWithChildren<{
-  onPress: () => void
+}: {
+  /**
+   * Callback to run when the action is pressed. The method is called _after_
+   * the dialog closes.
+   *
+   * Note: The dialog will close automatically when the action is pressed, you
+   * should NOT close the dialog as a side effect of this method.
+   */
+  onPress: (e: GestureResponderEvent) => void
   color?: ButtonColor
   /**
-   * Optional i18n string, used in lieu of `children` for simple buttons. If
-   * undefined (and `children` is undefined), it will default to "Confirm".
+   * Optional i18n string. If undefined, it will default to "Confirm".
    */
   cta?: string
   testID?: string
-}>) {
+}) {
   const {_} = useLingui()
   const {gtMobile} = useBreakpoints()
   const {close} = Dialog.useDialogContext()
-  const handleOnPress = React.useCallback(() => {
-    close()
-    onPress()
-  }, [close, onPress])
+  const handleOnPress = React.useCallback(
+    (e: GestureResponderEvent) => {
+      close(() => onPress?.(e))
+    },
+    [close, onPress],
+  )
 
   return (
     <Button
       variant="solid"
       color={color}
-      size={gtMobile ? 'small' : 'medium'}
+      size={gtMobile ? 'small' : 'large'}
       label={cta || _(msg`Confirm`)}
       onPress={handleOnPress}
       testID={testID}>
-      {children ? children : <ButtonText>{cta || _(msg`Confirm`)}</ButtonText>}
+      <ButtonText>{cta || _(msg`Confirm`)}</ButtonText>
     </Button>
   )
 }
@@ -165,19 +185,28 @@ export function Basic({
   confirmButtonCta,
   onConfirm,
   confirmButtonColor,
+  showCancel = true,
 }: React.PropsWithChildren<{
   control: Dialog.DialogOuterProps['control']
   title: string
   description: string
   cancelButtonCta?: string
   confirmButtonCta?: string
-  onConfirm: () => void
+  /**
+   * Callback to run when the Confirm button is pressed. The method is called
+   * _after_ the dialog closes.
+   *
+   * Note: The dialog will close automatically when the action is pressed, you
+   * should NOT close the dialog as a side effect of this method.
+   */
+  onConfirm: (e: GestureResponderEvent) => void
   confirmButtonColor?: ButtonColor
+  showCancel?: boolean
 }>) {
   return (
     <Outer control={control} testID="confirmModal">
-      <Title>{title}</Title>
-      <Description>{description}</Description>
+      <TitleText>{title}</TitleText>
+      <DescriptionText>{description}</DescriptionText>
       <Actions>
         <Action
           cta={confirmButtonCta}
@@ -185,7 +214,7 @@ export function Basic({
           color={confirmButtonColor}
           testID="confirmBtn"
         />
-        <Cancel cta={cancelButtonCta} />
+        {showCancel && <Cancel cta={cancelButtonCta} />}
       </Actions>
     </Outer>
   )

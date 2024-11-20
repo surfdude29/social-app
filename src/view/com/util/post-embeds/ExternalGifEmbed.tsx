@@ -1,21 +1,18 @@
-import {EmbedPlayerParams, getGifDims} from 'lib/strings/embed-player'
 import React from 'react'
-import {Image, ImageLoadEventData} from 'expo-image'
-import {
-  ActivityIndicator,
-  GestureResponderEvent,
-  LayoutChangeEvent,
-  Pressable,
-  StyleSheet,
-  View,
-} from 'react-native'
-import {isIOS, isNative, isWeb} from '#/platform/detection'
-import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome'
-import {useExternalEmbedsPrefs} from 'state/preferences'
-import {useModalControls} from 'state/modals'
-import {useLingui} from '@lingui/react'
-import {msg} from '@lingui/macro'
+import {ActivityIndicator, GestureResponderEvent, Pressable} from 'react-native'
+import {Image} from 'expo-image'
 import {AppBskyEmbedExternal} from '@atproto/api'
+import {msg} from '@lingui/macro'
+import {useLingui} from '@lingui/react'
+
+import {EmbedPlayerParams} from '#/lib/strings/embed-player'
+import {isIOS, isNative, isWeb} from '#/platform/detection'
+import {useExternalEmbedsPrefs} from '#/state/preferences'
+import {atoms as a, useTheme} from '#/alf'
+import {useDialogControl} from '#/components/Dialog'
+import {EmbedConsentDialog} from '#/components/dialogs/EmbedConsent'
+import {Fill} from '#/components/Fill'
+import {PlayButtonIcon} from '#/components/video/PlayButtonIcon'
 
 export function ExternalGifEmbed({
   link,
@@ -24,12 +21,10 @@ export function ExternalGifEmbed({
   link: AppBskyEmbedExternal.ViewExternal
   params: EmbedPlayerParams
 }) {
+  const t = useTheme()
   const externalEmbedsPrefs = useExternalEmbedsPrefs()
-  const {openModal} = useModalControls()
   const {_} = useLingui()
-
-  const thumbHasLoaded = React.useRef(false)
-  const viewWidth = React.useRef(0)
+  const consentDialogControl = useDialogControl()
 
   // Tracking if the placer has been activated
   const [isPlayerActive, setIsPlayerActive] = React.useState(false)
@@ -37,7 +32,6 @@ export function ExternalGifEmbed({
   const [isPrefetched, setIsPrefetched] = React.useState(false)
   // Tracking whether the image is animating
   const [isAnimating, setIsAnimating] = React.useState(true)
-  const [imageDims, setImageDims] = React.useState({height: 100, width: 1})
 
   // Used for controlling animation
   const imageRef = React.useRef<Image>(null)
@@ -57,11 +51,7 @@ export function ExternalGifEmbed({
 
       // Show consent if this is the first load
       if (externalEmbedsPrefs?.[params.source] === undefined) {
-        openModal({
-          name: 'embed-consent',
-          source: params.source,
-          onAccept: load,
-        })
+        consentDialogControl.open()
         return
       }
       // If the player isn't active, we want to activate it and prefetch the gif
@@ -84,87 +74,74 @@ export function ExternalGifEmbed({
         }
       })
     },
-    [externalEmbedsPrefs, isPlayerActive, load, openModal, params.source],
+    [
+      consentDialogControl,
+      externalEmbedsPrefs,
+      isPlayerActive,
+      load,
+      params.source,
+    ],
   )
 
-  const onLoad = React.useCallback((e: ImageLoadEventData) => {
-    if (thumbHasLoaded.current) return
-    setImageDims(getGifDims(e.source.height, e.source.width, viewWidth.current))
-    thumbHasLoaded.current = true
-  }, [])
-
-  const onLayout = React.useCallback((e: LayoutChangeEvent) => {
-    viewWidth.current = e.nativeEvent.layout.width
-  }, [])
-
   return (
-    <Pressable
-      style={[
-        {height: imageDims.height},
-        styles.topRadius,
-        styles.gifContainer,
-      ]}
-      onPress={onPlayPress}
-      onLayout={onLayout}
-      accessibilityRole="button"
-      accessibilityHint={_(msg`Plays the GIF`)}
-      accessibilityLabel={_(msg`Play ${link.title}`)}>
-      {(!isPrefetched || !isAnimating) && ( // If we have not loaded or are not animating, show the overlay
-        <View style={[styles.layer, styles.overlayLayer]}>
-          <View style={[styles.overlayContainer, styles.topRadius]}>
+    <>
+      <EmbedConsentDialog
+        control={consentDialogControl}
+        source={params.source}
+        onAccept={load}
+      />
+
+      <Pressable
+        style={[
+          {height: 300},
+          a.w_full,
+          a.overflow_hidden,
+          {
+            borderBottomLeftRadius: 0,
+            borderBottomRightRadius: 0,
+          },
+        ]}
+        onPress={onPlayPress}
+        accessibilityRole="button"
+        accessibilityHint={_(msg`Plays the GIF`)}
+        accessibilityLabel={_(msg`Play ${link.title}`)}>
+        <Image
+          source={{
+            uri:
+              !isPrefetched || (isWeb && !isAnimating)
+                ? link.thumb
+                : params.playerUri,
+          }} // Web uses the thumb to control playback
+          style={{flex: 1}}
+          ref={imageRef}
+          autoplay={isAnimating}
+          contentFit="contain"
+          accessibilityIgnoresInvertColors
+          accessibilityLabel={link.title}
+          accessibilityHint={link.title}
+          cachePolicy={isIOS ? 'disk' : 'memory-disk'} // cant control playback with memory-disk on ios
+        />
+
+        {(!isPrefetched || !isAnimating) && (
+          <Fill style={[a.align_center, a.justify_center]}>
+            <Fill
+              style={[
+                t.name === 'light' ? t.atoms.bg_contrast_975 : t.atoms.bg,
+                {
+                  opacity: 0.3,
+                },
+              ]}
+            />
+
             {!isAnimating || !isPlayerActive ? ( // Play button when not animating or not active
-              <FontAwesomeIcon icon="play" size={42} color="white" />
+              <PlayButtonIcon />
             ) : (
               // Activity indicator while gif loads
               <ActivityIndicator size="large" color="white" />
             )}
-          </View>
-        </View>
-      )}
-      <Image
-        source={{
-          uri:
-            !isPrefetched || (isWeb && !isAnimating)
-              ? link.thumb
-              : params.playerUri,
-        }} // Web uses the thumb to control playback
-        style={{flex: 1}}
-        ref={imageRef}
-        onLoad={onLoad}
-        autoplay={isAnimating}
-        contentFit="contain"
-        accessibilityIgnoresInvertColors
-        accessibilityLabel={link.title}
-        accessibilityHint={link.title}
-        cachePolicy={isIOS ? 'disk' : 'memory-disk'} // cant control playback with memory-disk on ios
-      />
-    </Pressable>
+          </Fill>
+        )}
+      </Pressable>
+    </>
   )
 }
-
-const styles = StyleSheet.create({
-  topRadius: {
-    borderTopLeftRadius: 6,
-    borderTopRightRadius: 6,
-  },
-  layer: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-  },
-  overlayContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0,0,0,0.5)',
-  },
-  overlayLayer: {
-    zIndex: 2,
-  },
-  gifContainer: {
-    width: '100%',
-    overflow: 'hidden',
-  },
-})

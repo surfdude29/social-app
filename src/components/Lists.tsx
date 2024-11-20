@@ -1,28 +1,34 @@
-import React from 'react'
-import {atoms as a, useBreakpoints, useTheme} from '#/alf'
-import {View} from 'react-native'
+import React, {memo} from 'react'
+import {StyleProp, View, ViewStyle} from 'react-native'
+import {msg, Trans} from '@lingui/macro'
 import {useLingui} from '@lingui/react'
-import {Trans, msg} from '@lingui/macro'
 
-import {CenteredView} from 'view/com/util/Views'
-import {Loader} from '#/components/Loader'
-import {cleanError} from 'lib/strings/errors'
-import {Button} from '#/components/Button'
-import {Text} from '#/components/Typography'
+import {cleanError} from '#/lib/strings/errors'
+import {CenteredView} from '#/view/com/util/Views'
+import {atoms as a, flatten, useBreakpoints, useTheme} from '#/alf'
+import {Button, ButtonText} from '#/components/Button'
 import {Error} from '#/components/Error'
+import {Loader} from '#/components/Loader'
+import {Text} from '#/components/Typography'
 
 export function ListFooter({
-  isFetching,
-  isError,
+  isFetchingNextPage,
+  hasNextPage,
   error,
   onRetry,
   height,
+  style,
+  showEndMessage = false,
+  endMessageText,
 }: {
-  isFetching?: boolean
-  isError?: boolean
+  isFetchingNextPage?: boolean
+  hasNextPage?: boolean
   error?: string
   onRetry?: () => Promise<unknown>
   height?: number
+  style?: StyleProp<ViewStyle>
+  showEndMessage?: boolean
+  endMessageText?: string
 }) {
   const t = useTheme()
 
@@ -35,33 +41,32 @@ export function ListFooter({
         a.pb_lg,
         t.atoms.border_contrast_low,
         {height: height ?? 180, paddingTop: 30},
+        flatten(style),
       ]}>
-      {isFetching ? (
+      {isFetchingNextPage ? (
         <Loader size="xl" />
-      ) : (
-        <ListFooterMaybeError
-          isError={isError}
-          error={error}
-          onRetry={onRetry}
-        />
-      )}
+      ) : error ? (
+        <ListFooterMaybeError error={error} onRetry={onRetry} />
+      ) : !hasNextPage && showEndMessage ? (
+        <Text style={[a.text_sm, t.atoms.text_contrast_low]}>
+          {endMessageText ?? <Trans>You have reached the end</Trans>}
+        </Text>
+      ) : null}
     </View>
   )
 }
 
 function ListFooterMaybeError({
-  isError,
   error,
   onRetry,
 }: {
-  isError?: boolean
   error?: string
   onRetry?: () => Promise<unknown>
 }) {
   const t = useTheme()
   const {_} = useLingui()
 
-  if (!isError) return null
+  if (!error) return null
 
   return (
     <View style={[a.w_full, a.px_lg]}>
@@ -95,7 +100,9 @@ function ListFooterMaybeError({
             a.py_sm,
           ]}
           onPress={onRetry}>
-          <Trans>Retry</Trans>
+          <ButtonText>
+            <Trans>Retry</Trans>
+          </ButtonText>
         </Button>
       </View>
     </View>
@@ -115,8 +122,16 @@ export function ListHeaderDesktop({
   if (!gtTablet) return null
 
   return (
-    <View style={[a.w_full, a.py_lg, a.px_xl, a.gap_xs]}>
-      <Text style={[a.text_3xl, a.font_bold]}>{title}</Text>
+    <View
+      style={[
+        a.w_full,
+        a.py_sm,
+        a.px_xl,
+        a.gap_xs,
+        a.justify_center,
+        {minHeight: 50},
+      ]}>
+      <Text style={[a.text_2xl, a.font_bold]}>{title}</Text>
       {subtitle ? (
         <Text style={[a.text_md, t.atoms.text_contrast_medium]}>
           {subtitle}
@@ -126,9 +141,9 @@ export function ListHeaderDesktop({
   )
 }
 
-export function ListMaybePlaceholder({
+let ListMaybePlaceholder = ({
   isLoading,
-  isEmpty,
+  noEmpty,
   isError,
   emptyTitle,
   emptyMessage,
@@ -136,9 +151,13 @@ export function ListMaybePlaceholder({
   errorMessage,
   emptyType = 'page',
   onRetry,
+  onGoBack,
+  hideBackButton,
+  sideBorders,
+  topBorder = true,
 }: {
   isLoading: boolean
-  isEmpty?: boolean
+  noEmpty?: boolean
   isError?: boolean
   emptyTitle?: string
   emptyMessage?: string
@@ -146,33 +165,27 @@ export function ListMaybePlaceholder({
   errorMessage?: string
   emptyType?: 'page' | 'results'
   onRetry?: () => Promise<unknown>
-}) {
+  onGoBack?: () => void
+  hideBackButton?: boolean
+  sideBorders?: boolean
+  topBorder?: boolean
+}): React.ReactNode => {
   const t = useTheme()
   const {_} = useLingui()
   const {gtMobile, gtTablet} = useBreakpoints()
-
-  if (!isLoading && isError) {
-    return (
-      <Error
-        title={errorTitle ?? _(msg`Oops!`)}
-        message={errorMessage ?? _(`Something went wrong!`)}
-        onRetry={onRetry}
-      />
-    )
-  }
 
   if (isLoading) {
     return (
       <CenteredView
         style={[
-          a.flex_1,
+          a.h_full_vh,
           a.align_center,
           !gtMobile ? a.justify_between : a.gap_5xl,
           t.atoms.border_contrast_low,
           {paddingTop: 175, paddingBottom: 110},
         ]}
-        sideBorders={gtMobile}
-        topBorder={!gtTablet}>
+        sideBorders={sideBorders ?? gtMobile}
+        topBorder={topBorder && !gtTablet}>
         <View style={[a.w_full, a.align_center, {top: 100}]}>
           <Loader size="xl" />
         </View>
@@ -180,7 +193,20 @@ export function ListMaybePlaceholder({
     )
   }
 
-  if (isEmpty) {
+  if (isError) {
+    return (
+      <Error
+        title={errorTitle ?? _(msg`Oops!`)}
+        message={errorMessage ?? _(msg`Something went wrong!`)}
+        onRetry={onRetry}
+        onGoBack={onGoBack}
+        sideBorders={sideBorders}
+        hideBackButton={hideBackButton}
+      />
+    )
+  }
+
+  if (!noEmpty) {
     return (
       <Error
         title={
@@ -194,7 +220,14 @@ export function ListMaybePlaceholder({
           _(msg`We're sorry! We can't find the page you were looking for.`)
         }
         onRetry={onRetry}
+        onGoBack={onGoBack}
+        hideBackButton={hideBackButton}
+        sideBorders={sideBorders}
       />
     )
   }
+
+  return null
 }
+ListMaybePlaceholder = memo(ListMaybePlaceholder)
+export {ListMaybePlaceholder}

@@ -1,40 +1,65 @@
 import React from 'react'
-import {StyleProp, StyleSheet, View, ViewStyle} from 'react-native'
 import {
-  AppBskyFeedDefs,
-  AppBskyEmbedRecord,
-  AppBskyFeedPost,
-  AppBskyEmbedImages,
-  AppBskyEmbedRecordWithMedia,
+  StyleProp,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+  ViewStyle,
+} from 'react-native'
+import {
   AppBskyEmbedExternal,
-  RichText as RichTextAPI,
-  moderatePost,
+  AppBskyEmbedImages,
+  AppBskyEmbedRecord,
+  AppBskyEmbedRecordWithMedia,
+  AppBskyEmbedVideo,
+  AppBskyFeedDefs,
+  AppBskyFeedPost,
   ModerationDecision,
+  RichText as RichTextAPI,
 } from '@atproto/api'
 import {AtUri} from '@atproto/api'
-import {PostMeta} from '../PostMeta'
-import {Link} from '../Link'
-import {Text} from '../text/Text'
-import {usePalette} from 'lib/hooks/usePalette'
-import {ComposerOptsQuote} from 'state/shell/composer'
-import {PostEmbeds} from '.'
-import {PostAlerts} from '../../../../components/moderation/PostAlerts'
-import {makeProfileLink} from 'lib/routes/links'
-import {InfoCircleIcon} from 'lib/icons'
-import {Trans} from '@lingui/macro'
-import {useModerationOpts} from '#/state/queries/preferences'
-import {ContentHider} from '../../../../components/moderation/ContentHider'
+import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome'
+import {msg, Trans} from '@lingui/macro'
+import {useLingui} from '@lingui/react'
+import {useQueryClient} from '@tanstack/react-query'
+
+import {HITSLOP_20} from '#/lib/constants'
+import {usePalette} from '#/lib/hooks/usePalette'
+import {InfoCircleIcon} from '#/lib/icons'
+import {moderatePost_wrapped} from '#/lib/moderatePost_wrapped'
+import {makeProfileLink} from '#/lib/routes/links'
+import {s} from '#/lib/styles'
+import {useModerationOpts} from '#/state/preferences/moderation-opts'
+import {precacheProfile} from '#/state/queries/profile'
+import {useResolveLinkQuery} from '#/state/queries/resolve-link'
+import {useSession} from '#/state/session'
+import {atoms as a, useTheme} from '#/alf'
 import {RichText} from '#/components/RichText'
-import {atoms as a} from '#/alf'
+import {SubtleWebHover} from '#/components/SubtleWebHover'
+import {ContentHider} from '../../../../components/moderation/ContentHider'
+import {PostAlerts} from '../../../../components/moderation/PostAlerts'
+import {Link} from '../Link'
+import {PostMeta} from '../PostMeta'
+import {Text} from '../text/Text'
+import {PostEmbeds} from '.'
+import {QuoteEmbedViewContext} from './types'
 
 export function MaybeQuoteEmbed({
   embed,
+  onOpen,
   style,
+  allowNestedQuotes,
+  viewContext,
 }: {
   embed: AppBskyEmbedRecord.View
+  onOpen?: () => void
   style?: StyleProp<ViewStyle>
+  allowNestedQuotes?: boolean
+  viewContext?: QuoteEmbedViewContext
 }) {
+  const t = useTheme()
   const pal = usePalette('default')
+  const {currentAccount} = useSession()
   if (
     AppBskyEmbedRecord.isViewRecord(embed.record) &&
     AppBskyFeedPost.isRecord(embed.record.value) &&
@@ -43,13 +68,16 @@ export function MaybeQuoteEmbed({
     return (
       <QuoteEmbedModerated
         viewRecord={embed.record}
-        postRecord={embed.record.value}
+        onOpen={onOpen}
         style={style}
+        allowNestedQuotes={allowNestedQuotes}
+        viewContext={viewContext}
       />
     )
   } else if (AppBskyEmbedRecord.isViewBlocked(embed.record)) {
     return (
-      <View style={[styles.errorContainer, pal.borderDark]}>
+      <View
+        style={[styles.errorContainer, a.border, t.atoms.border_contrast_low]}>
         <InfoCircleIcon size={18} style={pal.text} />
         <Text type="lg" style={pal.text}>
           <Trans>Blocked</Trans>
@@ -58,10 +86,28 @@ export function MaybeQuoteEmbed({
     )
   } else if (AppBskyEmbedRecord.isViewNotFound(embed.record)) {
     return (
-      <View style={[styles.errorContainer, pal.borderDark]}>
+      <View
+        style={[styles.errorContainer, a.border, t.atoms.border_contrast_low]}>
         <InfoCircleIcon size={18} style={pal.text} />
         <Text type="lg" style={pal.text}>
           <Trans>Deleted</Trans>
+        </Text>
+      </View>
+    )
+  } else if (AppBskyEmbedRecord.isViewDetached(embed.record)) {
+    const isViewerOwner = currentAccount?.did
+      ? embed.record.uri.includes(currentAccount.did)
+      : false
+    return (
+      <View
+        style={[styles.errorContainer, a.border, t.atoms.border_contrast_low]}>
+        <InfoCircleIcon size={18} style={pal.text} />
+        <Text type="lg" style={pal.text}>
+          {isViewerOwner ? (
+            <Trans>Removed by you</Trans>
+          ) : (
+            <Trans>Removed by author</Trans>
+          )}
         </Text>
       </View>
     )
@@ -71,101 +117,188 @@ export function MaybeQuoteEmbed({
 
 function QuoteEmbedModerated({
   viewRecord,
-  postRecord,
+  onOpen,
   style,
+  allowNestedQuotes,
+  viewContext,
 }: {
   viewRecord: AppBskyEmbedRecord.ViewRecord
-  postRecord: AppBskyFeedPost.Record
+  onOpen?: () => void
   style?: StyleProp<ViewStyle>
+  allowNestedQuotes?: boolean
+  viewContext?: QuoteEmbedViewContext
 }) {
   const moderationOpts = useModerationOpts()
+  const postView = React.useMemo(
+    () => viewRecordToPostView(viewRecord),
+    [viewRecord],
+  )
   const moderation = React.useMemo(() => {
     return moderationOpts
-      ? moderatePost(viewRecordToPostView(viewRecord), moderationOpts)
+      ? moderatePost_wrapped(postView, moderationOpts)
       : undefined
-  }, [viewRecord, moderationOpts])
+  }, [postView, moderationOpts])
 
-  const quote = {
-    author: viewRecord.author,
-    cid: viewRecord.cid,
-    uri: viewRecord.uri,
-    indexedAt: viewRecord.indexedAt,
-    text: postRecord.text,
-    facets: postRecord.facets,
-    embeds: viewRecord.embeds,
-  }
-
-  return <QuoteEmbed quote={quote} moderation={moderation} style={style} />
+  return (
+    <QuoteEmbed
+      quote={postView}
+      moderation={moderation}
+      onOpen={onOpen}
+      style={style}
+      allowNestedQuotes={allowNestedQuotes}
+      viewContext={viewContext}
+    />
+  )
 }
 
 export function QuoteEmbed({
   quote,
   moderation,
+  onOpen,
   style,
+  allowNestedQuotes,
 }: {
-  quote: ComposerOptsQuote
+  quote: AppBskyFeedDefs.PostView
   moderation?: ModerationDecision
+  onOpen?: () => void
   style?: StyleProp<ViewStyle>
+  allowNestedQuotes?: boolean
+  viewContext?: QuoteEmbedViewContext
 }) {
+  const t = useTheme()
+  const queryClient = useQueryClient()
   const pal = usePalette('default')
   const itemUrip = new AtUri(quote.uri)
   const itemHref = makeProfileLink(quote.author, 'post', itemUrip.rkey)
   const itemTitle = `Post by ${quote.author.handle}`
 
-  const richText = React.useMemo(
-    () =>
-      quote.text.trim()
-        ? new RichTextAPI({text: quote.text, facets: quote.facets})
-        : undefined,
-    [quote.text, quote.facets],
-  )
+  const richText = React.useMemo(() => {
+    const text = AppBskyFeedPost.isRecord(quote.record) ? quote.record.text : ''
+    const facets = AppBskyFeedPost.isRecord(quote.record)
+      ? quote.record.facets
+      : undefined
+    return text.trim()
+      ? new RichTextAPI({text: text, facets: facets})
+      : undefined
+  }, [quote.record])
 
   const embed = React.useMemo(() => {
-    const e = quote.embeds?.[0]
+    const e = quote.embed
 
-    if (AppBskyEmbedImages.isView(e) || AppBskyEmbedExternal.isView(e)) {
+    if (allowNestedQuotes) {
       return e
-    } else if (
-      AppBskyEmbedRecordWithMedia.isView(e) &&
-      (AppBskyEmbedImages.isView(e.media) ||
-        AppBskyEmbedExternal.isView(e.media))
-    ) {
-      return e.media
+    } else {
+      if (
+        AppBskyEmbedImages.isView(e) ||
+        AppBskyEmbedExternal.isView(e) ||
+        AppBskyEmbedVideo.isView(e)
+      ) {
+        return e
+      } else if (
+        AppBskyEmbedRecordWithMedia.isView(e) &&
+        (AppBskyEmbedImages.isView(e.media) ||
+          AppBskyEmbedExternal.isView(e.media) ||
+          AppBskyEmbedVideo.isView(e.media))
+      ) {
+        return e.media
+      }
     }
-  }, [quote.embeds])
+  }, [quote.embed, allowNestedQuotes])
 
+  const onBeforePress = React.useCallback(() => {
+    precacheProfile(queryClient, quote.author)
+    onOpen?.()
+  }, [queryClient, quote.author, onOpen])
+
+  const [hover, setHover] = React.useState(false)
   return (
-    <ContentHider modui={moderation?.ui('contentList')}>
-      <Link
-        style={[styles.container, pal.borderDark, style]}
-        hoverStyle={{borderColor: pal.colors.borderLinkHover}}
-        href={itemHref}
-        title={itemTitle}>
-        <View pointerEvents="none">
-          <PostMeta
-            author={quote.author}
-            moderation={moderation}
-            showAvatar
-            authorHasWarning={false}
-            postHref={itemHref}
-            timestamp={quote.indexedAt}
-          />
-        </View>
-        {moderation ? (
-          <PostAlerts modui={moderation.ui('contentView')} style={[a.py_xs]} />
-        ) : null}
-        {richText ? (
-          <RichText
-            value={richText}
-            style={[a.text_md]}
-            numberOfLines={20}
-            disableLinks
-          />
-        ) : null}
-        {embed && <PostEmbeds embed={embed} moderation={moderation} />}
-      </Link>
-    </ContentHider>
+    <View
+      onPointerEnter={() => {
+        setHover(true)
+      }}
+      onPointerLeave={() => {
+        setHover(false)
+      }}>
+      <ContentHider
+        modui={moderation?.ui('contentList')}
+        style={[
+          a.rounded_md,
+          a.p_md,
+          a.mt_sm,
+          a.border,
+          t.atoms.border_contrast_low,
+          style,
+        ]}
+        childContainerStyle={[a.pt_sm]}>
+        <SubtleWebHover hover={hover} />
+        <Link
+          hoverStyle={{borderColor: pal.colors.borderLinkHover}}
+          href={itemHref}
+          title={itemTitle}
+          onBeforePress={onBeforePress}>
+          <View pointerEvents="none">
+            <PostMeta
+              author={quote.author}
+              moderation={moderation}
+              showAvatar
+              postHref={itemHref}
+              timestamp={quote.indexedAt}
+            />
+          </View>
+          {moderation ? (
+            <PostAlerts
+              modui={moderation.ui('contentView')}
+              style={[a.py_xs]}
+            />
+          ) : null}
+          {richText ? (
+            <RichText
+              value={richText}
+              style={a.text_md}
+              numberOfLines={20}
+              disableLinks
+            />
+          ) : null}
+          {embed && <PostEmbeds embed={embed} moderation={moderation} />}
+        </Link>
+      </ContentHider>
+    </View>
   )
+}
+
+export function QuoteX({onRemove}: {onRemove: () => void}) {
+  const {_} = useLingui()
+  return (
+    <TouchableOpacity
+      style={[
+        a.absolute,
+        a.p_xs,
+        a.rounded_full,
+        a.align_center,
+        a.justify_center,
+        {
+          top: 16,
+          right: 10,
+          backgroundColor: 'rgba(0, 0, 0, 0.75)',
+        },
+      ]}
+      onPress={onRemove}
+      accessibilityRole="button"
+      accessibilityLabel={_(msg`Remove quote`)}
+      accessibilityHint={_(msg`Removes quoted post`)}
+      onAccessibilityEscape={onRemove}
+      hitSlop={HITSLOP_20}>
+      <FontAwesomeIcon size={12} icon="xmark" style={s.white} />
+    </TouchableOpacity>
+  )
+}
+
+export function LazyQuoteEmbed({uri}: {uri: string}) {
+  const {data} = useResolveLinkQuery(uri)
+  if (!data || data.type !== 'record' || data.kind !== 'post') {
+    return null
+  }
+  return <QuoteEmbed quote={data.view} />
 }
 
 function viewRecordToPostView(
@@ -181,18 +314,6 @@ function viewRecordToPostView(
 }
 
 const styles = StyleSheet.create({
-  container: {
-    borderRadius: 8,
-    marginTop: 8,
-    paddingVertical: 12,
-    paddingHorizontal: 12,
-    borderWidth: 1,
-  },
-  quotePost: {
-    flex: 1,
-    paddingLeft: 13,
-    paddingRight: 8,
-  },
   errorContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -201,7 +322,7 @@ const styles = StyleSheet.create({
     marginTop: 8,
     paddingVertical: 14,
     paddingHorizontal: 14,
-    borderWidth: 1,
+    borderWidth: StyleSheet.hairlineWidth,
   },
   alert: {
     marginBottom: 6,

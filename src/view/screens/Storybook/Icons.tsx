@@ -1,12 +1,11 @@
-import React from 'react'
 import {View} from 'react-native'
 
 import {atoms as a, useTheme} from '#/alf'
-import {H1} from '#/components/Typography'
-import {Globe_Stroke2_Corner0_Rounded as Globe} from '#/components/icons/Globe'
-import {ArrowTopRight_Stroke2_Corner0_Rounded as ArrowTopRight} from '#/components/icons/ArrowTopRight'
+import {ArrowTopRight_Stroke2_Corner0_Rounded as ArrowTopRight} from '#/components/icons/Arrow'
 import {CalendarDays_Stroke2_Corner0_Rounded as CalendarDays} from '#/components/icons/CalendarDays'
+import {Globe_Stroke2_Corner0_Rounded as Globe} from '#/components/icons/Globe'
 import {Loader} from '#/components/Loader'
+import {H1} from '#/components/Typography'
 
 export function Icons() {
   const t = useTheme()
@@ -44,6 +43,14 @@ export function Icons() {
         <Loader size="md" fill={t.atoms.text.color} />
         <Loader size="lg" fill={t.atoms.text.color} />
         <Loader size="xl" fill={t.atoms.text.color} />
+      </View>
+
+      <View style={[a.flex_row, a.gap_xl]}>
+        <Globe size="xs" gradient="sky" />
+        <Globe size="sm" gradient="sky" />
+        <Globe size="md" gradient="sky" />
+        <Globe size="lg" gradient="sky" />
+        <Globe size="xl" gradient="sky" />
       </View>
     </View>
   )

@@ -1,16 +1,21 @@
 import React from 'react'
 import {
+  AccessibilityProps,
+  AccessibilityRole,
   GestureResponderEvent,
   PressableProps,
-  AccessibilityProps,
 } from 'react-native'
 
-import {Props as SVGIconProps} from '#/components/icons/common'
-import * as Dialog from '#/components/Dialog'
 import {TextStyleProp, ViewStyleProp} from '#/alf'
+import * as Dialog from '#/components/Dialog'
+import {Props as SVGIconProps} from '#/components/icons/common'
 
 export type ContextType = {
   control: Dialog.DialogOuterProps['control']
+}
+
+export type ItemContextType = {
+  disabled: boolean
 }
 
 export type RadixPassThroughTriggerProps = {
@@ -32,6 +37,7 @@ export type RadixPassThroughTriggerProps = {
 export type TriggerProps = {
   children(props: TriggerChildProps): React.ReactNode
   label: string
+  role?: AccessibilityRole
 }
 export type TriggerChildProps =
   | {
@@ -59,6 +65,7 @@ export type TriggerChildProps =
         onPressIn: () => void
         onPressOut: () => void
         accessibilityLabel: string
+        accessibilityRole: AccessibilityRole
       }
     }
   | {
@@ -79,6 +86,7 @@ export type TriggerChildProps =
         onMouseEnter: () => void
         onMouseLeave: () => void
         accessibilityLabel: string
+        accessibilityRole: AccessibilityRole
       }
     }
 

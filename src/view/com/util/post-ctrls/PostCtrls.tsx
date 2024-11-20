@@ -1,80 +1,134 @@
 import React, {memo, useCallback} from 'react'
 import {
-  StyleProp,
-  StyleSheet,
-  TouchableOpacity,
+  Pressable,
+  type PressableStateCallbackType,
+  type StyleProp,
   View,
-  ViewStyle,
+  type ViewStyle,
 } from 'react-native'
+import * as Clipboard from 'expo-clipboard'
 import {
   AppBskyFeedDefs,
   AppBskyFeedPost,
+  AppBskyFeedThreadgate,
   AtUri,
   RichText as RichTextAPI,
 } from '@atproto/api'
-import {Text} from '../text/Text'
-import {PostDropdownBtn} from '../forms/PostDropdownBtn'
-import {HeartIcon, HeartIconSolid, CommentBottomArrow} from 'lib/icons'
-import {s} from 'lib/styles'
-import {pluralize} from 'lib/strings/helpers'
-import {useTheme} from 'lib/ThemeContext'
-import {RepostButton} from './RepostButton'
-import {Haptics} from 'lib/haptics'
-import {HITSLOP_10, HITSLOP_20} from 'lib/constants'
-import {useModalControls} from '#/state/modals'
+import {msg, plural} from '@lingui/macro'
+import {useLingui} from '@lingui/react'
+
+import {IS_INTERNAL} from '#/lib/app-info'
+import {DISCOVER_DEBUG_DIDS, POST_CTRL_HITSLOP} from '#/lib/constants'
+import {CountWheel} from '#/lib/custom-animations/CountWheel'
+import {AnimatedLikeIcon} from '#/lib/custom-animations/LikeIcon'
+import {useHaptics} from '#/lib/haptics'
+import {makeProfileLink} from '#/lib/routes/links'
+import {shareUrl} from '#/lib/sharing'
+import {toShareUrl} from '#/lib/strings/url-helpers'
+import {Shadow} from '#/state/cache/types'
+import {useFeedFeedbackContext} from '#/state/feed-feedback'
 import {
   usePostLikeMutationQueue,
   usePostRepostMutationQueue,
 } from '#/state/queries/post'
+import {useRequireAuth, useSession} from '#/state/session'
 import {useComposerControls} from '#/state/shell/composer'
-import {Shadow} from '#/state/cache/types'
-import {useRequireAuth} from '#/state/session'
-import {msg} from '@lingui/macro'
-import {useLingui} from '@lingui/react'
+import {
+  ProgressGuideAction,
+  useProgressGuideControls,
+} from '#/state/shell/progress-guide'
+import {atoms as a, useTheme} from '#/alf'
+import {useDialogControl} from '#/components/Dialog'
 import {ArrowOutOfBox_Stroke2_Corner0_Rounded as ArrowOutOfBox} from '#/components/icons/ArrowOutOfBox'
-import {toShareUrl} from 'lib/strings/url-helpers'
-import {shareUrl} from 'lib/sharing'
-import {makeProfileLink} from 'lib/routes/links'
+import {Bubble_Stroke2_Corner2_Rounded as Bubble} from '#/components/icons/Bubble'
+import * as Prompt from '#/components/Prompt'
+import {PostDropdownBtn} from '../forms/PostDropdownBtn'
+import {formatCount} from '../numeric/format'
+import {Text} from '../text/Text'
+import * as Toast from '../Toast'
+import {RepostButton} from './RepostButton'
 
 let PostCtrls = ({
   big,
   post,
   record,
   richText,
+  feedContext,
   style,
   onPressReply,
+  onPostReply,
   logContext,
+  threadgateRecord,
 }: {
   big?: boolean
   post: Shadow<AppBskyFeedDefs.PostView>
   record: AppBskyFeedPost.Record
   richText: RichTextAPI
+  feedContext?: string | undefined
   style?: StyleProp<ViewStyle>
   onPressReply: () => void
+  onPostReply?: (postUri: string | undefined) => void
   logContext: 'FeedItem' | 'PostThreadItem' | 'Post'
+  threadgateRecord?: AppBskyFeedThreadgate.Record
 }): React.ReactNode => {
-  const theme = useTheme()
-  const {_} = useLingui()
+  const t = useTheme()
+  const {_, i18n} = useLingui()
   const {openComposer} = useComposerControls()
-  const {closeModal} = useModalControls()
+  const {currentAccount} = useSession()
   const [queueLike, queueUnlike] = usePostLikeMutationQueue(post, logContext)
   const [queueRepost, queueUnrepost] = usePostRepostMutationQueue(
     post,
     logContext,
   )
   const requireAuth = useRequireAuth()
+  const loggedOutWarningPromptControl = useDialogControl()
+  const {sendInteraction} = useFeedFeedbackContext()
+  const {captureAction} = useProgressGuideControls()
+  const playHaptic = useHaptics()
+  const isDiscoverDebugUser =
+    IS_INTERNAL || DISCOVER_DEBUG_DIDS[currentAccount?.did ?? '']
+  const isBlocked = Boolean(
+    post.author.viewer?.blocking ||
+      post.author.viewer?.blockedBy ||
+      post.author.viewer?.blockingByList,
+  )
+
+  const shouldShowLoggedOutWarning = React.useMemo(() => {
+    return (
+      post.author.did !== currentAccount?.did &&
+      !!post.author.labels?.find(label => label.val === '!no-unauthenticated')
+    )
+  }, [currentAccount, post])
 
   const defaultCtrlColor = React.useMemo(
     () => ({
-      color: theme.palette.default.postCtrl,
+      color: t.palette.contrast_500,
     }),
-    [theme],
+    [t],
   ) as StyleProp<ViewStyle>
 
+  const [hasLikeIconBeenToggled, setHasLikeIconBeenToggled] =
+    React.useState(false)
+
   const onPressToggleLike = React.useCallback(async () => {
+    if (isBlocked) {
+      Toast.show(
+        _(msg`Cannot interact with a blocked user`),
+        'exclamation-circle',
+      )
+      return
+    }
+
     try {
+      setHasLikeIconBeenToggled(true)
       if (!post.viewer?.like) {
-        Haptics.default()
+        playHaptic('Light')
+        sendInteraction({
+          item: post.uri,
+          event: 'app.bsky.feed.defs#interactionLike',
+          feedContext,
+        })
+        captureAction(ProgressGuideAction.Like)
         await queueLike()
       } else {
         await queueUnlike()
@@ -84,13 +138,35 @@ let PostCtrls = ({
         throw e
       }
     }
-  }, [post.viewer?.like, queueLike, queueUnlike])
+  }, [
+    _,
+    playHaptic,
+    post.uri,
+    post.viewer?.like,
+    queueLike,
+    queueUnlike,
+    sendInteraction,
+    captureAction,
+    feedContext,
+    isBlocked,
+  ])
 
   const onRepost = useCallback(async () => {
-    closeModal()
+    if (isBlocked) {
+      Toast.show(
+        _(msg`Cannot interact with a blocked user`),
+        'exclamation-circle',
+      )
+      return
+    }
+
     try {
       if (!post.viewer?.repost) {
-        Haptics.default()
+        sendInteraction({
+          item: post.uri,
+          event: 'app.bsky.feed.defs#interactionRepost',
+          feedContext,
+        })
         await queueRepost()
       } else {
         await queueUnrepost()
@@ -100,28 +176,43 @@ let PostCtrls = ({
         throw e
       }
     }
-  }, [post.viewer?.repost, queueRepost, queueUnrepost, closeModal])
+  }, [
+    _,
+    post.uri,
+    post.viewer?.repost,
+    queueRepost,
+    queueUnrepost,
+    sendInteraction,
+    feedContext,
+    isBlocked,
+  ])
 
   const onQuote = useCallback(() => {
-    closeModal()
-    openComposer({
-      quote: {
-        uri: post.uri,
-        cid: post.cid,
-        text: record.text,
-        author: post.author,
-        indexedAt: post.indexedAt,
-      },
+    if (isBlocked) {
+      Toast.show(
+        _(msg`Cannot interact with a blocked user`),
+        'exclamation-circle',
+      )
+      return
+    }
+
+    sendInteraction({
+      item: post.uri,
+      event: 'app.bsky.feed.defs#interactionQuote',
+      feedContext,
     })
-    Haptics.default()
+    openComposer({
+      quote: post,
+      onPost: onPostReply,
+    })
   }, [
-    post.uri,
-    post.cid,
-    post.author,
-    post.indexedAt,
-    record.text,
+    _,
+    sendInteraction,
+    post,
+    feedContext,
     openComposer,
-    closeModal,
+    onPostReply,
+    isBlocked,
   ])
 
   const onShare = useCallback(() => {
@@ -129,141 +220,182 @@ let PostCtrls = ({
     const href = makeProfileLink(post.author, 'post', urip.rkey)
     const url = toShareUrl(href)
     shareUrl(url)
-  }, [post.uri, post.author])
+    sendInteraction({
+      item: post.uri,
+      event: 'app.bsky.feed.defs#interactionShare',
+      feedContext,
+    })
+  }, [post.uri, post.author, sendInteraction, feedContext])
+
+  const btnStyle = React.useCallback(
+    ({pressed, hovered}: PressableStateCallbackType) => [
+      a.gap_xs,
+      a.rounded_full,
+      a.flex_row,
+      a.justify_center,
+      a.align_center,
+      a.overflow_hidden,
+      {padding: 5},
+      (pressed || hovered) && t.atoms.bg_contrast_25,
+    ],
+    [t.atoms.bg_contrast_25],
+  )
 
   return (
-    <View style={[styles.ctrls, style]}>
+    <View style={[a.flex_row, a.justify_between, a.align_center, style]}>
       <View
         style={[
-          big ? styles.ctrlBig : styles.ctrl,
+          big ? a.align_center : [a.flex_1, a.align_start, {marginLeft: -6}],
           post.viewer?.replyDisabled ? {opacity: 0.5} : undefined,
         ]}>
-        <TouchableOpacity
+        <Pressable
           testID="replyBtn"
-          style={[styles.btn, !big && styles.btnPad, {paddingLeft: 0}]}
+          style={btnStyle}
           onPress={() => {
             if (!post.viewer?.replyDisabled) {
+              playHaptic('Light')
               requireAuth(() => onPressReply())
             }
           }}
           accessibilityRole="button"
-          accessibilityLabel={`Reply (${post.replyCount} ${
-            post.replyCount === 1 ? 'reply' : 'replies'
-          })`}
+          accessibilityLabel={plural(post.replyCount || 0, {
+            one: 'Reply (# reply)',
+            other: 'Reply (# replies)',
+          })}
           accessibilityHint=""
-          hitSlop={big ? HITSLOP_20 : HITSLOP_10}>
-          <CommentBottomArrow
-            style={[defaultCtrlColor, big ? s.mt2 : styles.mt1]}
-            strokeWidth={3}
-            size={big ? 20 : 15}
+          hitSlop={POST_CTRL_HITSLOP}>
+          <Bubble
+            style={[defaultCtrlColor, {pointerEvents: 'none'}]}
+            width={big ? 22 : 18}
           />
           {typeof post.replyCount !== 'undefined' && post.replyCount > 0 ? (
-            <Text style={[defaultCtrlColor, s.ml5, s.f15]}>
-              {post.replyCount}
+            <Text
+              style={[
+                defaultCtrlColor,
+                big ? a.text_md : {fontSize: 15},
+                a.user_select_none,
+              ]}>
+              {formatCount(i18n, post.replyCount)}
             </Text>
           ) : undefined}
-        </TouchableOpacity>
+        </Pressable>
       </View>
-      <View style={big ? styles.ctrlBig : styles.ctrl}>
+      <View style={big ? a.align_center : [a.flex_1, a.align_start]}>
         <RepostButton
-          big={big}
           isReposted={!!post.viewer?.repost}
-          repostCount={post.repostCount}
+          repostCount={(post.repostCount ?? 0) + (post.quoteCount ?? 0)}
           onRepost={onRepost}
           onQuote={onQuote}
+          big={big}
+          embeddingDisabled={Boolean(post.viewer?.embeddingDisabled)}
         />
       </View>
-      <View style={big ? styles.ctrlBig : styles.ctrl}>
-        <TouchableOpacity
+      <View style={big ? a.align_center : [a.flex_1, a.align_start]}>
+        <Pressable
           testID="likeBtn"
-          style={[styles.btn, !big && styles.btnPad]}
-          onPress={() => {
-            requireAuth(() => onPressToggleLike())
-          }}
+          style={btnStyle}
+          onPress={() => requireAuth(() => onPressToggleLike())}
           accessibilityRole="button"
-          accessibilityLabel={`${
-            post.viewer?.like ? _(msg`Unlike`) : _(msg`Like`)
-          } (${post.likeCount} ${pluralize(post.likeCount || 0, 'like')})`}
+          accessibilityLabel={
+            post.viewer?.like
+              ? plural(post.likeCount || 0, {
+                  one: 'Unlike (# like)',
+                  other: 'Unlike (# likes)',
+                })
+              : plural(post.likeCount || 0, {
+                  one: 'Like (# like)',
+                  other: 'Like (# likes)',
+                })
+          }
           accessibilityHint=""
-          hitSlop={big ? HITSLOP_20 : HITSLOP_10}>
-          {post.viewer?.like ? (
-            <HeartIconSolid style={s.likeColor} size={big ? 22 : 16} />
-          ) : (
-            <HeartIcon
-              style={[defaultCtrlColor, big ? styles.mt1 : undefined]}
-              strokeWidth={3}
-              size={big ? 20 : 16}
-            />
-          )}
-          {typeof post.likeCount !== 'undefined' && post.likeCount > 0 ? (
-            <Text
-              testID="likeCount"
-              style={
-                post.viewer?.like
-                  ? [s.bold, s.likeColor, s.f15, s.ml5]
-                  : [defaultCtrlColor, s.f15, s.ml5]
-              }>
-              {post.likeCount}
-            </Text>
-          ) : undefined}
-        </TouchableOpacity>
+          hitSlop={POST_CTRL_HITSLOP}>
+          <AnimatedLikeIcon
+            isLiked={Boolean(post.viewer?.like)}
+            big={big}
+            hasBeenToggled={hasLikeIconBeenToggled}
+          />
+          <CountWheel
+            likeCount={post.likeCount ?? 0}
+            big={big}
+            isLiked={Boolean(post.viewer?.like)}
+            hasBeenToggled={hasLikeIconBeenToggled}
+          />
+        </Pressable>
       </View>
       {big && (
-        <View style={styles.ctrlBig}>
-          <TouchableOpacity
-            testID="shareBtn"
-            style={[styles.btn]}
-            onPress={onShare}
-            accessibilityRole="button"
-            accessibilityLabel={`${_(msg`Share`)}`}
-            accessibilityHint=""
-            hitSlop={big ? HITSLOP_20 : HITSLOP_10}>
-            <ArrowOutOfBox style={[defaultCtrlColor, styles.mt1]} width={22} />
-          </TouchableOpacity>
-        </View>
+        <>
+          <View style={a.align_center}>
+            <Pressable
+              testID="shareBtn"
+              style={btnStyle}
+              onPress={() => {
+                if (shouldShowLoggedOutWarning) {
+                  loggedOutWarningPromptControl.open()
+                } else {
+                  onShare()
+                }
+              }}
+              accessibilityRole="button"
+              accessibilityLabel={_(msg`Share`)}
+              accessibilityHint=""
+              hitSlop={POST_CTRL_HITSLOP}>
+              <ArrowOutOfBox
+                style={[defaultCtrlColor, {pointerEvents: 'none'}]}
+                width={22}
+              />
+            </Pressable>
+          </View>
+          <Prompt.Basic
+            control={loggedOutWarningPromptControl}
+            title={_(msg`Note about sharing`)}
+            description={_(
+              msg`This post is only visible to logged-in users. It won't be visible to people who aren't logged in.`,
+            )}
+            onConfirm={onShare}
+            confirmButtonCta={_(msg`Share anyway`)}
+          />
+        </>
       )}
-      <View style={big ? styles.ctrlBig : styles.ctrl}>
+      <View style={big ? a.align_center : [a.flex_1, a.align_start]}>
         <PostDropdownBtn
           testID="postDropdownBtn"
-          postAuthor={post.author}
-          postCid={post.cid}
-          postUri={post.uri}
+          post={post}
+          postFeedContext={feedContext}
           record={record}
           richText={richText}
-          style={styles.btnPad}
-          hitSlop={big ? HITSLOP_20 : HITSLOP_10}
+          style={{padding: 5}}
+          hitSlop={POST_CTRL_HITSLOP}
+          timestamp={post.indexedAt}
+          threadgateRecord={threadgateRecord}
         />
       </View>
+      {isDiscoverDebugUser && feedContext && (
+        <Pressable
+          accessible={false}
+          style={{
+            position: 'absolute',
+            top: 0,
+            bottom: 0,
+            right: 0,
+            display: 'flex',
+            justifyContent: 'center',
+          }}
+          onPress={e => {
+            e.stopPropagation()
+            Clipboard.setStringAsync(feedContext)
+            Toast.show(_(msg`Copied to clipboard`), 'clipboard-check')
+          }}>
+          <Text
+            style={{
+              color: t.palette.contrast_400,
+              fontSize: 7,
+            }}>
+            {feedContext}
+          </Text>
+        </Pressable>
+      )}
     </View>
   )
 }
 PostCtrls = memo(PostCtrls)
 export {PostCtrls}
-
-const styles = StyleSheet.create({
-  ctrls: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  ctrl: {
-    flex: 1,
-    alignItems: 'flex-start',
-  },
-  ctrlBig: {
-    alignItems: 'center',
-  },
-  btn: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  btnPad: {
-    paddingTop: 5,
-    paddingBottom: 5,
-    paddingLeft: 5,
-    paddingRight: 5,
-  },
-  mt1: {
-    marginTop: 1,
-  },
-})

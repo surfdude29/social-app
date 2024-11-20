@@ -1,34 +1,38 @@
 import React, {
+  ComponentProps,
   forwardRef,
   useCallback,
-  useRef,
   useMemo,
+  useRef,
   useState,
-  ComponentProps,
 } from 'react'
 import {
   NativeSyntheticEvent,
-  StyleSheet,
+  Text as RNText,
   TextInput as RNTextInput,
   TextInputSelectionChangeEventData,
   View,
 } from 'react-native'
+import {AppBskyRichtextFacet, RichText} from '@atproto/api'
 import PasteInput, {
   PastedFile,
   PasteInputRef,
 } from '@mattermost/react-native-paste-input'
-import {AppBskyRichtextFacet, RichText} from '@atproto/api'
-import isEqual from 'lodash.isequal'
+
+import {POST_IMG_MAX} from '#/lib/constants'
+import {downloadAndResize} from '#/lib/media/manip'
+import {isUriImage} from '#/lib/media/util'
+import {cleanError} from '#/lib/strings/errors'
+import {getMentionAt, insertMentionAt} from '#/lib/strings/mention-manip'
+import {useTheme} from '#/lib/ThemeContext'
+import {isAndroid, isNative} from '#/platform/detection'
+import {
+  LinkFacetMatch,
+  suggestLinkCardUri,
+} from '#/view/com/composer/text-input/text-input-util'
+import {atoms as a, useAlf} from '#/alf'
+import {normalizeTextStyles} from '#/components/Typography'
 import {Autocomplete} from './mobile/Autocomplete'
-import {Text} from 'view/com/util/text/Text'
-import {cleanError} from 'lib/strings/errors'
-import {getMentionAt, insertMentionAt} from 'lib/strings/mention-manip'
-import {usePalette} from 'lib/hooks/usePalette'
-import {useTheme} from 'lib/ThemeContext'
-import {isUriImage} from 'lib/media/util'
-import {downloadAndResize} from 'lib/media/manip'
-import {POST_IMG_MAX} from 'lib/constants'
-import {isIOS} from 'platform/detection'
 
 export interface TextInputRef {
   focus: () => void
@@ -39,11 +43,13 @@ export interface TextInputRef {
 interface TextInputProps extends ComponentProps<typeof RNTextInput> {
   richtext: RichText
   placeholder: string
-  suggestedLinks: Set<string>
-  setRichText: (v: RichText | ((v: RichText) => RichText)) => void
+  webForceMinHeight: boolean
+  hasRightPadding: boolean
+  isActive: boolean
+  setRichText: (v: RichText) => void
   onPhotoPasted: (uri: string) => void
-  onPressPublish: (richtext: RichText) => Promise<void>
-  onSuggestedLinksChanged: (uris: Set<string>) => void
+  onPressPublish: (richtext: RichText) => void
+  onNewLink: (uri: string) => void
   onError: (err: string) => void
 }
 
@@ -56,20 +62,21 @@ export const TextInput = forwardRef(function TextInputImpl(
   {
     richtext,
     placeholder,
-    suggestedLinks,
+    hasRightPadding,
     setRichText,
     onPhotoPasted,
-    onSuggestedLinksChanged,
+    onNewLink,
     onError,
     ...props
   }: TextInputProps,
   ref,
 ) {
-  const pal = usePalette('default')
+  const {theme: t, fonts} = useAlf()
   const textInput = useRef<PasteInputRef>(null)
   const textInputSelection = useRef<Selection>({start: 0, end: 0})
   const theme = useTheme()
   const [autocompletePrefix, setAutocompletePrefix] = useState('')
+  const prevLength = React.useRef(richtext.length)
 
   React.useImperativeHandle(ref, () => ({
     focus: () => textInput.current?.focus(),
@@ -79,73 +86,64 @@ export const TextInput = forwardRef(function TextInputImpl(
     getCursorPosition: () => undefined, // Not implemented on native
   }))
 
+  const pastSuggestedUris = useRef(new Set<string>())
+  const prevDetectedUris = useRef(new Map<string, LinkFacetMatch>())
   const onChangeText = useCallback(
-    (newText: string) => {
-      /*
-       * This is a hack to bump the rendering of our styled
-       * `textDecorated` to _after_ whatever processing is happening
-       * within the `PasteInput` library. Without this, the elements in
-       * `textDecorated` are not correctly painted to screen.
-       *
-       * NB: we tried a `0` timeout as well, but only positive values worked.
-       *
-       * @see https://github.com/bluesky-social/social-app/issues/929
-       */
-      setTimeout(async () => {
-        const newRt = new RichText({text: newText})
-        newRt.detectFacetsWithoutResolution()
-        setRichText(newRt)
+    async (newText: string) => {
+      const mayBePaste = newText.length > prevLength.current + 1
 
-        const prefix = getMentionAt(
-          newText,
-          textInputSelection.current?.start || 0,
-        )
-        if (prefix) {
-          setAutocompletePrefix(prefix.value)
-        } else if (autocompletePrefix) {
-          setAutocompletePrefix('')
-        }
+      const newRt = new RichText({text: newText})
+      newRt.detectFacetsWithoutResolution()
+      setRichText(newRt)
 
-        const set: Set<string> = new Set()
+      const prefix = getMentionAt(
+        newText,
+        textInputSelection.current?.start || 0,
+      )
+      if (prefix) {
+        setAutocompletePrefix(prefix.value)
+      } else if (autocompletePrefix) {
+        setAutocompletePrefix('')
+      }
 
-        if (newRt.facets) {
-          for (const facet of newRt.facets) {
-            for (const feature of facet.features) {
-              if (AppBskyRichtextFacet.isLink(feature)) {
-                if (isUriImage(feature.uri)) {
-                  const res = await downloadAndResize({
-                    uri: feature.uri,
-                    width: POST_IMG_MAX.width,
-                    height: POST_IMG_MAX.height,
-                    mode: 'contain',
-                    maxSize: POST_IMG_MAX.size,
-                    timeout: 15e3,
-                  })
+      const nextDetectedUris = new Map<string, LinkFacetMatch>()
+      if (newRt.facets) {
+        for (const facet of newRt.facets) {
+          for (const feature of facet.features) {
+            if (AppBskyRichtextFacet.isLink(feature)) {
+              if (isUriImage(feature.uri)) {
+                const res = await downloadAndResize({
+                  uri: feature.uri,
+                  width: POST_IMG_MAX.width,
+                  height: POST_IMG_MAX.height,
+                  mode: 'contain',
+                  maxSize: POST_IMG_MAX.size,
+                  timeout: 15e3,
+                })
 
-                  if (res !== undefined) {
-                    onPhotoPasted(res.path)
-                  }
-                } else {
-                  set.add(feature.uri)
+                if (res !== undefined) {
+                  onPhotoPasted(res.path)
                 }
+              } else {
+                nextDetectedUris.set(feature.uri, {facet, rt: newRt})
               }
             }
           }
         }
-
-        if (!isEqual(set, suggestedLinks)) {
-          onSuggestedLinksChanged(set)
-        }
-      }, 1)
+      }
+      const suggestedUri = suggestLinkCardUri(
+        mayBePaste,
+        nextDetectedUris,
+        prevDetectedUris.current,
+        pastSuggestedUris.current,
+      )
+      prevDetectedUris.current = nextDetectedUris
+      if (suggestedUri) {
+        onNewLink(suggestedUri)
+      }
+      prevLength.current = newText.length
     },
-    [
-      setRichText,
-      autocompletePrefix,
-      setAutocompletePrefix,
-      suggestedLinks,
-      onSuggestedLinksChanged,
-      onPhotoPasted,
-    ],
+    [setRichText, autocompletePrefix, onPhotoPasted, onNewLink],
   )
 
   const onPaste = useCallback(
@@ -186,25 +184,57 @@ export const TextInput = forwardRef(function TextInputImpl(
     [onChangeText, richtext, setAutocompletePrefix],
   )
 
+  const inputTextStyle = React.useMemo(() => {
+    const style = normalizeTextStyles(
+      [a.text_xl, a.leading_snug, t.atoms.text],
+      {
+        fontScale: fonts.scaleMultiplier,
+        fontFamily: fonts.family,
+        flags: {},
+      },
+    )
+
+    /**
+     * PasteInput doesn't like `lineHeight`, results in jumpiness
+     */
+    if (isNative) {
+      style.lineHeight = undefined
+    }
+
+    /*
+     * Android impl of `PasteInput` doesn't support the array syntax for `fontVariant`
+     */
+    if (isAndroid) {
+      // @ts-ignore
+      style.fontVariant = style.fontVariant
+        ? style.fontVariant.join(' ')
+        : undefined
+    }
+    return style
+  }, [t, fonts])
+
   const textDecorated = useMemo(() => {
     let i = 0
 
     return Array.from(richtext.segments()).map(segment => {
       return (
-        <Text
+        <RNText
           key={i++}
           style={[
-            segment.facet ? pal.link : pal.text,
-            styles.textInputFormatting,
+            inputTextStyle,
+            {
+              color: segment.facet ? t.palette.primary_500 : t.atoms.text.color,
+              marginTop: -1,
+            },
           ]}>
           {segment.text}
-        </Text>
+        </RNText>
       )
     })
-  }, [richtext, pal.link, pal.text])
+  }, [t, richtext, inputTextStyle])
 
   return (
-    <View style={styles.container}>
+    <View style={[a.flex_1, a.pl_md, hasRightPadding && a.pr_4xl]}>
       <PasteInput
         testID="composerTextInput"
         ref={textInput}
@@ -212,18 +242,21 @@ export const TextInput = forwardRef(function TextInputImpl(
         onPaste={onPaste}
         onSelectionChange={onSelectionChange}
         placeholder={placeholder}
-        placeholderTextColor={pal.colors.textLight}
+        placeholderTextColor={t.atoms.text_contrast_medium.color}
         keyboardAppearance={theme.colorScheme}
         autoFocus={true}
         allowFontScaling
         multiline
         scrollEnabled={false}
-        numberOfLines={4}
+        numberOfLines={2}
         style={[
-          pal.text,
-          styles.textInput,
-          styles.textInputFormatting,
-          {textAlignVertical: 'top'},
+          inputTextStyle,
+          a.w_full,
+          {
+            textAlignVertical: 'top',
+            minHeight: 60,
+            includeFontPadding: false,
+          },
         ]}
         {...props}>
         {textDecorated}
@@ -234,25 +267,4 @@ export const TextInput = forwardRef(function TextInputImpl(
       />
     </View>
   )
-})
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  textInput: {
-    flex: 1,
-    width: '100%',
-    padding: 5,
-    paddingBottom: 20,
-    marginLeft: 8,
-    alignSelf: 'flex-start',
-  },
-  textInputFormatting: {
-    fontSize: 18,
-    letterSpacing: 0.2,
-    fontWeight: '400',
-    // This is broken on ios right now, so don't set it there.
-    lineHeight: isIOS ? undefined : 23.4, // 1.3*16
-  },
 })

@@ -1,27 +1,29 @@
 import React from 'react'
-import {View, Pressable, ViewStyle, StyleProp} from 'react-native'
+import {Pressable, StyleProp, View, ViewStyle} from 'react-native'
+import {msg, Trans} from '@lingui/macro'
+import {useLingui} from '@lingui/react'
 import flattenReactChildren from 'react-keyed-flatten-children'
 
+import {isNative} from '#/platform/detection'
 import {atoms as a, useTheme} from '#/alf'
+import {Button, ButtonText} from '#/components/Button'
 import * as Dialog from '#/components/Dialog'
 import {useInteractionState} from '#/components/hooks/useInteractionState'
-import {Text} from '#/components/Typography'
-
-import {Context} from '#/components/Menu/context'
+import {Context, ItemContext} from '#/components/Menu/context'
 import {
   ContextType,
-  TriggerProps,
-  ItemProps,
   GroupProps,
-  ItemTextProps,
   ItemIconProps,
+  ItemProps,
+  ItemTextProps,
+  TriggerProps,
 } from '#/components/Menu/types'
-import {Button, ButtonText} from '#/components/Button'
-import {Trans, msg} from '@lingui/macro'
-import {useLingui} from '@lingui/react'
-import {isNative} from 'platform/detection'
+import {Text} from '#/components/Typography'
 
-export {useDialogControl as useMenuControl} from '#/components/Dialog'
+export {
+  type DialogControlProps as MenuControlProps,
+  useDialogControl as useMenuControl,
+} from '#/components/Dialog'
 
 export function useMemoControlContext() {
   return React.useContext(Context)
@@ -44,7 +46,7 @@ export function Root({
   return <Context.Provider value={context}>{children}</Context.Provider>
 }
 
-export function Trigger({children, label}: TriggerProps) {
+export function Trigger({children, label, role = 'button'}: TriggerProps) {
   const {control} = React.useContext(Context)
   const {state: focused, onIn: onFocus, onOut: onBlur} = useInteractionState()
   const {
@@ -68,6 +70,7 @@ export function Trigger({children, label}: TriggerProps) {
       onPressIn,
       onPressOut,
       accessibilityLabel: label,
+      accessibilityRole: role,
     },
   })
 }
@@ -80,19 +83,20 @@ export function Outer({
   style?: StyleProp<ViewStyle>
 }>) {
   const context = React.useContext(Context)
+  const {_} = useLingui()
 
   return (
-    <Dialog.Outer control={context.control}>
+    <Dialog.Outer
+      control={context.control}
+      nativeOptions={{preventExpansion: true}}>
       <Dialog.Handle />
-
       {/* Re-wrap with context since Dialogs are portal-ed to root */}
       <Context.Provider value={context}>
-        <Dialog.ScrollableInner label="Menu TODO">
+        <Dialog.ScrollableInner label={_(msg`Menu`)} style={[a.py_sm]}>
           <View style={[a.gap_lg]}>
             {children}
             {isNative && showCancel && <Cancel />}
           </View>
-          <View style={{height: a.gap_lg.gap}} />
         </Dialog.ScrollableInner>
       </Context.Provider>
     </Dialog.Outer>
@@ -114,17 +118,22 @@ export function Item({children, label, style, onPress, ...rest}: ItemProps) {
       {...rest}
       accessibilityHint=""
       accessibilityLabel={label}
-      onPress={e => {
-        onPress(e)
-
+      onFocus={onFocus}
+      onBlur={onBlur}
+      onPress={async e => {
+        await onPress(e)
         if (!e.defaultPrevented) {
           control?.close()
         }
       }}
-      onFocus={onFocus}
-      onBlur={onBlur}
-      onPressIn={onPressIn}
-      onPressOut={onPressOut}
+      onPressIn={e => {
+        onPressIn()
+        rest.onPressIn?.(e)
+      }}
+      onPressOut={e => {
+        onPressOut()
+        rest.onPressOut?.(e)
+      }}
       style={[
         a.flex_row,
         a.align_center,
@@ -136,15 +145,18 @@ export function Item({children, label, style, onPress, ...rest}: ItemProps) {
         t.atoms.border_contrast_low,
         {minHeight: 44, paddingVertical: 10},
         style,
-        (focused || pressed) && [t.atoms.bg_contrast_50],
+        (focused || pressed) && !rest.disabled && [t.atoms.bg_contrast_50],
       ]}>
-      {children}
+      <ItemContext.Provider value={{disabled: Boolean(rest.disabled)}}>
+        {children}
+      </ItemContext.Provider>
     </Pressable>
   )
 }
 
 export function ItemText({children, style}: ItemTextProps) {
   const t = useTheme()
+  const {disabled} = React.useContext(ItemContext)
   return (
     <Text
       numberOfLines={1}
@@ -153,9 +165,10 @@ export function ItemText({children, style}: ItemTextProps) {
         a.flex_1,
         a.text_md,
         a.font_bold,
-        t.atoms.text_contrast_medium,
+        t.atoms.text_contrast_high,
         {paddingTop: 3},
         style,
+        disabled && t.atoms.text_contrast_low,
       ]}>
       {children}
     </Text>
@@ -164,7 +177,17 @@ export function ItemText({children, style}: ItemTextProps) {
 
 export function ItemIcon({icon: Comp}: ItemIconProps) {
   const t = useTheme()
-  return <Comp size="lg" fill={t.atoms.text_contrast_medium.color} />
+  const {disabled} = React.useContext(ItemContext)
+  return (
+    <Comp
+      size="lg"
+      fill={
+        disabled
+          ? t.atoms.text_contrast_low.color
+          : t.atoms.text_contrast_medium.color
+      }
+    />
+  )
 }
 
 export function Group({children, style}: GroupProps) {

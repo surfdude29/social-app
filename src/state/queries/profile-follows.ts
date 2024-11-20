@@ -1,21 +1,32 @@
 import {AppBskyActorDefs, AppBskyGraphGetFollows} from '@atproto/api'
 import {
-  useInfiniteQuery,
   InfiniteData,
   QueryClient,
   QueryKey,
+  useInfiniteQuery,
 } from '@tanstack/react-query'
 
-import {getAgent} from '#/state/session'
 import {STALE} from '#/state/queries'
+import {useAgent} from '#/state/session'
 
 const PAGE_SIZE = 30
 type RQPageParam = string | undefined
 
 // TODO refactor invalidate on mutate?
-export const RQKEY = (did: string) => ['profile-follows', did]
+const RQKEY_ROOT = 'profile-follows'
+export const RQKEY = (did: string) => [RQKEY_ROOT, did]
 
-export function useProfileFollowsQuery(did: string | undefined) {
+export function useProfileFollowsQuery(
+  did: string | undefined,
+  {
+    limit,
+  }: {
+    limit?: number
+  } = {
+    limit: PAGE_SIZE,
+  },
+) {
+  const agent = useAgent()
   return useInfiniteQuery<
     AppBskyGraphGetFollows.OutputSchema,
     Error,
@@ -26,9 +37,9 @@ export function useProfileFollowsQuery(did: string | undefined) {
     staleTime: STALE.MINUTES.ONE,
     queryKey: RQKEY(did || ''),
     async queryFn({pageParam}: {pageParam: RQPageParam}) {
-      const res = await getAgent().app.bsky.graph.getFollows({
+      const res = await agent.app.bsky.graph.getFollows({
         actor: did || '',
-        limit: PAGE_SIZE,
+        limit: limit || PAGE_SIZE,
         cursor: pageParam,
       })
       return res.data
@@ -46,7 +57,7 @@ export function* findAllProfilesInQueryData(
   const queryDatas = queryClient.getQueriesData<
     InfiniteData<AppBskyGraphGetFollows.OutputSchema>
   >({
-    queryKey: ['profile-follows'],
+    queryKey: [RQKEY_ROOT],
   })
   for (const [_queryKey, queryData] of queryDatas) {
     if (!queryData?.pages) {

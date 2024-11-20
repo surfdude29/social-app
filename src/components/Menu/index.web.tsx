@@ -1,27 +1,24 @@
-/* eslint-disable react/prop-types */
-
 import React from 'react'
-import {View, Pressable, ViewStyle, StyleProp} from 'react-native'
-import * as DropdownMenu from '@radix-ui/react-dropdown-menu'
+import {Pressable, StyleProp, View, ViewStyle} from 'react-native'
 import {msg} from '@lingui/macro'
 import {useLingui} from '@lingui/react'
+import * as DropdownMenu from '@radix-ui/react-dropdown-menu'
 
+import {atoms as a, flatten, useTheme, web} from '#/alf'
 import * as Dialog from '#/components/Dialog'
 import {useInteractionState} from '#/components/hooks/useInteractionState'
-import {atoms as a, useTheme, flatten, web} from '#/alf'
-import {Text} from '#/components/Typography'
-
+import {Context, ItemContext} from '#/components/Menu/context'
 import {
   ContextType,
-  TriggerProps,
-  ItemProps,
   GroupProps,
-  ItemTextProps,
   ItemIconProps,
+  ItemProps,
+  ItemTextProps,
   RadixPassThroughTriggerProps,
+  TriggerProps,
 } from '#/components/Menu/types'
-import {Context} from '#/components/Menu/context'
 import {Portal} from '#/components/Portal'
+import {Text} from '#/components/Typography'
 
 export function useMenuControl(): Dialog.DialogControlProps {
   const id = React.useId()
@@ -112,7 +109,7 @@ const RadixTriggerPassThrough = React.forwardRef(
 )
 RadixTriggerPassThrough.displayName = 'RadixTriggerPassThrough'
 
-export function Trigger({children, label}: TriggerProps) {
+export function Trigger({children, label, role = 'button'}: TriggerProps) {
   const {control} = React.useContext(Context)
   const {
     state: hovered,
@@ -135,15 +132,28 @@ export function Trigger({children, label}: TriggerProps) {
             },
             props: {
               ...props,
-              // disable on web, use `onPress`
-              onPointerDown: () => false,
-              onPress: () =>
-                control.isOpen ? control.close() : control.open(),
+              // No-op override to prevent false positive that interprets mobile scroll as a tap.
+              // This requires the custom onPress handler below to compensate.
+              // https://github.com/radix-ui/primitives/issues/1912
+              onPointerDown: undefined,
+              onPress: () => {
+                if (window.event instanceof KeyboardEvent) {
+                  // The onPointerDown hack above is not relevant to this press, so don't do anything.
+                  return
+                }
+                // Compensate for the disabled onPointerDown above by triggering it manually.
+                if (control.isOpen) {
+                  control.close()
+                } else {
+                  control.open()
+                }
+              },
               onFocus: onFocus,
               onBlur: onBlur,
               onMouseEnter,
               onMouseLeave,
               accessibilityLabel: label,
+              accessibilityRole: role,
             },
           })
         }
@@ -168,8 +178,10 @@ export function Outer({
           style={[
             a.rounded_sm,
             a.p_xs,
+            a.border,
             t.name === 'light' ? t.atoms.bg : t.atoms.bg_contrast_25,
             t.atoms.shadow_md,
+            t.atoms.border_contrast_low,
             style,
           ]}>
           {children}
@@ -228,18 +240,21 @@ export function Item({children, label, onPress, ...rest}: ItemProps) {
           a.rounded_xs,
           {minHeight: 32, paddingHorizontal: 10},
           web({outline: 0}),
-          (hovered || focused) && [
-            web({outline: '0 !important'}),
-            t.name === 'light'
-              ? t.atoms.bg_contrast_25
-              : t.atoms.bg_contrast_50,
-          ],
+          (hovered || focused) &&
+            !rest.disabled && [
+              web({outline: '0 !important'}),
+              t.name === 'light'
+                ? t.atoms.bg_contrast_25
+                : t.atoms.bg_contrast_50,
+            ],
         ])}
         {...web({
           onMouseEnter,
           onMouseLeave,
         })}>
-        {children}
+        <ItemContext.Provider value={{disabled: Boolean(rest.disabled)}}>
+          {children}
+        </ItemContext.Provider>
       </Pressable>
     </DropdownMenu.Item>
   )
@@ -247,8 +262,16 @@ export function Item({children, label, onPress, ...rest}: ItemProps) {
 
 export function ItemText({children, style}: ItemTextProps) {
   const t = useTheme()
+  const {disabled} = React.useContext(ItemContext)
   return (
-    <Text style={[a.flex_1, a.font_bold, t.atoms.text_contrast_high, style]}>
+    <Text
+      style={[
+        a.flex_1,
+        a.font_bold,
+        t.atoms.text_contrast_high,
+        style,
+        disabled && t.atoms.text_contrast_low,
+      ]}>
       {children}
     </Text>
   )
@@ -256,10 +279,9 @@ export function ItemText({children, style}: ItemTextProps) {
 
 export function ItemIcon({icon: Comp, position = 'left'}: ItemIconProps) {
   const t = useTheme()
+  const {disabled} = React.useContext(ItemContext)
   return (
-    <Comp
-      size="md"
-      fill={t.atoms.text_contrast_medium.color}
+    <View
       style={[
         position === 'left' && {
           marginLeft: -2,
@@ -268,8 +290,16 @@ export function ItemIcon({icon: Comp, position = 'left'}: ItemIconProps) {
           marginRight: -2,
           marginLeft: 12,
         },
-      ]}
-    />
+      ]}>
+      <Comp
+        size="md"
+        fill={
+          disabled
+            ? t.atoms.text_contrast_low.color
+            : t.atoms.text_contrast_medium.color
+        }
+      />
+    </View>
   )
 }
 

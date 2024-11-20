@@ -1,11 +1,8 @@
 import * as React from 'react'
 import {View} from 'react-native'
-import {PWI_ENABLED, NEW_ONBOARDING_ENABLED} from '#/lib/build-flags'
-
 // Based on @react-navigation/native-stack/src/createNativeStackNavigator.ts
 // MIT License
 // Copyright (c) 2017 React Navigation Contributors
-
 import {
   createNavigatorFactory,
   EventArg,
@@ -21,24 +18,26 @@ import type {
   NativeStackNavigationEventMap,
   NativeStackNavigationOptions,
 } from '@react-navigation/native-stack'
-import type {NativeStackNavigatorProps} from '@react-navigation/native-stack/src/types'
 import {NativeStackView} from '@react-navigation/native-stack'
+import type {NativeStackNavigatorProps} from '@react-navigation/native-stack/src/types'
 
-import {BottomBarWeb} from './bottom-bar/BottomBarWeb'
-import {DesktopLeftNav} from './desktop/LeftNav'
-import {DesktopRightNav} from './desktop/RightNav'
+import {PWI_ENABLED} from '#/lib/build-flags'
 import {useWebMediaQueries} from '#/lib/hooks/useWebMediaQueries'
+import {isNative, isWeb} from '#/platform/detection'
+import {useSession} from '#/state/session'
 import {useOnboardingState} from '#/state/shell'
 import {
   useLoggedOutView,
   useLoggedOutViewControls,
 } from '#/state/shell/logged-out'
-import {useSession} from '#/state/session'
-import {isWeb} from 'platform/detection'
+import {LoggedOut} from '#/view/com/auth/LoggedOut'
 import {Deactivated} from '#/screens/Deactivated'
-import {LoggedOut} from '../com/auth/LoggedOut'
-import {Onboarding} from '../com/auth/Onboarding'
-import {Onboarding as NewOnboarding} from '#/screens/Onboarding'
+import {Onboarding} from '#/screens/Onboarding'
+import {SignupQueued} from '#/screens/SignupQueued'
+import {atoms as a} from '#/alf'
+import {BottomBarWeb} from './bottom-bar/BottomBarWeb'
+import {DesktopLeftNav} from './desktop/LeftNav'
+import {DesktopRightNav} from './desktop/RightNav'
 
 type NativeStackNavigationOptionsWithAuth = NativeStackNavigationOptions & {
   requireAuth?: boolean
@@ -102,21 +101,20 @@ function NativeStackNavigator({
   const {showLoggedOut} = useLoggedOutView()
   const {setShowLoggedOut} = useLoggedOutViewControls()
   const {isMobile, isTabletOrMobile} = useWebMediaQueries()
-  if ((!PWI_ENABLED || activeRouteRequiresAuth) && !hasSession) {
+  if (!hasSession && (!PWI_ENABLED || activeRouteRequiresAuth || isNative)) {
     return <LoggedOut />
   }
-  if (hasSession && currentAccount?.deactivated) {
-    return <Deactivated />
+  if (hasSession && currentAccount?.signupQueued) {
+    return <SignupQueued />
   }
   if (showLoggedOut) {
     return <LoggedOut onDismiss={() => setShowLoggedOut(false)} />
   }
+  if (currentAccount?.status === 'deactivated') {
+    return <Deactivated />
+  }
   if (onboardingState.isActive) {
-    if (NEW_ONBOARDING_ENABLED) {
-      return <NewOnboarding />
-    } else {
-      return <Onboarding />
-    }
+    return <Onboarding />
   }
   const newDescriptors: typeof descriptors = {}
   for (let key in descriptors) {
@@ -140,12 +138,14 @@ function NativeStackNavigator({
 
   return (
     <NavigationContent>
-      <NativeStackView
-        {...rest}
-        state={state}
-        navigation={navigation}
-        descriptors={newDescriptors}
-      />
+      <View role="main" style={a.flex_1}>
+        <NativeStackView
+          {...rest}
+          state={state}
+          navigation={navigation}
+          descriptors={newDescriptors}
+        />
+      </View>
       {isWeb && showBottomBar && <BottomBarWeb />}
       {isWeb && !showBottomBar && (
         <>

@@ -1,4 +1,3 @@
-import React from 'react'
 import {View} from 'react-native'
 
 import {atoms as a, useTheme} from '#/alf'
@@ -20,7 +19,7 @@ export function FormError({error}: {error?: string}) {
         a.gap_sm,
       ]}>
       <Warning fill={t.palette.white} size="md" />
-      <View>
+      <View style={[a.flex_1]}>
         <Text style={[{color: t.palette.white}, a.font_bold, a.leading_snug]}>
           {error}
         </Text>

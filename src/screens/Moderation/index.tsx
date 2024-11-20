@@ -1,51 +1,45 @@
 import React from 'react'
-import {View} from 'react-native'
-import {useFocusEffect} from '@react-navigation/native'
-import {ComAtprotoLabelDefs} from '@atproto/api'
-import {Trans, msg} from '@lingui/macro'
-import {useLingui} from '@lingui/react'
-import {LABELS} from '@atproto/api'
+import {Linking, View} from 'react-native'
 import {useSafeAreaFrame} from 'react-native-safe-area-context'
-
-import {NativeStackScreenProps, CommonNavigatorParams} from '#/lib/routes/types'
-import {CenteredView} from '#/view/com/util/Views'
-import {ViewHeader} from '#/view/com/util/ViewHeader'
-import {useAnalytics} from 'lib/analytics/analytics'
-import {useSetMinimalShellMode} from '#/state/shell'
-import {useSession} from '#/state/session'
-import {
-  useProfileQuery,
-  useProfileUpdateMutation,
-} from '#/state/queries/profile'
-import {ScrollView} from '#/view/com/util/Views'
-
-import {
-  UsePreferencesQueryResponse,
-  useMyLabelersQuery,
-  usePreferencesQuery,
-  usePreferencesSetAdultContentMutation,
-} from '#/state/queries/preferences'
+import {LABELS} from '@atproto/api'
+import {msg, Trans} from '@lingui/macro'
+import {useLingui} from '@lingui/react'
+import {useFocusEffect} from '@react-navigation/native'
 
 import {getLabelingServiceTitle} from '#/lib/moderation'
+import {CommonNavigatorParams, NativeStackScreenProps} from '#/lib/routes/types'
 import {logger} from '#/logger'
-import {useTheme, atoms as a, useBreakpoints, ViewStyleProp} from '#/alf'
+import {isIOS} from '#/platform/detection'
+import {
+  useMyLabelersQuery,
+  usePreferencesQuery,
+  UsePreferencesQueryResponse,
+  usePreferencesSetAdultContentMutation,
+} from '#/state/queries/preferences'
+import {isNonConfigurableModerationAuthority} from '#/state/session/additional-moderation-authorities'
+import {useSetMinimalShellMode} from '#/state/shell'
+import {ViewHeader} from '#/view/com/util/ViewHeader'
+import {CenteredView} from '#/view/com/util/Views'
+import {ScrollView} from '#/view/com/util/Views'
+import {atoms as a, useBreakpoints, useTheme, ViewStyleProp} from '#/alf'
+import {Button, ButtonText} from '#/components/Button'
+import * as Dialog from '#/components/Dialog'
+import {BirthDateSettingsDialog} from '#/components/dialogs/BirthDateSettings'
+import {useGlobalDialogsControlContext} from '#/components/dialogs/Context'
 import {Divider} from '#/components/Divider'
+import * as Toggle from '#/components/forms/Toggle'
+import {ChevronRight_Stroke2_Corner0_Rounded as ChevronRight} from '#/components/icons/Chevron'
 import {CircleBanSign_Stroke2_Corner0_Rounded as CircleBanSign} from '#/components/icons/CircleBanSign'
+import {Props as SVGIconProps} from '#/components/icons/common'
+import {Filter_Stroke2_Corner0_Rounded as Filter} from '#/components/icons/Filter'
 import {Group3_Stroke2_Corner0_Rounded as Group} from '#/components/icons/Group'
 import {Person_Stroke2_Corner0_Rounded as Person} from '#/components/icons/Person'
-import {ChevronRight_Stroke2_Corner0_Rounded as ChevronRight} from '#/components/icons/Chevron'
-import {Filter_Stroke2_Corner0_Rounded as Filter} from '#/components/icons/Filter'
-import {Text} from '#/components/Typography'
-import * as Toggle from '#/components/forms/Toggle'
-import {InlineLink, Link} from '#/components/Link'
-import {Button, ButtonText} from '#/components/Button'
-import {Loader} from '#/components/Loader'
 import * as LabelingService from '#/components/LabelingServiceCard'
-import {GlobalModerationLabelPref} from '#/components/moderation/GlobalModerationLabelPref'
-import {useGlobalDialogsControlContext} from '#/components/dialogs/Context'
-import {Props as SVGIconProps} from '#/components/icons/common'
-import {BirthDateSettingsDialog} from '#/components/dialogs/BirthDateSettings'
-import * as Dialog from '#/components/Dialog'
+import * as Layout from '#/components/Layout'
+import {InlineLinkText, Link} from '#/components/Link'
+import {Loader} from '#/components/Loader'
+import {GlobalLabelPreference} from '#/components/moderation/LabelPreference'
+import {Text} from '#/components/Typography'
 
 function ErrorState({error}: {error: string}) {
   const t = useTheme()
@@ -95,31 +89,33 @@ export function ModerationScreen(
   const error = preferencesError
 
   return (
-    <CenteredView
-      testID="moderationScreen"
-      style={[
-        t.atoms.border_contrast_low,
-        t.atoms.bg,
-        {minHeight: height},
-        ...(gtMobile ? [a.border_l, a.border_r] : []),
-      ]}>
-      <ViewHeader title={_(msg`Moderation`)} showOnDesktop />
+    <Layout.Screen testID="moderationScreen">
+      <CenteredView
+        testID="moderationScreen"
+        style={[
+          t.atoms.border_contrast_low,
+          t.atoms.bg,
+          {minHeight: height},
+          ...(gtMobile ? [a.border_l, a.border_r] : []),
+        ]}>
+        <ViewHeader title={_(msg`Moderation`)} showOnDesktop />
 
-      {isLoading ? (
-        <View style={[a.w_full, a.align_center, a.pt_2xl]}>
-          <Loader size="xl" fill={t.atoms.text.color} />
-        </View>
-      ) : error || !preferences ? (
-        <ErrorState
-          error={
-            preferencesError?.toString() ||
-            _(msg`Something went wrong, please try again.`)
-          }
-        />
-      ) : (
-        <ModerationScreenInner preferences={preferences} />
-      )}
-    </CenteredView>
+        {isLoading ? (
+          <View style={[a.w_full, a.align_center, a.pt_2xl]}>
+            <Loader size="xl" fill={t.atoms.text.color} />
+          </View>
+        ) : error || !preferences ? (
+          <ErrorState
+            error={
+              preferencesError?.toString() ||
+              _(msg`Something went wrong, please try again.`)
+            }
+          />
+        ) : (
+          <ModerationScreenInner preferences={preferences} />
+        )}
+      </CenteredView>
+    </Layout.Screen>
   )
 }
 
@@ -163,7 +159,6 @@ export function ModerationScreenInner({
   const {_} = useLingui()
   const t = useTheme()
   const setMinimalShellMode = useSetMinimalShellMode()
-  const {screen} = useAnalytics()
   const {gtMobile} = useBreakpoints()
   const {mutedWordsDialogControl} = useGlobalDialogsControlContext()
   const birthdateDialogControl = Dialog.useDialogControl()
@@ -175,9 +170,8 @@ export function ModerationScreenInner({
 
   useFocusEffect(
     React.useCallback(() => {
-      screen('Moderation')
       setMinimalShellMode(false)
-    }, [screen, setMinimalShellMode]),
+    }, [setMinimalShellMode]),
   )
 
   const {mutateAsync: setAdultContentPref, variables: optimisticAdultContent} =
@@ -203,6 +197,8 @@ export function ModerationScreenInner({
     },
     [setAdultContentPref],
   )
+
+  const disabledOnIOS = isIOS && !adultContentEnabled
 
   return (
     <ScrollView
@@ -239,7 +235,10 @@ export function ModerationScreenInner({
           )}
         </Button>
         <Divider />
-        <Link testID="moderationlistsBtn" to="/moderation/modlists">
+        <Link
+          label={_(msg`View your moderation lists`)}
+          testID="moderationlistsBtn"
+          to="/moderation/modlists">
           {state => (
             <SubItem
               title={_(msg`Moderation lists`)}
@@ -251,7 +250,10 @@ export function ModerationScreenInner({
           )}
         </Link>
         <Divider />
-        <Link testID="mutedAccountsBtn" to="/moderation/muted-accounts">
+        <Link
+          label={_(msg`View your muted accounts`)}
+          testID="mutedAccountsBtn"
+          to="/moderation/muted-accounts">
           {state => (
             <SubItem
               title={_(msg`Muted accounts`)}
@@ -263,7 +265,10 @@ export function ModerationScreenInner({
           )}
         </Link>
         <Divider />
-        <Link testID="blockedAccountsBtn" to="/moderation/blocked-accounts">
+        <Link
+          label={_(msg`View your blocked accounts`)}
+          testID="blockedAccountsBtn"
+          to="/moderation/blocked-accounts">
           {state => (
             <SubItem
               title={_(msg`Blocked accounts`)}
@@ -326,12 +331,14 @@ export function ModerationScreenInner({
                   a.flex_row,
                   a.align_center,
                   a.justify_between,
+                  disabledOnIOS && {opacity: 0.5},
                 ]}>
-                <Text style={[a.font_semibold, t.atoms.text_contrast_high]}>
+                <Text style={[a.font_bold, t.atoms.text_contrast_high]}>
                   <Trans>Enable adult content</Trans>
                 </Text>
                 <Toggle.Item
                   label={_(msg`Toggle to enable or disable adult content`)}
+                  disabled={disabledOnIOS}
                   name="adultContent"
                   value={adultContentEnabled}
                   onChange={onToggleAdultContentEnabled}>
@@ -347,22 +354,42 @@ export function ModerationScreenInner({
                   </View>
                 </Toggle.Item>
               </View>
+              {disabledOnIOS && (
+                <View style={[a.pb_lg, a.px_lg]}>
+                  <Text>
+                    <Trans>
+                      Adult content can only be enabled via the Web at{' '}
+                      <InlineLinkText
+                        label={_(msg`The Bluesky web application`)}
+                        to=""
+                        onPress={evt => {
+                          evt.preventDefault()
+                          Linking.openURL('https://bsky.app/')
+                          return false
+                        }}>
+                        bsky.app
+                      </InlineLinkText>
+                      .
+                    </Trans>
+                  </Text>
+                </View>
+              )}
               <Divider />
             </>
           )}
           {!isUnderage && adultContentEnabled && (
             <>
-              <GlobalModerationLabelPref labelValueDefinition={LABELS.porn} />
+              <GlobalLabelPreference labelDefinition={LABELS.porn} />
               <Divider />
-              <GlobalModerationLabelPref labelValueDefinition={LABELS.sexual} />
+              <GlobalLabelPreference labelDefinition={LABELS.sexual} />
               <Divider />
-              <GlobalModerationLabelPref
-                labelValueDefinition={LABELS['graphic-media']}
+              <GlobalLabelPreference
+                labelDefinition={LABELS['graphic-media']}
               />
               <Divider />
             </>
           )}
-          <GlobalModerationLabelPref labelValueDefinition={LABELS.nudity} />
+          <GlobalLabelPreference labelDefinition={LABELS.nudity} />
         </View>
       </View>
 
@@ -423,6 +450,9 @@ export function ModerationScreenInner({
                           value={labeler.creator.description}
                           handle={labeler.creator.handle}
                         />
+                        {isNonConfigurableModerationAuthority(
+                          labeler.creator.did,
+                        ) && <LabelingService.RegionalNotice />}
                       </LabelingService.Content>
                     </LabelingService.Outer>
                   )}
@@ -432,125 +462,7 @@ export function ModerationScreenInner({
           })}
         </View>
       )}
-
-      <Text
-        style={[
-          a.text_md,
-          a.font_bold,
-          a.pt_2xl,
-          a.pb_md,
-          t.atoms.text_contrast_high,
-        ]}>
-        <Trans>Logged-out visibility</Trans>
-      </Text>
-
-      <PwiOptOut />
-
       <View style={{height: 200}} />
     </ScrollView>
-  )
-}
-
-function PwiOptOut() {
-  const t = useTheme()
-  const {_} = useLingui()
-  const {currentAccount} = useSession()
-  const {data: profile} = useProfileQuery({did: currentAccount?.did})
-  const updateProfile = useProfileUpdateMutation()
-
-  const isOptedOut =
-    profile?.labels?.some(l => l.val === '!no-unauthenticated') || false
-  const canToggle = profile && !updateProfile.isPending
-
-  const onToggleOptOut = React.useCallback(() => {
-    if (!profile) {
-      return
-    }
-    let wasAdded = false
-    updateProfile.mutate({
-      profile,
-      updates: existing => {
-        // create labels attr if needed
-        existing.labels = ComAtprotoLabelDefs.isSelfLabels(existing.labels)
-          ? existing.labels
-          : {
-              $type: 'com.atproto.label.defs#selfLabels',
-              values: [],
-            }
-
-        // toggle the label
-        const hasLabel = existing.labels.values.some(
-          l => l.val === '!no-unauthenticated',
-        )
-        if (hasLabel) {
-          wasAdded = false
-          existing.labels.values = existing.labels.values.filter(
-            l => l.val !== '!no-unauthenticated',
-          )
-        } else {
-          wasAdded = true
-          existing.labels.values.push({val: '!no-unauthenticated'})
-        }
-
-        // delete if no longer needed
-        if (existing.labels.values.length === 0) {
-          delete existing.labels
-        }
-        return existing
-      },
-      checkCommitted: res => {
-        const exists = !!res.data.labels?.some(
-          l => l.val === '!no-unauthenticated',
-        )
-        return exists === wasAdded
-      },
-    })
-  }, [updateProfile, profile])
-
-  return (
-    <View style={[a.pt_sm]}>
-      <View style={[a.flex_row, a.align_center, a.justify_between, a.gap_lg]}>
-        <Toggle.Item
-          disabled={!canToggle}
-          value={isOptedOut}
-          onChange={onToggleOptOut}
-          name="logged_out_visibility"
-          style={a.flex_1}
-          label={_(
-            msg`Discourage apps from showing my account to logged-out users`,
-          )}>
-          <Toggle.Switch />
-          <Toggle.Label style={[a.text_md, a.flex_1]}>
-            <Trans>
-              Discourage apps from showing my account to logged-out users
-            </Trans>
-          </Toggle.Label>
-        </Toggle.Item>
-
-        {updateProfile.isPending && <Loader />}
-      </View>
-
-      <View style={[a.pt_md, a.gap_md, {paddingLeft: 38}]}>
-        <Text style={[a.leading_snug, t.atoms.text_contrast_high]}>
-          <Trans>
-            Bluesky will not show your profile and posts to logged-out users.
-            Other apps may not honor this request. This does not make your
-            account private.
-          </Trans>
-        </Text>
-        <Text style={[a.font_bold, a.leading_snug, t.atoms.text_contrast_high]}>
-          <Trans>
-            Note: Bluesky is an open and public network. This setting only
-            limits the visibility of your content on the Bluesky app and
-            website, and other apps may not respect this setting. Your content
-            may still be shown to logged-out users by other apps and websites.
-          </Trans>
-        </Text>
-
-        <InlineLink to="https://blueskyweb.zendesk.com/hc/en-us/articles/15835264007693-Data-Privacy">
-          <Trans>Learn more about what is public on Bluesky.</Trans>
-        </InlineLink>
-      </View>
-    </View>
   )
 }

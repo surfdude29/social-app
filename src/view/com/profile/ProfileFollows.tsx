@@ -1,23 +1,33 @@
 import React from 'react'
 import {AppBskyActorDefs as ActorDefs} from '@atproto/api'
-import {List} from '../util/List'
-import {ProfileCardWithFollowBtn} from './ProfileCard'
-import {useProfileFollowsQuery} from '#/state/queries/profile-follows'
-import {useResolveDidQuery} from '#/state/queries/resolve-uri'
-import {logger} from '#/logger'
-import {cleanError} from '#/lib/strings/errors'
-import {
-  ListFooter,
-  ListHeaderDesktop,
-  ListMaybePlaceholder,
-} from '#/components/Lists'
-import {useInitialNumToRender} from 'lib/hooks/useInitialNumToRender'
-import {useSession} from 'state/session'
 import {msg} from '@lingui/macro'
 import {useLingui} from '@lingui/react'
 
-function renderItem({item}: {item: ActorDefs.ProfileViewBasic}) {
-  return <ProfileCardWithFollowBtn key={item.did} profile={item} />
+import {useInitialNumToRender} from '#/lib/hooks/useInitialNumToRender'
+import {cleanError} from '#/lib/strings/errors'
+import {logger} from '#/logger'
+import {isWeb} from '#/platform/detection'
+import {useProfileFollowsQuery} from '#/state/queries/profile-follows'
+import {useResolveDidQuery} from '#/state/queries/resolve-uri'
+import {useSession} from '#/state/session'
+import {ListFooter, ListMaybePlaceholder} from '#/components/Lists'
+import {List} from '../util/List'
+import {ProfileCardWithFollowBtn} from './ProfileCard'
+
+function renderItem({
+  item,
+  index,
+}: {
+  item: ActorDefs.ProfileViewBasic
+  index: number
+}) {
+  return (
+    <ProfileCardWithFollowBtn
+      key={item.did}
+      profile={item}
+      noBorder={index === 0 && !isWeb}
+    />
+  )
 }
 
 function keyExtractor(item: ActorDefs.ProfileViewBasic) {
@@ -38,7 +48,6 @@ export function ProfileFollows({name}: {name: string}) {
   const {
     data,
     isLoading: isFollowsLoading,
-    isFetching,
     isFetchingNextPage,
     hasNextPage,
     fetchNextPage,
@@ -46,14 +55,8 @@ export function ProfileFollows({name}: {name: string}) {
     refetch,
   } = useProfileFollowsQuery(resolvedDid)
 
-  const isError = React.useMemo(
-    () => !!resolveError || !!error,
-    [resolveError, error],
-  )
-
-  const isMe = React.useMemo(() => {
-    return resolvedDid === currentAccount?.did
-  }, [resolvedDid, currentAccount?.did])
+  const isError = !!resolveError || !!error
+  const isMe = resolvedDid === currentAccount?.did
 
   const follows = React.useMemo(() => {
     if (data?.pages) {
@@ -72,20 +75,19 @@ export function ProfileFollows({name}: {name: string}) {
     setIsPTRing(false)
   }, [refetch, setIsPTRing])
 
-  const onEndReached = async () => {
-    if (isFetching || !hasNextPage || !!error) return
+  const onEndReached = React.useCallback(async () => {
+    if (isFetchingNextPage || !hasNextPage || !!error) return
     try {
       await fetchNextPage()
     } catch (err) {
       logger.error('Failed to load more follows', {error: err})
     }
-  }
+  }, [error, fetchNextPage, hasNextPage, isFetchingNextPage])
 
-  return (
-    <>
+  if (follows.length < 1) {
+    return (
       <ListMaybePlaceholder
         isLoading={isDidLoading || isFollowsLoading}
-        isEmpty={follows.length < 1}
         isError={isError}
         emptyType="results"
         emptyMessage={
@@ -95,24 +97,32 @@ export function ProfileFollows({name}: {name: string}) {
         }
         errorMessage={cleanError(resolveError || error)}
         onRetry={isError ? refetch : undefined}
+        sideBorders={false}
       />
-      {follows.length > 0 && (
-        <List
-          data={follows}
-          renderItem={renderItem}
-          keyExtractor={keyExtractor}
-          refreshing={isPTRing}
-          onRefresh={onRefresh}
-          onEndReached={onEndReached}
-          onEndReachedThreshold={4}
-          ListHeaderComponent={<ListHeaderDesktop title={_(msg`Following`)} />}
-          ListFooterComponent={<ListFooter isFetching={isFetchingNextPage} />}
-          // @ts-ignore our .web version only -prf
-          desktopFixedHeight
-          initialNumToRender={initialNumToRender}
-          windowSize={11}
+    )
+  }
+
+  return (
+    <List
+      data={follows}
+      renderItem={renderItem}
+      keyExtractor={keyExtractor}
+      refreshing={isPTRing}
+      onRefresh={onRefresh}
+      onEndReached={onEndReached}
+      onEndReachedThreshold={4}
+      ListFooterComponent={
+        <ListFooter
+          isFetchingNextPage={isFetchingNextPage}
+          error={cleanError(error)}
+          onRetry={fetchNextPage}
         />
-      )}
-    </>
+      }
+      // @ts-ignore our .web version only -prf
+      desktopFixedHeight
+      initialNumToRender={initialNumToRender}
+      windowSize={11}
+      sideBorders={false}
+    />
   )
 }

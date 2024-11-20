@@ -1,48 +1,49 @@
 import React from 'react'
-import {StatusBar} from 'expo-status-bar'
-import {
-  DimensionValue,
-  StyleSheet,
-  useWindowDimensions,
-  View,
-  BackHandler,
-} from 'react-native'
-import {useSafeAreaInsets} from 'react-native-safe-area-context'
+import {BackHandler, StyleSheet, useWindowDimensions, View} from 'react-native'
 import {Drawer} from 'react-native-drawer-layout'
-import {useNavigationState} from '@react-navigation/native'
-import {ModalsContainer} from 'view/com/modals/Modal'
-import {Lightbox} from 'view/com/lightbox/Lightbox'
-import {ErrorBoundary} from 'view/com/util/ErrorBoundary'
-import {DrawerContent} from './Drawer'
-import {Composer} from './Composer'
-import {useTheme} from 'lib/ThemeContext'
-import {usePalette} from 'lib/hooks/usePalette'
-import {RoutesContainer, TabsNavigator} from '../../Navigation'
-import {isStateAtTabRoot} from 'lib/routes/helpers'
+import Animated from 'react-native-reanimated'
+import {useSafeAreaInsets} from 'react-native-safe-area-context'
+import * as NavigationBar from 'expo-navigation-bar'
+import {StatusBar} from 'expo-status-bar'
+import {useNavigation, useNavigationState} from '@react-navigation/native'
+
+import {useDedupe} from '#/lib/hooks/useDedupe'
+import {useIntentHandler} from '#/lib/hooks/useIntentHandler'
+import {useNotificationsHandler} from '#/lib/hooks/useNotificationHandler'
+import {usePalette} from '#/lib/hooks/usePalette'
+import {useNotificationsRegistration} from '#/lib/notifications/notifications'
+import {isStateAtTabRoot} from '#/lib/routes/helpers'
+import {useTheme} from '#/lib/ThemeContext'
+import {isAndroid, isIOS} from '#/platform/detection'
+import {useDialogStateControlContext} from '#/state/dialogs'
+import {useSession} from '#/state/session'
 import {
   useIsDrawerOpen,
-  useSetDrawerOpen,
   useIsDrawerSwipeDisabled,
+  useSetDrawerOpen,
 } from '#/state/shell'
-import {isAndroid} from 'platform/detection'
-import {useSession} from '#/state/session'
 import {useCloseAnyActiveElement} from '#/state/util'
-import * as notifications from 'lib/notifications/notifications'
-import {Outlet as PortalOutlet} from '#/components/Portal'
+import {Lightbox} from '#/view/com/lightbox/Lightbox'
+import {ModalsContainer} from '#/view/com/modals/Modal'
+import {ErrorBoundary} from '#/view/com/util/ErrorBoundary'
+import {atoms as a, select, useTheme as useNewTheme} from '#/alf'
 import {MutedWordsDialog} from '#/components/dialogs/MutedWords'
-import {useDialogStateContext} from 'state/dialogs'
-import Animated from 'react-native-reanimated'
+import {SigninDialog} from '#/components/dialogs/Signin'
+import {Outlet as PortalOutlet} from '#/components/Portal'
+import {BottomSheetOutlet} from '../../../modules/bottom-sheet'
+import {updateActiveViewAsync} from '../../../modules/expo-bluesky-swiss-army/src/VisibilityView'
+import {RoutesContainer, TabsNavigator} from '../../Navigation'
+import {Composer} from './Composer'
+import {DrawerContent} from './Drawer'
 
 function ShellInner() {
+  const t = useNewTheme()
   const isDrawerOpen = useIsDrawerOpen()
   const isDrawerSwipeDisabled = useIsDrawerSwipeDisabled()
   const setIsDrawerOpen = useSetDrawerOpen()
   const winDim = useWindowDimensions()
-  const safeAreaInsets = useSafeAreaInsets()
-  const containerPadding = React.useMemo(
-    () => ({height: '100%' as DimensionValue, paddingTop: safeAreaInsets.top}),
-    [safeAreaInsets],
-  )
+  const insets = useSafeAreaInsets()
+
   const renderDrawerContent = React.useCallback(() => <DrawerContent />, [])
   const onOpenDrawer = React.useCallback(
     () => setIsDrawerOpen(true),
@@ -53,47 +54,68 @@ function ShellInner() {
     [setIsDrawerOpen],
   )
   const canGoBack = useNavigationState(state => !isStateAtTabRoot(state))
-  const {hasSession, currentAccount} = useSession()
+  const {hasSession} = useSession()
   const closeAnyActiveElement = useCloseAnyActiveElement()
-  const {importantForAccessibility} = useDialogStateContext()
-  // start undefined
-  const currentAccountDid = React.useRef<string | undefined>(undefined)
+
+  useNotificationsRegistration()
+  useNotificationsHandler()
 
   React.useEffect(() => {
-    let listener = {remove() {}}
     if (isAndroid) {
-      listener = BackHandler.addEventListener('hardwareBackPress', () => {
+      const listener = BackHandler.addEventListener('hardwareBackPress', () => {
         return closeAnyActiveElement()
       })
-    }
-    return () => {
-      listener.remove()
+
+      return () => {
+        listener.remove()
+      }
     }
   }, [closeAnyActiveElement])
 
+  // HACK
+  // expo-video doesn't like it when you try and move a `player` to another `VideoView`. Instead, we need to actually
+  // unregister that player to let the new screen register it. This is only a problem on Android, so we only need to
+  // apply it there.
+  // The `state` event should only fire whenever we push or pop to a screen, and should not fire consecutively quickly.
+  // To be certain though, we will also dedupe these calls.
+  const navigation = useNavigation()
+  const dedupe = useDedupe(1000)
   React.useEffect(() => {
-    // only runs when did changes
-    if (currentAccount && currentAccountDid.current !== currentAccount.did) {
-      currentAccountDid.current = currentAccount.did
-      notifications.requestPermissionsAndRegisterToken(currentAccount)
-      const unsub = notifications.registerTokenChangeHandler(currentAccount)
-      return unsub
+    if (!isAndroid) return
+    const onFocusOrBlur = () => {
+      setTimeout(() => {
+        dedupe(updateActiveViewAsync)
+      }, 500)
     }
-  }, [currentAccount])
+    navigation.addListener('state', onFocusOrBlur)
+    return () => {
+      navigation.removeListener('state', onFocusOrBlur)
+    }
+  }, [dedupe, navigation])
 
   return (
     <>
-      <Animated.View
-        style={containerPadding}
-        importantForAccessibility={importantForAccessibility}>
-        <ErrorBoundary>
+      <Animated.View style={[a.h_full]}>
+        <ErrorBoundary
+          style={{paddingTop: insets.top, paddingBottom: insets.bottom}}>
           <Drawer
             renderDrawerContent={renderDrawerContent}
+            drawerStyle={{width: Math.min(400, winDim.width * 0.8)}}
             open={isDrawerOpen}
             onOpen={onOpenDrawer}
             onClose={onCloseDrawer}
             swipeEdgeWidth={winDim.width / 2}
-            swipeEnabled={!canGoBack && hasSession && !isDrawerSwipeDisabled}>
+            drawerType={isIOS ? 'slide' : 'front'}
+            swipeEnabled={!canGoBack && hasSession && !isDrawerSwipeDisabled}
+            overlayStyle={{
+              backgroundColor: select(t.name, {
+                light: 'rgba(0, 57, 117, 0.1)',
+                dark: isAndroid
+                  ? 'rgba(16, 133, 254, 0.1)'
+                  : 'rgba(1, 82, 168, 0.1)',
+                dim: 'rgba(10, 13, 16, 0.8)',
+              }),
+            }}>
             <TabsNavigator />
           </Drawer>
         </ErrorBoundary>
@@ -101,18 +123,39 @@ function ShellInner() {
       <Composer winHeight={winDim.height} />
       <ModalsContainer />
       <MutedWordsDialog />
+      <SigninDialog />
       <Lightbox />
       <PortalOutlet />
+      <BottomSheetOutlet />
     </>
   )
 }
 
 export const Shell: React.FC = function ShellImpl() {
+  const {fullyExpandedCount} = useDialogStateControlContext()
   const pal = usePalette('default')
   const theme = useTheme()
+  useIntentHandler()
+
+  React.useEffect(() => {
+    if (isAndroid) {
+      NavigationBar.setBackgroundColorAsync(theme.palette.default.background)
+      NavigationBar.setBorderColorAsync(theme.palette.default.background)
+      NavigationBar.setButtonStyleAsync(
+        theme.colorScheme === 'dark' ? 'light' : 'dark',
+      )
+    }
+  }, [theme])
   return (
     <View testID="mobileShellView" style={[styles.outerContainer, pal.view]}>
-      <StatusBar style={theme.colorScheme === 'dark' ? 'light' : 'dark'} />
+      <StatusBar
+        style={
+          theme.colorScheme === 'dark' || (isIOS && fullyExpandedCount > 0)
+            ? 'light'
+            : 'dark'
+        }
+        animated
+      />
       <RoutesContainer>
         <ShellInner />
       </RoutesContainer>

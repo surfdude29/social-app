@@ -1,12 +1,8 @@
 import React from 'react'
-import {AppBskyActorDefs, AppBskyGraphDefs} from '@atproto/api'
 import {Image as RNImage} from 'react-native-image-crop-picker'
+import {AppBskyActorDefs, AppBskyGraphDefs} from '@atproto/api'
 
-import {ImageModel} from '#/state/models/media/image'
-import {GalleryModel} from '#/state/models/media/gallery'
 import {useNonReactiveCallback} from '#/lib/hooks/useNonReactiveCallback'
-import {EmbedPlayerSource} from '#/lib/strings/embed-player'
-import {ThreadgateSetting} from '../queries/threadgate'
 
 export interface EditProfileModal {
   name: 'edit-profile'
@@ -39,50 +35,17 @@ export interface ListAddRemoveUsersModal {
   ) => void
 }
 
-export interface EditImageModal {
-  name: 'edit-image'
-  image: ImageModel
-  gallery: GalleryModel
-}
-
 export interface CropImageModal {
   name: 'crop-image'
   uri: string
+  dimensions?: {width: number; height: number}
+  aspect?: number
+  circular?: boolean
   onSelect: (img?: RNImage) => void
-}
-
-export interface AltTextImageModal {
-  name: 'alt-text-image'
-  image: ImageModel
 }
 
 export interface DeleteAccountModal {
   name: 'delete-account'
-}
-
-export interface RepostModal {
-  name: 'repost'
-  onRepost: () => void
-  onQuote: () => void
-  isReposted: boolean
-}
-
-export interface SelfLabelModal {
-  name: 'self-label'
-  labels: string[]
-  hasMedia: boolean
-  onChange: (labels: string[]) => void
-}
-
-export interface ThreadgateModal {
-  name: 'threadgate'
-  settings: ThreadgateSetting[]
-  onChange: (settings: ThreadgateSetting[]) => void
-}
-
-export interface ChangeHandleModal {
-  name: 'change-handle'
-  onChanged: () => void
 }
 
 export interface WaitlistModal {
@@ -91,10 +54,6 @@ export interface WaitlistModal {
 
 export interface InviteCodesModal {
   name: 'invite-codes'
-}
-
-export interface AddAppPasswordModal {
-  name: 'add-app-password'
 }
 
 export interface ContentLanguagesSettingsModal {
@@ -108,6 +67,7 @@ export interface PostLanguagesSettingsModal {
 export interface VerifyEmailModal {
   name: 'verify-email'
   showReminder?: boolean
+  onSuccess?: () => void
 }
 
 export interface ChangeEmailModal {
@@ -118,20 +78,11 @@ export interface ChangePasswordModal {
   name: 'change-password'
 }
 
-export interface SwitchAccountModal {
-  name: 'switch-account'
-}
-
 export interface LinkWarningModal {
   name: 'link-warning'
   text: string
   href: string
-}
-
-export interface EmbedConsentModal {
-  name: 'embed-consent'
-  source: EmbedPlayerSource
-  onAccept: () => void
+  share?: boolean
 }
 
 export interface InAppBrowserConsentModal {
@@ -141,14 +92,13 @@ export interface InAppBrowserConsentModal {
 
 export type Modal =
   // Account
-  | AddAppPasswordModal
-  | ChangeHandleModal
   | DeleteAccountModal
-  | EditProfileModal
   | VerifyEmailModal
   | ChangeEmailModal
   | ChangePasswordModal
-  | SwitchAccountModal
+
+  // Temp
+  | EditProfileModal
 
   // Curation
   | ContentLanguagesSettingsModal
@@ -160,12 +110,7 @@ export type Modal =
   | ListAddRemoveUsersModal
 
   // Posts
-  | AltTextImageModal
   | CropImageModal
-  | EditImageModal
-  | RepostModal
-  | SelfLabelModal
-  | ThreadgateModal
 
   // Bluesky access
   | WaitlistModal
@@ -173,7 +118,6 @@ export type Modal =
 
   // Generic
   | LinkWarningModal
-  | EmbedConsentModal
   | InAppBrowserConsentModal
 
 const ModalContext = React.createContext<{
@@ -187,11 +131,11 @@ const ModalContext = React.createContext<{
 const ModalControlContext = React.createContext<{
   openModal: (modal: Modal) => void
   closeModal: () => boolean
-  closeAllModals: () => void
+  closeAllModals: () => boolean
 }>({
   openModal: () => {},
   closeModal: () => false,
-  closeAllModals: () => {},
+  closeAllModals: () => false,
 })
 
 /**
@@ -224,7 +168,9 @@ export function Provider({children}: React.PropsWithChildren<{}>) {
   })
 
   const closeAllModals = useNonReactiveCallback(() => {
+    let wasActive = activeModals.length > 0
     setActiveModals([])
+    return wasActive
   })
 
   unstable__openModal = openModal

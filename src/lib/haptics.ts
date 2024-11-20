@@ -1,40 +1,31 @@
-import {isIOS, isWeb} from 'platform/detection'
-import ReactNativeHapticFeedback, {
-  HapticFeedbackTypes,
-} from 'react-native-haptic-feedback'
+import React from 'react'
+import * as Device from 'expo-device'
+import {impactAsync, ImpactFeedbackStyle} from 'expo-haptics'
 
-const hapticImpact: HapticFeedbackTypes = isIOS ? 'impactMedium' : 'impactLight' // Users said the medium impact was too strong on Android; see APP-537s
+import {isIOS, isWeb} from '#/platform/detection'
+import {useHapticsDisabled} from '#/state/preferences/disable-haptics'
+import * as Toast from '#/view/com/util/Toast'
 
-export class Haptics {
-  static default() {
-    if (isWeb) {
-      return
-    }
-    ReactNativeHapticFeedback.trigger(hapticImpact)
-  }
-  static impact(type: HapticFeedbackTypes = hapticImpact) {
-    if (isWeb) {
-      return
-    }
-    ReactNativeHapticFeedback.trigger(type)
-  }
-  static selection() {
-    if (isWeb) {
-      return
-    }
-    ReactNativeHapticFeedback.trigger('selection')
-  }
-  static notification = (type: 'success' | 'warning' | 'error') => {
-    if (isWeb) {
-      return
-    }
-    switch (type) {
-      case 'success':
-        return ReactNativeHapticFeedback.trigger('notificationSuccess')
-      case 'warning':
-        return ReactNativeHapticFeedback.trigger('notificationWarning')
-      case 'error':
-        return ReactNativeHapticFeedback.trigger('notificationError')
-    }
-  }
+export function useHaptics() {
+  const isHapticsDisabled = useHapticsDisabled()
+
+  return React.useCallback(
+    (strength: 'Light' | 'Medium' | 'Heavy' = 'Medium') => {
+      if (isHapticsDisabled || isWeb) {
+        return
+      }
+
+      // Users said the medium impact was too strong on Android; see APP-537s
+      const style = isIOS
+        ? ImpactFeedbackStyle[strength]
+        : ImpactFeedbackStyle.Light
+      impactAsync(style)
+
+      // DEV ONLY - show a toast when a haptic is meant to fire on simulator
+      if (__DEV__ && !Device.isDevice) {
+        Toast.show(`Buzzz!`)
+      }
+    },
+    [isHapticsDisabled],
+  )
 }

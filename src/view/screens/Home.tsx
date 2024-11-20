@@ -1,42 +1,89 @@
 import React from 'react'
-import {View, ActivityIndicator, StyleSheet} from 'react-native'
+import {ActivityIndicator, StyleSheet} from 'react-native'
 import {useFocusEffect} from '@react-navigation/native'
-import {NativeStackScreenProps, HomeTabNavigatorParams} from 'lib/routes/types'
-import {FeedDescriptor, FeedParams} from '#/state/queries/post-feed'
-import {FollowingEmptyState} from 'view/com/posts/FollowingEmptyState'
-import {FollowingEndOfFeed} from 'view/com/posts/FollowingEndOfFeed'
-import {CustomFeedEmptyState} from 'view/com/posts/CustomFeedEmptyState'
-import {HomeHeader} from '../com/home/HomeHeader'
-import {Pager, RenderTabBarFnProps, PagerRef} from 'view/com/pager/Pager'
-import {FeedPage} from 'view/com/feeds/FeedPage'
-import {HomeLoggedOutCTA} from '../com/auth/HomeLoggedOutCTA'
-import {useSetMinimalShellMode, useSetDrawerSwipeDisabled} from '#/state/shell'
-import {usePreferencesQuery} from '#/state/queries/preferences'
-import {usePinnedFeedsInfos, FeedSourceInfo} from '#/state/queries/feed'
-import {UsePreferencesQueryResponse} from '#/state/queries/preferences/types'
-import {emitSoftReset} from '#/state/events'
-import {useSession} from '#/state/session'
-import {useSelectedFeed, useSetSelectedFeed} from '#/state/shell/selected-feed'
-import {useSetTitle} from '#/lib/hooks/useSetTitle'
 
-type Props = NativeStackScreenProps<HomeTabNavigatorParams, 'Home'>
+import {PROD_DEFAULT_FEED} from '#/lib/constants'
+import {useNonReactiveCallback} from '#/lib/hooks/useNonReactiveCallback'
+import {useOTAUpdates} from '#/lib/hooks/useOTAUpdates'
+import {useSetTitle} from '#/lib/hooks/useSetTitle'
+import {useRequestNotificationsPermission} from '#/lib/notifications/notifications'
+import {
+  HomeTabNavigatorParams,
+  NativeStackScreenProps,
+} from '#/lib/routes/types'
+import {logEvent, LogEvents} from '#/lib/statsig/statsig'
+import {isWeb} from '#/platform/detection'
+import {emitSoftReset} from '#/state/events'
+import {SavedFeedSourceInfo, usePinnedFeedsInfos} from '#/state/queries/feed'
+import {FeedParams} from '#/state/queries/post-feed'
+import {usePreferencesQuery} from '#/state/queries/preferences'
+import {UsePreferencesQueryResponse} from '#/state/queries/preferences/types'
+import {useSession} from '#/state/session'
+import {useSetDrawerSwipeDisabled, useSetMinimalShellMode} from '#/state/shell'
+import {useLoggedOutViewControls} from '#/state/shell/logged-out'
+import {useSelectedFeed, useSetSelectedFeed} from '#/state/shell/selected-feed'
+import {FeedPage} from '#/view/com/feeds/FeedPage'
+import {HomeHeader} from '#/view/com/home/HomeHeader'
+import {Pager, PagerRef, RenderTabBarFnProps} from '#/view/com/pager/Pager'
+import {CustomFeedEmptyState} from '#/view/com/posts/CustomFeedEmptyState'
+import {FollowingEmptyState} from '#/view/com/posts/FollowingEmptyState'
+import {FollowingEndOfFeed} from '#/view/com/posts/FollowingEndOfFeed'
+import {NoFeedsPinned} from '#/screens/Home/NoFeedsPinned'
+import * as Layout from '#/components/Layout'
+
+type Props = NativeStackScreenProps<HomeTabNavigatorParams, 'Home' | 'Start'>
 export function HomeScreen(props: Props) {
+  const {setShowLoggedOut} = useLoggedOutViewControls()
   const {data: preferences} = usePreferencesQuery()
+  const {currentAccount} = useSession()
   const {data: pinnedFeedInfos, isLoading: isPinnedFeedsLoading} =
     usePinnedFeedsInfos()
+
+  React.useEffect(() => {
+    if (isWeb && !currentAccount) {
+      const getParams = new URLSearchParams(window.location.search)
+      const splash = getParams.get('splash')
+      if (splash === 'true') {
+        setShowLoggedOut(true)
+        return
+      }
+    }
+
+    const params = props.route.params
+    if (
+      currentAccount &&
+      props.route.name === 'Start' &&
+      params?.name &&
+      params?.rkey
+    ) {
+      props.navigation.navigate('StarterPack', {
+        rkey: params.rkey,
+        name: params.name,
+      })
+    }
+  }, [
+    currentAccount,
+    props.navigation,
+    props.route.name,
+    props.route.params,
+    setShowLoggedOut,
+  ])
+
   if (preferences && pinnedFeedInfos && !isPinnedFeedsLoading) {
     return (
-      <HomeScreenReady
-        {...props}
-        preferences={preferences}
-        pinnedFeedInfos={pinnedFeedInfos}
-      />
+      <Layout.Screen testID="HomeScreen">
+        <HomeScreenReady
+          {...props}
+          preferences={preferences}
+          pinnedFeedInfos={pinnedFeedInfos}
+        />
+      </Layout.Screen>
     )
   } else {
     return (
-      <View style={styles.loading}>
+      <Layout.Screen style={styles.loading}>
         <ActivityIndicator size="large" />
-      </View>
+      </Layout.Screen>
     )
   }
 }
@@ -46,28 +93,25 @@ function HomeScreenReady({
   pinnedFeedInfos,
 }: Props & {
   preferences: UsePreferencesQueryResponse
-  pinnedFeedInfos: FeedSourceInfo[]
+  pinnedFeedInfos: SavedFeedSourceInfo[]
 }) {
-  const allFeeds = React.useMemo(() => {
-    const feeds: FeedDescriptor[] = []
-    feeds.push('home')
-    for (const {uri} of pinnedFeedInfos) {
-      if (uri.includes('app.bsky.feed.generator')) {
-        feeds.push(`feedgen|${uri}`)
-      } else if (uri.includes('app.bsky.graph.list')) {
-        feeds.push(`list|${uri}`)
-      }
-    }
-    return feeds
-  }, [pinnedFeedInfos])
-
-  const rawSelectedFeed = useSelectedFeed()
+  const allFeeds = React.useMemo(
+    () => pinnedFeedInfos.map(f => f.feedDescriptor),
+    [pinnedFeedInfos],
+  )
+  const rawSelectedFeed = useSelectedFeed() ?? allFeeds[0]
   const setSelectedFeed = useSetSelectedFeed()
-  const maybeFoundIndex = allFeeds.indexOf(rawSelectedFeed as FeedDescriptor)
+  const maybeFoundIndex = allFeeds.indexOf(rawSelectedFeed)
   const selectedIndex = Math.max(0, maybeFoundIndex)
   const selectedFeed = allFeeds[selectedIndex]
+  const requestNotificationsPermission = useRequestNotificationsPermission()
 
   useSetTitle(pinnedFeedInfos[selectedIndex]?.displayName)
+  useOTAUpdates()
+
+  React.useEffect(() => {
+    requestNotificationsPermission('Home')
+  }, [requestNotificationsPermission])
 
   const pagerRef = React.useRef<PagerRef>(null)
   const lastPagerReportedIndexRef = React.useRef(selectedIndex)
@@ -77,7 +121,7 @@ function HomeScreenReady({
     // This is supposed to only happen on the web when you use the right nav.
     if (selectedIndex !== lastPagerReportedIndexRef.current) {
       lastPagerReportedIndexRef.current = selectedIndex
-      pagerRef.current?.setPage(selectedIndex)
+      pagerRef.current?.setPage(selectedIndex, 'desktop-sidebar-click')
     }
   }, [selectedIndex])
 
@@ -94,6 +138,19 @@ function HomeScreenReady({
     }, [setDrawerSwipeDisabled, selectedIndex, setMinimalShellMode]),
   )
 
+  useFocusEffect(
+    useNonReactiveCallback(() => {
+      if (selectedFeed) {
+        logEvent('home:feedDisplayed', {
+          index: selectedIndex,
+          feedType: selectedFeed.split('|')[0],
+          feedUrl: selectedFeed,
+          reason: 'focus',
+        })
+      }
+    }),
+  )
+
   const onPageSelected = React.useCallback(
     (index: number) => {
       setMinimalShellMode(false)
@@ -103,6 +160,19 @@ function HomeScreenReady({
       lastPagerReportedIndexRef.current = index
     },
     [setDrawerSwipeDisabled, setSelectedFeed, setMinimalShellMode, allFeeds],
+  )
+
+  const onPageSelecting = React.useCallback(
+    (index: number, reason: LogEvents['home:feedDisplayed']['reason']) => {
+      const feed = allFeeds[index]
+      logEvent('home:feedDisplayed', {
+        index,
+        feedType: feed.split('|')[0],
+        feedUrl: feed,
+        reason,
+      })
+    },
+    [allFeeds],
   )
 
   const onPressSelected = React.useCallback(() => {
@@ -141,12 +211,13 @@ function HomeScreenReady({
     return <CustomFeedEmptyState />
   }, [])
 
-  const [homeFeed, ...customFeeds] = allFeeds
   const homeFeedParams = React.useMemo<FeedParams>(() => {
     return {
       mergeFeedEnabled: Boolean(preferences.feedViewPrefs.lab_mergeFeedEnabled),
       mergeFeedSources: preferences.feedViewPrefs.lab_mergeFeedEnabled
-        ? preferences.feeds.saved
+        ? preferences.savedFeeds
+            .filter(f => f.type === 'feed' || f.type === 'list')
+            .map(f => f.value)
         : [],
     }
   }, [preferences])
@@ -157,29 +228,41 @@ function HomeScreenReady({
       ref={pagerRef}
       testID="homeScreen"
       initialPage={selectedIndex}
+      onPageSelecting={onPageSelecting}
       onPageSelected={onPageSelected}
       onPageScrollStateChanged={onPageScrollStateChanged}
       renderTabBar={renderTabBar}>
-      <FeedPage
-        key={homeFeed}
-        testID="followingFeedPage"
-        isPageFocused={selectedFeed === homeFeed}
-        feed={homeFeed}
-        feedParams={homeFeedParams}
-        renderEmptyState={renderFollowingEmptyState}
-        renderEndOfFeed={FollowingEndOfFeed}
-      />
-      {customFeeds.map(feed => {
-        return (
-          <FeedPage
-            key={feed}
-            testID="customFeedPage"
-            isPageFocused={selectedFeed === feed}
-            feed={feed}
-            renderEmptyState={renderCustomFeedEmptyState}
-          />
-        )
-      })}
+      {pinnedFeedInfos.length ? (
+        pinnedFeedInfos.map(feedInfo => {
+          const feed = feedInfo.feedDescriptor
+          if (feed === 'following') {
+            return (
+              <FeedPage
+                key={feed}
+                testID="followingFeedPage"
+                isPageFocused={selectedFeed === feed}
+                feed={feed}
+                feedParams={homeFeedParams}
+                renderEmptyState={renderFollowingEmptyState}
+                renderEndOfFeed={FollowingEndOfFeed}
+              />
+            )
+          }
+          const savedFeedConfig = feedInfo.savedFeed
+          return (
+            <FeedPage
+              key={feed}
+              testID="customFeedPage"
+              isPageFocused={selectedFeed === feed}
+              feed={feed}
+              renderEmptyState={renderCustomFeedEmptyState}
+              savedFeedConfig={savedFeedConfig}
+            />
+          )
+        })
+      ) : (
+        <NoFeedsPinned preferences={preferences} />
+      )}
     </Pager>
   ) : (
     <Pager
@@ -187,7 +270,12 @@ function HomeScreenReady({
       onPageSelected={onPageSelected}
       onPageScrollStateChanged={onPageScrollStateChanged}
       renderTabBar={renderTabBar}>
-      <HomeLoggedOutCTA />
+      <FeedPage
+        testID="customFeedPage"
+        isPageFocused
+        feed={`feedgen|${PROD_DEFAULT_FEED('whats-hot')}`}
+        renderEmptyState={renderCustomFeedEmptyState}
+      />
     </Pager>
   )
 }

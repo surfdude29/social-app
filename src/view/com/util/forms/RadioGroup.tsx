@@ -1,8 +1,9 @@
-import React, {useState} from 'react'
+import {useState} from 'react'
 import {View} from 'react-native'
-import {RadioButton} from './RadioButton'
+
+import {s} from '#/lib/styles'
 import {ButtonType} from './Button'
-import {s} from 'lib/styles'
+import {RadioButton} from './RadioButton'
 
 export interface RadioGroupItem {
   label: string | JSX.Element

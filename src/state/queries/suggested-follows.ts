@@ -1,4 +1,3 @@
-import React from 'react'
 import {
   AppBskyActorDefs,
   AppBskyActorGetSuggestions,
@@ -6,27 +5,43 @@ import {
   moderateProfile,
 } from '@atproto/api'
 import {
-  useInfiniteQuery,
-  useQueryClient,
-  useQuery,
   InfiniteData,
   QueryClient,
   QueryKey,
+  useInfiniteQuery,
+  useQuery,
 } from '@tanstack/react-query'
 
-import {useSession, getAgent} from '#/state/session'
-import {useModerationOpts} from '#/state/queries/preferences'
+import {
+  aggregateUserInterests,
+  createBskyTopicsHeader,
+} from '#/lib/api/feed/utils'
+import {getContentLanguages} from '#/state/preferences/languages'
 import {STALE} from '#/state/queries'
+import {usePreferencesQuery} from '#/state/queries/preferences'
+import {useAgent, useSession} from '#/state/session'
+import {useModerationOpts} from '../preferences/moderation-opts'
 
-const suggestedFollowsQueryKey = ['suggested-follows']
+const suggestedFollowsQueryKeyRoot = 'suggested-follows'
+const suggestedFollowsQueryKey = (options?: SuggestedFollowsOptions) => [
+  suggestedFollowsQueryKeyRoot,
+  options,
+]
+
+const suggestedFollowsByActorQueryKeyRoot = 'suggested-follows-by-actor'
 const suggestedFollowsByActorQueryKey = (did: string) => [
-  'suggested-follows-by-actor',
+  suggestedFollowsByActorQueryKeyRoot,
   did,
 ]
 
-export function useSuggestedFollowsQuery() {
+type SuggestedFollowsOptions = {limit?: number; subsequentPageLimit?: number}
+
+export function useSuggestedFollowsQuery(options?: SuggestedFollowsOptions) {
   const {currentAccount} = useSession()
+  const agent = useAgent()
   const moderationOpts = useModerationOpts()
+  const {data: preferences} = usePreferencesQuery()
+  const limit = options?.limit || 25
 
   return useInfiniteQuery<
     AppBskyActorGetSuggestions.OutputSchema,
@@ -35,14 +50,27 @@ export function useSuggestedFollowsQuery() {
     QueryKey,
     string | undefined
   >({
-    enabled: !!moderationOpts,
+    enabled: !!moderationOpts && !!preferences,
     staleTime: STALE.HOURS.ONE,
-    queryKey: suggestedFollowsQueryKey,
+    queryKey: suggestedFollowsQueryKey(options),
     queryFn: async ({pageParam}) => {
-      const res = await getAgent().app.bsky.actor.getSuggestions({
-        limit: 25,
-        cursor: pageParam,
-      })
+      const contentLangs = getContentLanguages().join(',')
+      const maybeDifferentLimit =
+        options?.subsequentPageLimit && pageParam
+          ? options.subsequentPageLimit
+          : limit
+      const res = await agent.app.bsky.actor.getSuggestions(
+        {
+          limit: maybeDifferentLimit,
+          cursor: pageParam,
+        },
+        {
+          headers: {
+            ...createBskyTopicsHeader(aggregateUserInterests(preferences)),
+            'Accept-Language': contentLangs,
+          },
+        },
+      )
 
       res.data.actors = res.data.actors
         .filter(
@@ -76,38 +104,19 @@ export function useSuggestedFollowsQuery() {
 }
 
 export function useSuggestedFollowsByActorQuery({did}: {did: string}) {
-  return useQuery<AppBskyGraphGetSuggestedFollowsByActor.OutputSchema, Error>({
+  const agent = useAgent()
+  return useQuery({
     queryKey: suggestedFollowsByActorQueryKey(did),
     queryFn: async () => {
-      const res = await getAgent().app.bsky.graph.getSuggestedFollowsByActor({
+      const res = await agent.app.bsky.graph.getSuggestedFollowsByActor({
         actor: did,
       })
-      return res.data
+      const suggestions = res.data.isFallback
+        ? []
+        : res.data.suggestions.filter(profile => !profile.viewer?.following)
+      return {suggestions}
     },
   })
-}
-
-export function useGetSuggestedFollowersByActor() {
-  const queryClient = useQueryClient()
-
-  return React.useCallback(
-    async (actor: string) => {
-      const res = await queryClient.fetchQuery({
-        staleTime: STALE.MINUTES.ONE,
-        queryKey: suggestedFollowsByActorQueryKey(actor),
-        queryFn: async () => {
-          const res =
-            await getAgent().app.bsky.graph.getSuggestedFollowsByActor({
-              actor: actor,
-            })
-          return res.data
-        },
-      })
-
-      return res
-    },
-    [queryClient],
-  )
 }
 
 export function* findAllProfilesInQueryData(
@@ -125,7 +134,7 @@ function* findAllProfilesInSuggestedFollowsQueryData(
   const queryDatas = queryClient.getQueriesData<
     InfiniteData<AppBskyActorGetSuggestions.OutputSchema>
   >({
-    queryKey: ['suggested-follows'],
+    queryKey: [suggestedFollowsQueryKeyRoot],
   })
   for (const [_queryKey, queryData] of queryDatas) {
     if (!queryData?.pages) {
@@ -148,7 +157,7 @@ function* findAllProfilesInSuggestedFollowsByActorQueryData(
   const queryDatas =
     queryClient.getQueriesData<AppBskyGraphGetSuggestedFollowsByActor.OutputSchema>(
       {
-        queryKey: ['suggested-follows-by-actor'],
+        queryKey: [suggestedFollowsByActorQueryKeyRoot],
       },
     )
   for (const [_queryKey, queryData] of queryDatas) {

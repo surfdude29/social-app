@@ -1,20 +1,20 @@
 import React from 'react'
 import {
-  View,
+  AccessibilityProps,
+  StyleSheet,
   TextInput,
   TextInputProps,
   TextStyle,
+  View,
   ViewStyle,
-  StyleSheet,
-  AccessibilityProps,
 } from 'react-native'
 
-import {HITSLOP_20} from 'lib/constants'
-import {useTheme, atoms as a, web, android} from '#/alf'
-import {Text} from '#/components/Typography'
+import {HITSLOP_20} from '#/lib/constants'
+import {mergeRefs} from '#/lib/merge-refs'
+import {android, atoms as a, TextStyleProp, useTheme, web} from '#/alf'
 import {useInteractionState} from '#/components/hooks/useInteractionState'
 import {Props as SVGIconProps} from '#/components/icons/common'
-import {mergeRefs} from '#/lib/merge-refs'
+import {Text} from '#/components/Typography'
 
 const Context = React.createContext<{
   inputRef: React.RefObject<TextInput> | null
@@ -73,7 +73,7 @@ export function Root({children, isInvalid = false}: RootProps) {
   return (
     <Context.Provider value={context}>
       <View
-        style={[a.flex_row, a.align_center, a.relative, a.flex_1, a.px_md]}
+        style={[a.flex_row, a.align_center, a.relative, a.w_full, a.px_md]}
         {...web({
           onClick: () => inputRef.current?.focus(),
           onMouseOver: onHoverIn,
@@ -101,16 +101,13 @@ export function useSharedInputStyles() {
     ]
     const error: ViewStyle[] = [
       {
-        backgroundColor:
-          t.name === 'light' ? t.palette.negative_25 : t.palette.negative_900,
-        borderColor:
-          t.name === 'light' ? t.palette.negative_300 : t.palette.negative_800,
+        backgroundColor: t.palette.negative_25,
+        borderColor: t.palette.negative_300,
       },
     ]
     const errorHover: ViewStyle[] = [
       {
-        backgroundColor:
-          t.name === 'light' ? t.palette.negative_25 : t.palette.negative_900,
+        backgroundColor: t.palette.negative_25,
         borderColor: t.palette.negative_500,
       },
     ]
@@ -126,10 +123,15 @@ export function useSharedInputStyles() {
 
 export type InputProps = Omit<TextInputProps, 'value' | 'onChangeText'> & {
   label: string
+  /**
+   * @deprecated Controlled inputs are *strongly* discouraged. Use `defaultValue` instead where possible.
+   *
+   * See https://github.com/facebook/react-native-website/pull/4247
+   */
   value?: string
   onChangeText?: (value: string) => void
   isInvalid?: boolean
-  inputRef?: React.RefObject<TextInput>
+  inputRef?: React.RefObject<TextInput> | React.ForwardedRef<TextInput>
 }
 
 export function createInput(Component: typeof TextInput) {
@@ -138,8 +140,11 @@ export function createInput(Component: typeof TextInput) {
     placeholder,
     value,
     onChangeText,
+    onFocus,
+    onBlur,
     isInvalid,
     inputRef,
+    style,
     ...rest
   }: InputProps) {
     const t = useTheme()
@@ -175,8 +180,14 @@ export function createInput(Component: typeof TextInput) {
           ref={refs}
           value={value}
           onChangeText={onChangeText}
-          onFocus={ctx.onFocus}
-          onBlur={ctx.onBlur}
+          onFocus={e => {
+            ctx.onFocus()
+            onFocus?.(e)
+          }}
+          onBlur={e => {
+            ctx.onBlur()
+            onBlur?.(e)
+          }}
           placeholder={placeholder || label}
           placeholderTextColor={t.palette.contrast_500}
           keyboardAppearance={t.name === 'light' ? 'light' : 'dark'}
@@ -190,15 +201,25 @@ export function createInput(Component: typeof TextInput) {
             a.px_xs,
             {
               // paddingVertical doesn't work w/multiline - esb
-              paddingTop: 14,
-              paddingBottom: 14,
+              paddingTop: 12,
+              paddingBottom: 13,
               lineHeight: a.text_md.fontSize * 1.1875,
               textAlignVertical: rest.multiline ? 'top' : undefined,
               minHeight: rest.multiline ? 80 : undefined,
+              minWidth: 0,
             },
-            android({
-              paddingBottom: 16,
+            // fix for autofill styles covering border
+            web({
+              paddingTop: 10,
+              paddingBottom: 11,
+              marginTop: 2,
+              marginBottom: 2,
             }),
+            android({
+              paddingTop: 8,
+              paddingBottom: 8,
+            }),
+            style,
           ]}
         />
 
@@ -225,7 +246,7 @@ export function createInput(Component: typeof TextInput) {
 
 export const Input = createInput(TextInput)
 
-export function Label({
+export function LabelText({
   nativeID,
   children,
 }: React.PropsWithChildren<{nativeID?: string}>) {
@@ -288,20 +309,24 @@ export function Icon({icon: Comp}: {icon: React.ComponentType<SVGIconProps>}) {
   )
 }
 
-export function Suffix({
+export function SuffixText({
   children,
   label,
   accessibilityHint,
-}: React.PropsWithChildren<{
-  label: string
-  accessibilityHint?: AccessibilityProps['accessibilityHint']
-}>) {
+  style,
+}: React.PropsWithChildren<
+  TextStyleProp & {
+    label: string
+    accessibilityHint?: AccessibilityProps['accessibilityHint']
+  }
+>) {
   const t = useTheme()
   const ctx = React.useContext(Context)
   return (
     <Text
       accessibilityLabel={label}
       accessibilityHint={accessibilityHint}
+      numberOfLines={1}
       style={[
         a.z_20,
         a.pr_sm,
@@ -318,6 +343,7 @@ export function Suffix({
               color: t.palette.contrast_800,
             }
           : {},
+        style,
       ]}>
       {children}
     </Text>

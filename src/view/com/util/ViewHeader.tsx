@@ -1,19 +1,20 @@
 import React from 'react'
 import {StyleSheet, TouchableOpacity, View} from 'react-native'
-import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome'
-import {useNavigation} from '@react-navigation/native'
-import {CenteredView} from './Views'
-import {Text} from './text/Text'
-import {usePalette} from 'lib/hooks/usePalette'
-import {useWebMediaQueries} from 'lib/hooks/useWebMediaQueries'
-import {useAnalytics} from 'lib/analytics/analytics'
-import {NavigationProp} from 'lib/routes/types'
-import {useMinimalShellMode} from 'lib/hooks/useMinimalShellMode'
 import Animated from 'react-native-reanimated'
-import {useSetDrawerOpen} from '#/state/shell'
+import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome'
 import {msg} from '@lingui/macro'
 import {useLingui} from '@lingui/react'
+import {useNavigation} from '@react-navigation/native'
+
+import {useMinimalShellHeaderTransform} from '#/lib/hooks/useMinimalShellTransform'
+import {usePalette} from '#/lib/hooks/usePalette'
+import {useWebMediaQueries} from '#/lib/hooks/useWebMediaQueries'
+import {NavigationProp} from '#/lib/routes/types'
+import {useSetDrawerOpen} from '#/state/shell'
 import {useTheme} from '#/alf'
+import {Menu_Stroke2_Corner0_Rounded as Menu} from '#/components/icons/Menu'
+import {Text} from './text/Text'
+import {CenteredView} from './Views'
 
 const BACK_HITSLOP = {left: 20, top: 20, right: 50, bottom: 20}
 
@@ -40,7 +41,6 @@ export function ViewHeader({
   const {_} = useLingui()
   const setDrawerOpen = useSetDrawerOpen()
   const navigation = useNavigation<NavigationProp>()
-  const {track} = useAnalytics()
   const {isDesktop, isTablet} = useWebMediaQueries()
   const t = useTheme()
 
@@ -53,15 +53,15 @@ export function ViewHeader({
   }, [navigation])
 
   const onPressMenu = React.useCallback(() => {
-    track('ViewHeader:MenuButtonClicked')
     setDrawerOpen(true)
-  }, [track, setDrawerOpen])
+  }, [setDrawerOpen])
 
   if (isDesktop) {
     if (showOnDesktop) {
       return (
         <DesktopWebHeader
           title={title}
+          subtitle={subtitle}
           renderButton={renderButton}
           showBorder={showBorder}
         />
@@ -95,16 +95,12 @@ export function ViewHeader({
                     style={[styles.backIcon, pal.text]}
                   />
                 ) : !isTablet ? (
-                  <FontAwesomeIcon
-                    size={18}
-                    icon="bars"
-                    style={[styles.backIcon, pal.textLight]}
-                  />
+                  <Menu size="lg" style={[{marginTop: 3}, pal.textLight]} />
                 ) : null}
               </TouchableOpacity>
             ) : null}
             <View style={styles.titleContainer} pointerEvents="none">
-              <Text type="title" style={[pal.text, styles.title]}>
+              <Text emoji type="title" style={[pal.text, styles.title]}>
                 {title}
               </Text>
             </View>
@@ -136,14 +132,17 @@ export function ViewHeader({
 
 function DesktopWebHeader({
   title,
+  subtitle,
   renderButton,
   showBorder = true,
 }: {
   title: string
+  subtitle?: string
   renderButton?: () => JSX.Element
   showBorder?: boolean
 }) {
   const pal = usePalette('default')
+  const t = useTheme()
   return (
     <CenteredView
       style={[
@@ -151,15 +150,32 @@ function DesktopWebHeader({
         styles.desktopHeader,
         pal.border,
         {
-          borderBottomWidth: showBorder ? 1 : 0,
+          borderBottomWidth: showBorder ? StyleSheet.hairlineWidth : 0,
         },
+        {display: 'flex', flexDirection: 'column'},
       ]}>
-      <View style={styles.titleContainer} pointerEvents="none">
-        <Text type="title-lg" style={[pal.text, styles.title]}>
-          {title}
-        </Text>
+      <View>
+        <View style={styles.titleContainer} pointerEvents="none">
+          <Text type="title-lg" style={[pal.text, styles.title]}>
+            {title}
+          </Text>
+        </View>
+        {renderButton?.()}
       </View>
-      {renderButton?.()}
+      {subtitle ? (
+        <View>
+          <View style={[styles.titleContainer]} pointerEvents="none">
+            <Text
+              style={[
+                pal.text,
+                styles.subtitleDesktop,
+                t.atoms.text_contrast_medium,
+              ]}>
+              {subtitle}
+            </Text>
+          </View>
+        </View>
+      ) : null}
     </CenteredView>
   )
 }
@@ -174,7 +190,7 @@ function Container({
   showBorder?: boolean
 }) {
   const pal = usePalette('default')
-  const {headerMinimalShellTransform} = useMinimalShellMode()
+  const headerMinimalShellTransform = useMinimalShellHeaderTransform()
 
   if (!hideOnScroll) {
     return (
@@ -223,7 +239,7 @@ const styles = StyleSheet.create({
     marginRight: 'auto',
   },
   border: {
-    borderBottomWidth: 1,
+    borderBottomWidth: StyleSheet.hairlineWidth,
   },
   titleContainer: {
     marginLeft: 'auto',
@@ -231,10 +247,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   title: {
-    fontWeight: 'bold',
+    fontWeight: '600',
   },
   subtitle: {
     fontSize: 13,
+  },
+  subtitleDesktop: {
+    fontSize: 15,
   },
   backBtn: {
     width: 30,
@@ -243,7 +262,8 @@ const styles = StyleSheet.create({
   backBtnWide: {
     width: 30,
     height: 30,
-    paddingHorizontal: 6,
+    paddingLeft: 4,
+    marginRight: 4,
   },
   backIcon: {
     marginTop: 6,

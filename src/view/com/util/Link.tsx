@@ -2,34 +2,37 @@ import React, {ComponentProps, memo, useMemo} from 'react'
 import {
   GestureResponderEvent,
   Platform,
+  Pressable,
   StyleProp,
-  TextStyle,
   TextProps,
+  TextStyle,
+  TouchableOpacity,
   View,
   ViewStyle,
-  Pressable,
-  TouchableOpacity,
 } from 'react-native'
-import {useLinkProps, StackActions} from '@react-navigation/native'
-import {Text} from './text/Text'
-import {TypographyVariant} from 'lib/ThemeContext'
-import {router} from '../../../routes'
+import {sanitizeUrl} from '@braintree/sanitize-url'
+import {StackActions, useLinkProps} from '@react-navigation/native'
+
+import {
+  DebouncedNavigationProp,
+  useNavigationDeduped,
+} from '#/lib/hooks/useNavigationDeduped'
+import {useOpenLink} from '#/lib/hooks/useOpenLink'
+import {getTabState, TabState} from '#/lib/routes/helpers'
 import {
   convertBskyAppUrlIfNeeded,
   isExternalUrl,
   linkRequiresWarning,
-} from 'lib/strings/url-helpers'
-import {isAndroid, isWeb} from 'platform/detection'
-import {sanitizeUrl} from '@braintree/sanitize-url'
-import {PressableWithHover} from './PressableWithHover'
+} from '#/lib/strings/url-helpers'
+import {TypographyVariant} from '#/lib/ThemeContext'
+import {isAndroid, isWeb} from '#/platform/detection'
+import {emitSoftReset} from '#/state/events'
 import {useModalControls} from '#/state/modals'
-import {useOpenLink} from '#/state/preferences/in-app-browser'
-import {WebAuxClickWrapper} from 'view/com/util/WebAuxClickWrapper'
-import {
-  DebouncedNavigationProp,
-  useNavigationDeduped,
-} from 'lib/hooks/useNavigationDeduped'
+import {WebAuxClickWrapper} from '#/view/com/util/WebAuxClickWrapper'
 import {useTheme} from '#/alf'
+import {router} from '../../../routes'
+import {PressableWithHover} from './PressableWithHover'
+import {Text} from './text/Text'
 
 type Event =
   | React.MouseEvent<HTMLAnchorElement, MouseEvent>
@@ -44,9 +47,11 @@ interface Props extends ComponentProps<typeof TouchableOpacity> {
   hoverStyle?: StyleProp<ViewStyle>
   noFeedback?: boolean
   asAnchor?: boolean
+  dataSet?: Object | undefined
   anchorNoUnderline?: boolean
   navigationAction?: 'push' | 'replace' | 'navigate'
   onPointerEnter?: () => void
+  onPointerLeave?: () => void
   onBeforePress?: () => void
 }
 
@@ -62,6 +67,8 @@ export const Link = memo(function Link({
   anchorNoUnderline,
   navigationAction,
   onBeforePress,
+  accessibilityActions,
+  onAccessibilityAction,
   ...props
 }: Props) {
   const t = useTheme()
@@ -87,6 +94,11 @@ export const Link = memo(function Link({
     [closeModal, navigation, navigationAction, href, openLink, onBeforePress],
   )
 
+  const accessibilityActionsWithActivate = [
+    ...(accessibilityActions || []),
+    {name: 'activate', label: title},
+  ]
+
   if (noFeedback) {
     return (
       <WebAuxClickWrapper>
@@ -95,6 +107,14 @@ export const Link = memo(function Link({
           onPress={onPress}
           accessible={accessible}
           accessibilityRole="link"
+          accessibilityActions={accessibilityActionsWithActivate}
+          onAccessibilityAction={e => {
+            if (e.nativeEvent.actionName === 'activate') {
+              onPress()
+            } else {
+              onAccessibilityAction?.(e)
+            }
+          }}
           {...props}
           android_ripple={{
             color: t.atoms.bg_contrast_25.backgroundColor,
@@ -147,8 +167,10 @@ export const TextLink = memo(function TextLink({
   dataSet,
   title,
   onPress,
+  onBeforePress,
   disableMismatchWarning,
   navigationAction,
+  anchorNoUnderline,
   ...orgProps
 }: {
   testID?: string
@@ -162,6 +184,8 @@ export const TextLink = memo(function TextLink({
   title?: string
   disableMismatchWarning?: boolean
   navigationAction?: 'push' | 'replace' | 'navigate'
+  anchorNoUnderline?: boolean
+  onBeforePress?: () => void
 } & TextProps) {
   const {...props} = useLinkProps({to: sanitizeUrl(href)})
   const navigation = useNavigationDeduped()
@@ -170,6 +194,11 @@ export const TextLink = memo(function TextLink({
 
   if (!disableMismatchWarning && typeof text !== 'string') {
     console.error('Unable to detect mismatching label')
+  }
+
+  if (anchorNoUnderline) {
+    dataSet = dataSet ?? {}
+    dataSet.noUnderline = 1
   }
 
   props.onPress = React.useCallback(
@@ -194,6 +223,7 @@ export const TextLink = memo(function TextLink({
         // Let the browser handle opening in new tab etc.
         return
       }
+      onBeforePress?.()
       if (onPress) {
         e?.preventDefault?.()
         // @ts-ignore function signature differs by platform -prf
@@ -209,6 +239,7 @@ export const TextLink = memo(function TextLink({
       )
     },
     [
+      onBeforePress,
       onPress,
       closeModal,
       openModal,
@@ -266,7 +297,9 @@ interface TextLinkOnWebOnlyProps extends TextProps {
   title?: string
   navigationAction?: 'push' | 'replace' | 'navigate'
   disableMismatchWarning?: boolean
+  onBeforePress?: () => void
   onPointerEnter?: () => void
+  anchorNoUnderline?: boolean
 }
 export const TextLinkOnWebOnly = memo(function DesktopWebTextLink({
   testID,
@@ -278,6 +311,7 @@ export const TextLinkOnWebOnly = memo(function DesktopWebTextLink({
   lineHeight,
   navigationAction,
   disableMismatchWarning,
+  onBeforePress,
   ...props
 }: TextLinkOnWebOnlyProps) {
   if (isWeb) {
@@ -293,6 +327,7 @@ export const TextLinkOnWebOnly = memo(function DesktopWebTextLink({
         title={props.title}
         navigationAction={navigationAction}
         disableMismatchWarning={disableMismatchWarning}
+        onBeforePress={onBeforePress}
         {...props}
       />
     )
@@ -367,15 +402,22 @@ function onPressInner(
     } else {
       closeModal() // close any active modals
 
+      const [routeName, params] = router.matchPath(href)
       if (navigationAction === 'push') {
         // @ts-ignore we're not able to type check on this one -prf
-        navigation.dispatch(StackActions.push(...router.matchPath(href)))
+        navigation.dispatch(StackActions.push(routeName, params))
       } else if (navigationAction === 'replace') {
         // @ts-ignore we're not able to type check on this one -prf
-        navigation.dispatch(StackActions.replace(...router.matchPath(href)))
+        navigation.dispatch(StackActions.replace(routeName, params))
       } else if (navigationAction === 'navigate') {
-        // @ts-ignore we're not able to type check on this one -prf
-        navigation.navigate(...router.matchPath(href))
+        const state = navigation.getState()
+        const tabState = getTabState(state, routeName)
+        if (tabState === TabState.InsideAtRoot) {
+          emitSoftReset()
+        } else {
+          // @ts-ignore we're not able to type check on this one -prf
+          navigation.navigate(routeName, params)
+        }
       } else {
         throw Error('Unsupported navigator action.')
       }

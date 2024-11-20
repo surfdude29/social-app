@@ -1,7 +1,8 @@
 import {AppBskyFeedDefs, AppBskyFeedPost} from '@atproto/api'
-import lande from 'lande'
-import {hasProp} from 'lib/type-guards'
 import * as bcp47Match from 'bcp-47-match'
+import lande from 'lande'
+
+import {hasProp} from '#/lib/type-guards'
 import {
   AppLanguage,
   LANGUAGES_MAP_CODE2,
@@ -115,37 +116,94 @@ export function sanitizeAppLanguageSetting(appLanguage: string): AppLanguage {
   const langs = appLanguage.split(',').filter(Boolean)
 
   for (const lang of langs) {
-    switch (lang) {
+    switch (fixLegacyLanguageCode(lang)) {
       case 'en':
         return AppLanguage.en
+      case 'ca':
+        return AppLanguage.ca
       case 'de':
         return AppLanguage.de
+      case 'en-GB':
+        return AppLanguage.en_GB
       case 'es':
         return AppLanguage.es
       case 'fi':
         return AppLanguage.fi
       case 'fr':
         return AppLanguage.fr
+      case 'ga':
+        return AppLanguage.ga
       case 'hi':
         return AppLanguage.hi
+      case 'hu':
+        return AppLanguage.hu
       case 'id':
         return AppLanguage.id
+      case 'it':
+        return AppLanguage.it
       case 'ja':
         return AppLanguage.ja
       case 'ko':
         return AppLanguage.ko
+      case 'pl':
+        return AppLanguage.pl
       case 'pt-BR':
         return AppLanguage.pt_BR
+      case 'ru':
+        return AppLanguage.ru
+      case 'th':
+        return AppLanguage.th
+      case 'tr':
+        return AppLanguage.tr
       case 'uk':
         return AppLanguage.uk
-      case 'ca':
-        return AppLanguage.ca
       case 'zh-CN':
         return AppLanguage.zh_CN
-      case 'it':
-        return AppLanguage.it
+      case 'zh-HK':
+        return AppLanguage.zh_HK
+      case 'zh-TW':
+        return AppLanguage.zh_TW
       default:
         continue
+    }
+  }
+  return AppLanguage.en
+}
+
+/**
+ * Handles legacy migration for Java devices.
+ *
+ * {@link https://github.com/bluesky-social/social-app/pull/4461}
+ * {@link https://xml.coverpages.org/iso639a.html}
+ */
+export function fixLegacyLanguageCode(code: string | null): string | null {
+  if (code === 'in') {
+    // indonesian
+    return 'id'
+  }
+  if (code === 'iw') {
+    // hebrew
+    return 'he'
+  }
+  if (code === 'ji') {
+    // yiddish
+    return 'yi'
+  }
+  return code
+}
+
+/**
+ * Find the first language supported by our translation infra. Values should be
+ * in order of preference, and match the values of {@link AppLanguage}.
+ *
+ * If no match, returns `en`.
+ */
+export function findSupportedAppLanguage(languageTags: (string | undefined)[]) {
+  const supported = new Set(Object.values(AppLanguage))
+  for (const tag of languageTags) {
+    if (!tag) continue
+    if (supported.has(tag as AppLanguage)) {
+      return tag
     }
   }
   return AppLanguage.en

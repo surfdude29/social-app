@@ -1,19 +1,19 @@
 import React from 'react'
 import {View} from 'react-native'
-import {msg, Trans} from '@lingui/macro'
-import {useLingui} from '@lingui/react'
 import {AppBskyLabelerDefs} from '@atproto/api'
+import {msg, Plural, Trans} from '@lingui/macro'
+import {useLingui} from '@lingui/react'
 
 import {getLabelingServiceTitle} from '#/lib/moderation'
-import {Link as InternalLink, LinkProps} from '#/components/Link'
-import {Text} from '#/components/Typography'
-import {useLabelerInfoQuery} from '#/state/queries/labeler'
-import {atoms as a, useTheme, ViewStyleProp} from '#/alf'
-import {RichText} from '#/components/RichText'
-import {ChevronRight_Stroke2_Corner0_Rounded as ChevronRight} from '../icons/Chevron'
-import {UserAvatar} from '#/view/com/util/UserAvatar'
 import {sanitizeHandle} from '#/lib/strings/handles'
-import {pluralize} from '#/lib/strings/helpers'
+import {useLabelerInfoQuery} from '#/state/queries/labeler'
+import {UserAvatar} from '#/view/com/util/UserAvatar'
+import {atoms as a, useTheme, ViewStyleProp} from '#/alf'
+import {Flag_Stroke2_Corner0_Rounded as Flag} from '#/components/icons/Flag'
+import {Link as InternalLink, LinkProps} from '#/components/Link'
+import {RichText} from '#/components/RichText'
+import {Text} from '#/components/Typography'
+import {ChevronRight_Stroke2_Corner0_Rounded as ChevronRight} from '../icons/Chevron'
 
 type LabelingServiceProps = {
   labeler: AppBskyLabelerDefs.LabelerViewDetailed
@@ -44,18 +44,42 @@ export function Avatar({avatar}: {avatar?: string}) {
 }
 
 export function Title({value}: {value: string}) {
-  return <Text style={[a.text_md, a.font_bold]}>{value}</Text>
+  return (
+    <Text emoji style={[a.text_md, a.font_bold, a.leading_tight]}>
+      {value}
+    </Text>
+  )
 }
 
 export function Description({value, handle}: {value?: string; handle: string}) {
+  const {_} = useLingui()
   return value ? (
     <Text numberOfLines={2}>
-      <RichText value={value} style={[]} />
+      <RichText value={value} style={[a.leading_snug]} />
     </Text>
   ) : (
-    <Text>
-      <Trans>By {sanitizeHandle(handle, '@')}</Trans>
+    <Text emoji style={[a.leading_snug]}>
+      {_(msg`By ${sanitizeHandle(handle, '@')}`)}
     </Text>
+  )
+}
+
+export function RegionalNotice() {
+  const t = useTheme()
+  return (
+    <View
+      style={[
+        a.flex_row,
+        a.align_center,
+        a.gap_xs,
+        a.pt_2xs,
+        {marginLeft: -2},
+      ]}>
+      <Flag fill={t.atoms.text_contrast_low.color} size="sm" />
+      <Text style={[a.italic, a.leading_snug]}>
+        <Trans>Required in your region</Trans>
+      </Text>
+    </View>
   )
 }
 
@@ -67,11 +91,9 @@ export function LikeCount({count}: {count: number}) {
         a.mt_sm,
         a.text_sm,
         t.atoms.text_contrast_medium,
-        {fontWeight: '500'},
+        {fontWeight: '600'},
       ]}>
-      <Trans>
-        Liked by {count} {pluralize(count, 'user')}
-      </Trans>
+      <Plural value={count} one="Liked by # user" other="Liked by # users" />
     </Text>
   )
 }
@@ -88,7 +110,7 @@ export function Content({children}: React.PropsWithChildren<{}>) {
         a.align_center,
         a.justify_between,
       ]}>
-      <View style={[a.gap_xs, a.flex_1]}>{children}</View>
+      <View style={[a.gap_2xs, a.flex_1]}>{children}</View>
 
       <ChevronRight size="md" style={[a.z_10, t.atoms.text_contrast_low]} />
     </View>

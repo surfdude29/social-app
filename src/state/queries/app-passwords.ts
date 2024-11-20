@@ -1,17 +1,19 @@
 import {ComAtprotoServerCreateAppPassword} from '@atproto/api'
-import {useQuery, useQueryClient, useMutation} from '@tanstack/react-query'
+import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
 
 import {STALE} from '#/state/queries'
-import {getAgent} from '../session'
+import {useAgent} from '../session'
 
-export const RQKEY = () => ['app-passwords']
+const RQKEY_ROOT = 'app-passwords'
+export const RQKEY = () => [RQKEY_ROOT]
 
 export function useAppPasswordsQuery() {
+  const agent = useAgent()
   return useQuery({
     staleTime: STALE.MINUTES.FIVE,
     queryKey: RQKEY(),
     queryFn: async () => {
-      const res = await getAgent().com.atproto.server.listAppPasswords({})
+      const res = await agent.com.atproto.server.listAppPasswords({})
       return res.data.passwords
     },
   })
@@ -19,15 +21,17 @@ export function useAppPasswordsQuery() {
 
 export function useAppPasswordCreateMutation() {
   const queryClient = useQueryClient()
+  const agent = useAgent()
   return useMutation<
     ComAtprotoServerCreateAppPassword.OutputSchema,
     Error,
-    {name: string}
+    {name: string; privileged: boolean}
   >({
-    mutationFn: async ({name}) => {
+    mutationFn: async ({name, privileged}) => {
       return (
-        await getAgent().com.atproto.server.createAppPassword({
+        await agent.com.atproto.server.createAppPassword({
           name,
+          privileged,
         })
       ).data
     },
@@ -41,9 +45,10 @@ export function useAppPasswordCreateMutation() {
 
 export function useAppPasswordDeleteMutation() {
   const queryClient = useQueryClient()
+  const agent = useAgent()
   return useMutation<void, Error, {name: string}>({
     mutationFn: async ({name}) => {
-      await getAgent().com.atproto.server.revokeAppPassword({
+      await agent.com.atproto.server.revokeAppPassword({
         name,
       })
     },

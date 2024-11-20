@@ -1,22 +1,72 @@
-import {AppBskyActorDefs} from '@atproto/api'
-import {QueryClient, useQuery} from '@tanstack/react-query'
+import {AppBskyActorDefs, AppBskyActorSearchActors} from '@atproto/api'
+import {
+  InfiniteData,
+  QueryClient,
+  QueryKey,
+  useInfiniteQuery,
+  useQuery,
+} from '@tanstack/react-query'
 
-import {getAgent} from '#/state/session'
 import {STALE} from '#/state/queries'
+import {useAgent} from '#/state/session'
 
-export const RQKEY = (prefix: string) => ['actor-search', prefix]
+const RQKEY_ROOT = 'actor-search'
+export const RQKEY = (query: string) => [RQKEY_ROOT, query]
 
-export function useActorSearch(prefix: string) {
+export const RQKEY_PAGINATED = (query: string) => [
+  `${RQKEY_ROOT}_paginated`,
+  query,
+]
+
+export function useActorSearch({
+  query,
+  enabled,
+}: {
+  query: string
+  enabled?: boolean
+}) {
+  const agent = useAgent()
   return useQuery<AppBskyActorDefs.ProfileView[]>({
     staleTime: STALE.MINUTES.ONE,
-    queryKey: RQKEY(prefix || ''),
+    queryKey: RQKEY(query || ''),
     async queryFn() {
-      const res = await getAgent().searchActors({
-        term: prefix,
+      const res = await agent.searchActors({
+        q: query,
       })
       return res.data.actors
     },
-    enabled: !!prefix,
+    enabled: enabled && !!query,
+  })
+}
+
+export function useActorSearchPaginated({
+  query,
+  enabled,
+}: {
+  query: string
+  enabled?: boolean
+}) {
+  const agent = useAgent()
+  return useInfiniteQuery<
+    AppBskyActorSearchActors.OutputSchema,
+    Error,
+    InfiniteData<AppBskyActorSearchActors.OutputSchema>,
+    QueryKey,
+    string | undefined
+  >({
+    staleTime: STALE.MINUTES.FIVE,
+    queryKey: RQKEY_PAGINATED(query),
+    queryFn: async ({pageParam}) => {
+      const res = await agent.searchActors({
+        q: query,
+        limit: 25,
+        cursor: pageParam,
+      })
+      return res.data
+    },
+    enabled: enabled && !!query,
+    initialPageParam: undefined,
+    getNextPageParam: lastPage => lastPage.cursor,
   })
 }
 
@@ -26,7 +76,7 @@ export function* findAllProfilesInQueryData(
 ) {
   const queryDatas = queryClient.getQueriesData<AppBskyActorDefs.ProfileView[]>(
     {
-      queryKey: ['actor-search'],
+      queryKey: [RQKEY_ROOT],
     },
   )
   for (const [_queryKey, queryData] of queryDatas) {

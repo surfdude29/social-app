@@ -1,5 +1,6 @@
 import {useNavigationState} from '@react-navigation/native'
-import {getCurrentRoute} from 'lib/routes/helpers'
+
+import {getCurrentRoute} from '#/lib/routes/helpers'
 
 export function useNavigationTabState() {
   return useNavigationState(state => {
@@ -9,6 +10,7 @@ export function useNavigationTabState() {
       isAtSearch: currentRoute === 'Search',
       isAtNotifications: currentRoute === 'Notifications',
       isAtMyProfile: currentRoute === 'MyProfile',
+      isAtMessages: currentRoute === 'Messages',
     }
   })
 }

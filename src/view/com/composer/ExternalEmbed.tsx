@@ -1,115 +1,154 @@
 import React from 'react'
-import {
-  ActivityIndicator,
-  StyleSheet,
-  TouchableOpacity,
-  View,
-} from 'react-native'
-import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome'
-import {AutoSizedImage} from '../util/images/AutoSizedImage'
-import {Text} from '../util/text/Text'
-import {s} from 'lib/styles'
-import {usePalette} from 'lib/hooks/usePalette'
-import {ExternalEmbedDraft} from 'lib/api/index'
-import {useLingui} from '@lingui/react'
-import {msg} from '@lingui/macro'
+import {StyleProp, View, ViewStyle} from 'react-native'
 
-export const ExternalEmbed = ({
-  link,
+import {cleanError} from '#/lib/strings/errors'
+import {
+  useResolveGifQuery,
+  useResolveLinkQuery,
+} from '#/state/queries/resolve-link'
+import {Gif} from '#/state/queries/tenor'
+import {ExternalEmbedRemoveBtn} from '#/view/com/composer/ExternalEmbedRemoveBtn'
+import {ExternalLinkEmbed} from '#/view/com/util/post-embeds/ExternalLinkEmbed'
+import {atoms as a, useTheme} from '#/alf'
+import {Loader} from '#/components/Loader'
+import {Embed as StarterPackEmbed} from '#/components/StarterPack/StarterPackCard'
+import {Text} from '#/components/Typography'
+import {MaybeFeedCard, MaybeListCard} from '../util/post-embeds'
+
+export const ExternalEmbedGif = ({
   onRemove,
+  gif,
 }: {
-  link?: ExternalEmbedDraft
   onRemove: () => void
+  gif: Gif
 }) => {
-  const pal = usePalette('default')
-  const palError = usePalette('error')
-  const {_} = useLingui()
-  if (!link) {
-    return <View />
+  const t = useTheme()
+  const {data, error} = useResolveGifQuery(gif)
+  const linkInfo = React.useMemo(
+    () =>
+      data && {
+        title: data.title ?? data.uri,
+        uri: data.uri,
+        description: data.description ?? '',
+        thumb: data.thumb?.source.path,
+      },
+    [data],
+  )
+
+  const loadingStyle: ViewStyle = {
+    aspectRatio: gif.media_formats.gif.dims[0] / gif.media_formats.gif.dims[1],
+    width: '100%',
   }
+
   return (
-    <View style={[styles.outer, pal.view, pal.border]}>
-      {link.isLoading ? (
-        <View
-          style={[styles.image, {backgroundColor: pal.colors.backgroundLight}]}>
-          <ActivityIndicator size="large" style={styles.spinner} />
+    <View style={[a.overflow_hidden, t.atoms.border_contrast_medium]}>
+      {linkInfo ? (
+        <View style={{pointerEvents: 'auto'}}>
+          <ExternalLinkEmbed link={linkInfo} hideAlt />
         </View>
-      ) : link.localThumb ? (
-        <AutoSizedImage uri={link.localThumb.path} style={styles.image} />
-      ) : undefined}
-      <View style={styles.inner}>
-        {!!link.meta?.title && (
-          <Text type="sm-bold" numberOfLines={2} style={[pal.text]}>
-            {link.meta.title}
+      ) : error ? (
+        <Container style={[a.align_start, a.p_md, a.gap_xs]}>
+          <Text numberOfLines={1} style={t.atoms.text_contrast_high}>
+            {gif.url}
           </Text>
-        )}
-        <Text type="sm" numberOfLines={1} style={[pal.textLight, styles.uri]}>
-          {link.uri}
-        </Text>
-        {!!link.meta?.description && (
-          <Text
-            type="sm"
-            numberOfLines={2}
-            style={[pal.text, styles.description]}>
-            {link.meta.description}
+          <Text numberOfLines={2} style={[{color: t.palette.negative_400}]}>
+            {cleanError(error)}
           </Text>
-        )}
-        {link.meta?.error ? (
-          <Text
-            type="sm"
-            numberOfLines={2}
-            style={[{color: palError.colors.background}, styles.description]}>
-            {link.meta.error}
-          </Text>
-        ) : null}
-      </View>
-      <TouchableOpacity
-        style={styles.removeBtn}
-        onPress={onRemove}
-        accessibilityRole="button"
-        accessibilityLabel={_(msg`Remove image preview`)}
-        accessibilityHint={_(msg`Removes default thumbnail from ${link.uri}`)}
-        onAccessibilityEscape={onRemove}>
-        <FontAwesomeIcon size={18} icon="xmark" style={s.white} />
-      </TouchableOpacity>
+        </Container>
+      ) : (
+        <Container style={loadingStyle}>
+          <Loader size="xl" />
+        </Container>
+      )}
+      <ExternalEmbedRemoveBtn onRemove={onRemove} />
     </View>
   )
 }
 
-const styles = StyleSheet.create({
-  outer: {
-    borderWidth: 1,
-    borderRadius: 8,
-    marginTop: 20,
-    marginBottom: 10,
-  },
-  inner: {
-    padding: 10,
-  },
-  image: {
-    borderTopLeftRadius: 6,
-    borderTopRightRadius: 6,
-    width: '100%',
-    maxHeight: 200,
-  },
-  removeBtn: {
-    position: 'absolute',
-    top: 10,
-    right: 10,
-    width: 36,
-    height: 36,
-    backgroundColor: 'rgba(0, 0, 0, 0.75)',
-    borderRadius: 18,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  spinner: {
-    marginTop: 60,
-  },
-  uri: {
-    marginTop: 2,
-  },
-  description: {
-    marginTop: 4,
-  },
-})
+export const ExternalEmbedLink = ({
+  uri,
+  hasQuote,
+  onRemove,
+}: {
+  uri: string
+  hasQuote: boolean
+  onRemove: () => void
+}) => {
+  const t = useTheme()
+  const {data, error} = useResolveLinkQuery(uri)
+  const linkComponent = React.useMemo(() => {
+    if (data) {
+      if (data.type === 'external') {
+        return (
+          <ExternalLinkEmbed
+            link={{
+              title: data.title || uri,
+              uri,
+              description: data.description,
+              thumb: data.thumb?.source.path,
+            }}
+            hideAlt
+          />
+        )
+      } else if (data.kind === 'feed') {
+        return <MaybeFeedCard view={data.view} />
+      } else if (data.kind === 'list') {
+        return <MaybeListCard view={data.view} />
+      } else if (data.kind === 'starter-pack') {
+        return <StarterPackEmbed starterPack={data.view} />
+      }
+    }
+  }, [data, uri])
+
+  if (data?.type === 'record' && hasQuote) {
+    // This is not currently supported by the data model so don't preview it.
+    return null
+  }
+
+  return (
+    <View style={[a.mb_xl, a.overflow_hidden, t.atoms.border_contrast_medium]}>
+      {linkComponent ? (
+        <View style={{pointerEvents: 'none'}}>{linkComponent}</View>
+      ) : error ? (
+        <Container style={[a.align_start, a.p_md, a.gap_xs]}>
+          <Text numberOfLines={1} style={t.atoms.text_contrast_high}>
+            {uri}
+          </Text>
+          <Text numberOfLines={2} style={[{color: t.palette.negative_400}]}>
+            {cleanError(error)}
+          </Text>
+        </Container>
+      ) : (
+        <Container>
+          <Loader size="xl" />
+        </Container>
+      )}
+      <ExternalEmbedRemoveBtn onRemove={onRemove} />
+    </View>
+  )
+}
+
+function Container({
+  style,
+  children,
+}: {
+  style?: StyleProp<ViewStyle>
+  children: React.ReactNode
+}) {
+  const t = useTheme()
+  return (
+    <View
+      style={[
+        a.rounded_sm,
+        a.border,
+        a.align_center,
+        a.justify_center,
+        a.py_5xl,
+        t.atoms.bg_contrast_25,
+        t.atoms.border_contrast_medium,
+        style,
+      ]}>
+      {children}
+    </View>
+  )
+}

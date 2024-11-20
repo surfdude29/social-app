@@ -1,24 +1,33 @@
 import React from 'react'
 import {AppBskyActorDefs as ActorDefs} from '@atproto/api'
-import {List} from '../util/List'
-import {ProfileCardWithFollowBtn} from './ProfileCard'
-import {useProfileFollowersQuery} from '#/state/queries/profile-followers'
-import {useResolveDidQuery} from '#/state/queries/resolve-uri'
-import {logger} from '#/logger'
-import {cleanError} from '#/lib/strings/errors'
-import {useInitialNumToRender} from 'lib/hooks/useInitialNumToRender'
-import {
-  ListFooter,
-  ListHeaderDesktop,
-  ListMaybePlaceholder,
-} from '#/components/Lists'
 import {msg} from '@lingui/macro'
 import {useLingui} from '@lingui/react'
-import {useSession} from 'state/session'
-import {View} from 'react-native'
 
-function renderItem({item}: {item: ActorDefs.ProfileViewBasic}) {
-  return <ProfileCardWithFollowBtn key={item.did} profile={item} />
+import {useInitialNumToRender} from '#/lib/hooks/useInitialNumToRender'
+import {cleanError} from '#/lib/strings/errors'
+import {logger} from '#/logger'
+import {isWeb} from '#/platform/detection'
+import {useProfileFollowersQuery} from '#/state/queries/profile-followers'
+import {useResolveDidQuery} from '#/state/queries/resolve-uri'
+import {useSession} from '#/state/session'
+import {ListFooter, ListMaybePlaceholder} from '#/components/Lists'
+import {List} from '../util/List'
+import {ProfileCardWithFollowBtn} from './ProfileCard'
+
+function renderItem({
+  item,
+  index,
+}: {
+  item: ActorDefs.ProfileViewBasic
+  index: number
+}) {
+  return (
+    <ProfileCardWithFollowBtn
+      key={item.did}
+      profile={item}
+      noBorder={index === 0 && !isWeb}
+    />
+  )
 }
 
 function keyExtractor(item: ActorDefs.ProfileViewBasic) {
@@ -39,7 +48,6 @@ export function ProfileFollowers({name}: {name: string}) {
   const {
     data,
     isLoading: isFollowersLoading,
-    isFetching,
     isFetchingNextPage,
     hasNextPage,
     fetchNextPage,
@@ -47,14 +55,8 @@ export function ProfileFollowers({name}: {name: string}) {
     refetch,
   } = useProfileFollowersQuery(resolvedDid)
 
-  const isError = React.useMemo(
-    () => !!resolveError || !!error,
-    [resolveError, error],
-  )
-
-  const isMe = React.useMemo(() => {
-    return resolvedDid === currentAccount?.did
-  }, [resolvedDid, currentAccount?.did])
+  const isError = !!resolveError || !!error
+  const isMe = resolvedDid === currentAccount?.did
 
   const followers = React.useMemo(() => {
     if (data?.pages) {
@@ -73,20 +75,19 @@ export function ProfileFollowers({name}: {name: string}) {
     setIsPTRing(false)
   }, [refetch, setIsPTRing])
 
-  const onEndReached = async () => {
-    if (isFetching || !hasNextPage || !!error) return
+  const onEndReached = React.useCallback(async () => {
+    if (isFetchingNextPage || !hasNextPage || !!error) return
     try {
       await fetchNextPage()
     } catch (err) {
       logger.error('Failed to load more followers', {message: err})
     }
-  }
+  }, [isFetchingNextPage, hasNextPage, error, fetchNextPage])
 
-  return (
-    <View style={{flex: 1}}>
+  if (followers.length < 1) {
+    return (
       <ListMaybePlaceholder
         isLoading={isDidLoading || isFollowersLoading}
-        isEmpty={followers.length < 1}
         isError={isError}
         emptyType="results"
         emptyMessage={
@@ -96,24 +97,32 @@ export function ProfileFollowers({name}: {name: string}) {
         }
         errorMessage={cleanError(resolveError || error)}
         onRetry={isError ? refetch : undefined}
+        sideBorders={false}
       />
-      {followers.length > 0 && (
-        <List
-          data={followers}
-          renderItem={renderItem}
-          keyExtractor={keyExtractor}
-          refreshing={isPTRing}
-          onRefresh={onRefresh}
-          onEndReached={onEndReached}
-          onEndReachedThreshold={4}
-          ListHeaderComponent={<ListHeaderDesktop title={_(msg`Followers`)} />}
-          ListFooterComponent={<ListFooter isFetching={isFetchingNextPage} />}
-          // @ts-ignore our .web version only -prf
-          desktopFixedHeight
-          initialNumToRender={initialNumToRender}
-          windowSize={11}
+    )
+  }
+
+  return (
+    <List
+      data={followers}
+      renderItem={renderItem}
+      keyExtractor={keyExtractor}
+      refreshing={isPTRing}
+      onRefresh={onRefresh}
+      onEndReached={onEndReached}
+      onEndReachedThreshold={4}
+      ListFooterComponent={
+        <ListFooter
+          isFetchingNextPage={isFetchingNextPage}
+          error={cleanError(error)}
+          onRetry={fetchNextPage}
         />
-      )}
-    </View>
+      }
+      // @ts-ignore our .web version only -prf
+      desktopFixedHeight
+      initialNumToRender={initialNumToRender}
+      windowSize={11}
+      sideBorders={false}
+    />
   )
 }

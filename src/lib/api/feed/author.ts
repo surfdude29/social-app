@@ -1,15 +1,34 @@
 import {
   AppBskyFeedDefs,
   AppBskyFeedGetAuthorFeed as GetAuthorFeed,
+  BskyAgent,
 } from '@atproto/api'
+
 import {FeedAPI, FeedAPIResponse} from './types'
-import {getAgent} from '#/state/session'
 
 export class AuthorFeedAPI implements FeedAPI {
-  constructor(public params: GetAuthorFeed.QueryParams) {}
+  agent: BskyAgent
+  _params: GetAuthorFeed.QueryParams
+
+  constructor({
+    agent,
+    feedParams,
+  }: {
+    agent: BskyAgent
+    feedParams: GetAuthorFeed.QueryParams
+  }) {
+    this.agent = agent
+    this._params = feedParams
+  }
+
+  get params() {
+    const params = {...this._params}
+    params.includePins = params.filter !== 'posts_with_media'
+    return params
+  }
 
   async peekLatest(): Promise<AppBskyFeedDefs.FeedViewPost> {
-    const res = await getAgent().getAuthorFeed({
+    const res = await this.agent.getAuthorFeed({
       ...this.params,
       limit: 1,
     })
@@ -23,7 +42,7 @@ export class AuthorFeedAPI implements FeedAPI {
     cursor: string | undefined
     limit: number
   }): Promise<FeedAPIResponse> {
-    const res = await getAgent().getAuthorFeed({
+    const res = await this.agent.getAuthorFeed({
       ...this.params,
       cursor,
       limit,
@@ -44,8 +63,9 @@ export class AuthorFeedAPI implements FeedAPI {
       return feed.filter(post => {
         const isReply = post.reply
         const isRepost = AppBskyFeedDefs.isReasonRepost(post.reason)
+        const isPin = AppBskyFeedDefs.isReasonPin(post.reason)
         if (!isReply) return true
-        if (isRepost) return true
+        if (isRepost || isPin) return true
         return isReply && isAuthorReplyChain(this.params.actor, post, feed)
       })
     }

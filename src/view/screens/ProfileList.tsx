@@ -1,69 +1,83 @@
 import React, {useCallback, useMemo} from 'react'
 import {Pressable, StyleSheet, View} from 'react-native'
-import {useFocusEffect, useIsFocused} from '@react-navigation/native'
-import {NativeStackScreenProps, CommonNavigatorParams} from 'lib/routes/types'
-import {useNavigation} from '@react-navigation/native'
-import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome'
-import {AppBskyGraphDefs, AtUri, RichText as RichTextAPI} from '@atproto/api'
-import {useQueryClient} from '@tanstack/react-query'
-import {PagerWithHeader} from 'view/com/pager/PagerWithHeader'
-import {ProfileSubpageHeader} from 'view/com/profile/ProfileSubpageHeader'
-import {Feed} from 'view/com/posts/Feed'
-import {Text} from 'view/com/util/text/Text'
-import {NativeDropdown, DropdownItem} from 'view/com/util/forms/NativeDropdown'
-import {CenteredView} from 'view/com/util/Views'
-import {EmptyState} from 'view/com/util/EmptyState'
-import {LoadingScreen} from 'view/com/util/LoadingScreen'
-import {RichText} from '#/components/RichText'
-import {Button} from 'view/com/util/forms/Button'
-import {TextLink} from 'view/com/util/Link'
-import {ListRef} from 'view/com/util/List'
-import * as Toast from 'view/com/util/Toast'
-import {LoadLatestBtn} from 'view/com/util/load-latest/LoadLatestBtn'
-import {FAB} from 'view/com/util/fab/FAB'
-import {Haptics} from 'lib/haptics'
-import {FeedDescriptor} from '#/state/queries/post-feed'
-import {usePalette} from 'lib/hooks/usePalette'
-import {useSetTitle} from 'lib/hooks/useSetTitle'
-import {useWebMediaQueries} from 'lib/hooks/useWebMediaQueries'
-import {RQKEY as FEED_RQKEY} from '#/state/queries/post-feed'
-import {NavigationProp} from 'lib/routes/types'
-import {toShareUrl} from 'lib/strings/url-helpers'
-import {shareUrl} from 'lib/sharing'
-import {s} from 'lib/styles'
-import {sanitizeHandle} from 'lib/strings/handles'
-import {makeProfileLink, makeListLink} from 'lib/routes/links'
-import {ComposeIcon2} from 'lib/icons'
-import {ListMembers} from '#/view/com/lists/ListMembers'
-import {Trans, msg} from '@lingui/macro'
-import {useLingui} from '@lingui/react'
-import {useSetMinimalShellMode} from '#/state/shell'
-import {useModalControls} from '#/state/modals'
-import {ReportDialog, useReportDialogControl} from '#/components/ReportDialog'
-import {useResolveUriQuery} from '#/state/queries/resolve-uri'
 import {
-  useListQuery,
-  useListMuteMutation,
+  AppBskyGraphDefs,
+  AtUri,
+  moderateUserList,
+  ModerationOpts,
+  RichText as RichTextAPI,
+} from '@atproto/api'
+import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome'
+import {msg, Trans} from '@lingui/macro'
+import {useLingui} from '@lingui/react'
+import {useFocusEffect, useIsFocused} from '@react-navigation/native'
+import {useNavigation} from '@react-navigation/native'
+import {useQueryClient} from '@tanstack/react-query'
+
+import {useHaptics} from '#/lib/haptics'
+import {usePalette} from '#/lib/hooks/usePalette'
+import {useSetTitle} from '#/lib/hooks/useSetTitle'
+import {useWebMediaQueries} from '#/lib/hooks/useWebMediaQueries'
+import {ComposeIcon2} from '#/lib/icons'
+import {makeListLink, makeProfileLink} from '#/lib/routes/links'
+import {CommonNavigatorParams, NativeStackScreenProps} from '#/lib/routes/types'
+import {NavigationProp} from '#/lib/routes/types'
+import {shareUrl} from '#/lib/sharing'
+import {cleanError} from '#/lib/strings/errors'
+import {sanitizeHandle} from '#/lib/strings/handles'
+import {toShareUrl} from '#/lib/strings/url-helpers'
+import {s} from '#/lib/styles'
+import {logger} from '#/logger'
+import {isNative, isWeb} from '#/platform/detection'
+import {listenSoftReset} from '#/state/events'
+import {useModalControls} from '#/state/modals'
+import {useModerationOpts} from '#/state/preferences/moderation-opts'
+import {
   useListBlockMutation,
   useListDeleteMutation,
+  useListMuteMutation,
+  useListQuery,
 } from '#/state/queries/list'
-import {cleanError} from '#/lib/strings/errors'
-import {useSession} from '#/state/session'
-import {useComposerControls} from '#/state/shell/composer'
-import {isNative, isWeb} from '#/platform/detection'
-import {truncateAndInvalidate} from '#/state/queries/util'
+import {FeedDescriptor} from '#/state/queries/post-feed'
+import {RQKEY as FEED_RQKEY} from '#/state/queries/post-feed'
 import {
+  useAddSavedFeedsMutation,
   usePreferencesQuery,
-  usePinFeedMutation,
-  useUnpinFeedMutation,
-  useSetSaveFeedsMutation,
+  UsePreferencesQueryResponse,
+  useRemoveFeedMutation,
+  useUpdateSavedFeedsMutation,
 } from '#/state/queries/preferences'
-import {logger} from '#/logger'
-import {useAnalytics} from '#/lib/analytics/analytics'
-import {listenSoftReset} from '#/state/events'
+import {useResolveUriQuery} from '#/state/queries/resolve-uri'
+import {truncateAndInvalidate} from '#/state/queries/util'
+import {useSession} from '#/state/session'
+import {useSetMinimalShellMode} from '#/state/shell'
+import {useComposerControls} from '#/state/shell/composer'
+import {ListMembers} from '#/view/com/lists/ListMembers'
+import {PagerWithHeader} from '#/view/com/pager/PagerWithHeader'
+import {Feed} from '#/view/com/posts/Feed'
+import {ProfileSubpageHeader} from '#/view/com/profile/ProfileSubpageHeader'
+import {EmptyState} from '#/view/com/util/EmptyState'
+import {FAB} from '#/view/com/util/fab/FAB'
+import {Button} from '#/view/com/util/forms/Button'
+import {
+  DropdownItem,
+  NativeDropdown,
+} from '#/view/com/util/forms/NativeDropdown'
+import {TextLink} from '#/view/com/util/Link'
+import {ListRef} from '#/view/com/util/List'
+import {LoadLatestBtn} from '#/view/com/util/load-latest/LoadLatestBtn'
+import {LoadingScreen} from '#/view/com/util/LoadingScreen'
+import {Text} from '#/view/com/util/text/Text'
+import * as Toast from '#/view/com/util/Toast'
+import {CenteredView} from '#/view/com/util/Views'
+import {ListHiddenScreen} from '#/screens/List/ListHiddenScreen'
 import {atoms as a, useTheme} from '#/alf'
-import * as Prompt from '#/components/Prompt'
 import {useDialogControl} from '#/components/Dialog'
+import * as Layout from '#/components/Layout'
+import * as Hider from '#/components/moderation/Hider'
+import * as Prompt from '#/components/Prompt'
+import {ReportDialog, useReportDialogControl} from '#/components/ReportDialog'
+import {RichText} from '#/components/RichText'
 
 const SECTION_TITLES_CURATE = ['Posts', 'About']
 const SECTION_TITLES_MOD = ['About']
@@ -74,12 +88,22 @@ interface SectionRef {
 
 type Props = NativeStackScreenProps<CommonNavigatorParams, 'ProfileList'>
 export function ProfileListScreen(props: Props) {
+  return (
+    <Layout.Screen testID="profileListScreen">
+      <ProfileListScreenInner {...props} />
+    </Layout.Screen>
+  )
+}
+
+function ProfileListScreenInner(props: Props) {
   const {_} = useLingui()
   const {name: handleOrDid, rkey} = props.route.params
   const {data: resolvedUri, error: resolveError} = useResolveUriQuery(
     AtUri.make(handleOrDid, 'app.bsky.graph.list', rkey).toString(),
   )
+  const {data: preferences} = usePreferencesQuery()
   const {data: list, error: listError} = useListQuery(resolvedUri?.uri)
+  const moderationOpts = useModerationOpts()
 
   if (resolveError) {
     return (
@@ -100,8 +124,14 @@ export function ProfileListScreen(props: Props) {
     )
   }
 
-  return resolvedUri && list ? (
-    <ProfileListScreenLoaded {...props} uri={resolvedUri.uri} list={list} />
+  return resolvedUri && list && moderationOpts && preferences ? (
+    <ProfileListScreenLoaded
+      {...props}
+      uri={resolvedUri.uri}
+      list={list}
+      moderationOpts={moderationOpts}
+      preferences={preferences}
+    />
   ) : (
     <LoadingScreen />
   )
@@ -111,19 +141,33 @@ function ProfileListScreenLoaded({
   route,
   uri,
   list,
-}: Props & {uri: string; list: AppBskyGraphDefs.ListView}) {
+  moderationOpts,
+  preferences,
+}: Props & {
+  uri: string
+  list: AppBskyGraphDefs.ListView
+  moderationOpts: ModerationOpts
+  preferences: UsePreferencesQueryResponse
+}) {
   const {_} = useLingui()
   const queryClient = useQueryClient()
   const {openComposer} = useComposerControls()
   const setMinimalShellMode = useSetMinimalShellMode()
+  const {currentAccount} = useSession()
   const {rkey} = route.params
   const feedSectionRef = React.useRef<SectionRef>(null)
   const aboutSectionRef = React.useRef<SectionRef>(null)
   const {openModal} = useModalControls()
-  const isCurateList = list.purpose === 'app.bsky.graph.defs#curatelist'
+  const isCurateList = list.purpose === AppBskyGraphDefs.CURATELIST
   const isScreenFocused = useIsFocused()
+  const isHidden = list.labels?.findIndex(l => l.val === '!hide') !== -1
+  const isOwner = currentAccount?.did === list.creator.did
 
-  useSetTitle(list.name)
+  const moderation = React.useMemo(() => {
+    return moderateUserList(list, moderationOpts)
+  }, [list, moderationOpts])
+
+  useSetTitle(isHidden ? _(msg`List Hidden`) : list.name)
 
   useFocusEffect(
     useCallback(() => {
@@ -155,83 +199,109 @@ function ProfileListScreenLoaded({
   )
 
   const renderHeader = useCallback(() => {
-    return <Header rkey={rkey} list={list} />
-  }, [rkey, list])
+    return <Header rkey={rkey} list={list} preferences={preferences} />
+  }, [rkey, list, preferences])
 
   if (isCurateList) {
     return (
-      <View style={s.hContentRegion}>
-        <PagerWithHeader
-          items={SECTION_TITLES_CURATE}
-          isHeaderReady={true}
-          renderHeader={renderHeader}
-          onCurrentPageSelected={onCurrentPageSelected}>
-          {({headerHeight, scrollElRef, isFocused}) => (
-            <FeedSection
-              ref={feedSectionRef}
-              feed={`list|${uri}`}
-              scrollElRef={scrollElRef as ListRef}
-              headerHeight={headerHeight}
-              isFocused={isScreenFocused && isFocused}
+      <Hider.Outer modui={moderation.ui('contentView')} allowOverride={isOwner}>
+        <Hider.Mask>
+          <ListHiddenScreen list={list} preferences={preferences} />
+        </Hider.Mask>
+        <Hider.Content>
+          <View style={s.hContentRegion}>
+            <PagerWithHeader
+              items={SECTION_TITLES_CURATE}
+              isHeaderReady={true}
+              renderHeader={renderHeader}
+              onCurrentPageSelected={onCurrentPageSelected}>
+              {({headerHeight, scrollElRef, isFocused}) => (
+                <FeedSection
+                  ref={feedSectionRef}
+                  feed={`list|${uri}`}
+                  scrollElRef={scrollElRef as ListRef}
+                  headerHeight={headerHeight}
+                  isFocused={isScreenFocused && isFocused}
+                />
+              )}
+              {({headerHeight, scrollElRef}) => (
+                <AboutSection
+                  ref={aboutSectionRef}
+                  scrollElRef={scrollElRef as ListRef}
+                  list={list}
+                  onPressAddUser={onPressAddUser}
+                  headerHeight={headerHeight}
+                />
+              )}
+            </PagerWithHeader>
+            <FAB
+              testID="composeFAB"
+              onPress={() => openComposer({})}
+              icon={
+                <ComposeIcon2
+                  strokeWidth={1.5}
+                  size={29}
+                  style={{color: 'white'}}
+                />
+              }
+              accessibilityRole="button"
+              accessibilityLabel={_(msg`New post`)}
+              accessibilityHint=""
             />
-          )}
-          {({headerHeight, scrollElRef}) => (
-            <AboutSection
-              ref={aboutSectionRef}
-              scrollElRef={scrollElRef as ListRef}
-              list={list}
-              onPressAddUser={onPressAddUser}
-              headerHeight={headerHeight}
-            />
-          )}
-        </PagerWithHeader>
-        <FAB
-          testID="composeFAB"
-          onPress={() => openComposer({})}
-          icon={
-            <ComposeIcon2
-              strokeWidth={1.5}
-              size={29}
-              style={{color: 'white'}}
-            />
-          }
-          accessibilityRole="button"
-          accessibilityLabel={_(msg`New post`)}
-          accessibilityHint=""
-        />
-      </View>
+          </View>
+        </Hider.Content>
+      </Hider.Outer>
     )
   }
   return (
-    <View style={s.hContentRegion}>
-      <PagerWithHeader
-        items={SECTION_TITLES_MOD}
-        isHeaderReady={true}
-        renderHeader={renderHeader}>
-        {({headerHeight, scrollElRef}) => (
-          <AboutSection
-            list={list}
-            scrollElRef={scrollElRef as ListRef}
-            onPressAddUser={onPressAddUser}
-            headerHeight={headerHeight}
+    <Hider.Outer modui={moderation.ui('contentView')} allowOverride={isOwner}>
+      <Hider.Mask>
+        <ListHiddenScreen list={list} preferences={preferences} />
+      </Hider.Mask>
+      <Hider.Content>
+        <View style={s.hContentRegion}>
+          <PagerWithHeader
+            items={SECTION_TITLES_MOD}
+            isHeaderReady={true}
+            renderHeader={renderHeader}>
+            {({headerHeight, scrollElRef}) => (
+              <AboutSection
+                list={list}
+                scrollElRef={scrollElRef as ListRef}
+                onPressAddUser={onPressAddUser}
+                headerHeight={headerHeight}
+              />
+            )}
+          </PagerWithHeader>
+          <FAB
+            testID="composeFAB"
+            onPress={() => openComposer({})}
+            icon={
+              <ComposeIcon2
+                strokeWidth={1.5}
+                size={29}
+                style={{color: 'white'}}
+              />
+            }
+            accessibilityRole="button"
+            accessibilityLabel={_(msg`New post`)}
+            accessibilityHint=""
           />
-        )}
-      </PagerWithHeader>
-      <FAB
-        testID="composeFAB"
-        onPress={() => openComposer({})}
-        icon={
-          <ComposeIcon2 strokeWidth={1.5} size={29} style={{color: 'white'}} />
-        }
-        accessibilityRole="button"
-        accessibilityLabel={_(msg`New post`)}
-        accessibilityHint=""
-      />
-    </View>
+        </View>
+      </Hider.Content>
+    </Hider.Outer>
   )
 }
 
-function Header({rkey, list}: {rkey: string; list: AppBskyGraphDefs.ListView}) {
+function Header({
+  rkey,
+  list,
+  preferences,
+}: {
+  rkey: string
+  list: AppBskyGraphDefs.ListView
+  preferences: UsePreferencesQueryResponse
+}) {
   const pal = usePalette('default')
   const palInverted = usePalette('inverted')
   const {_} = useLingui()
@@ -247,41 +317,83 @@ function Header({rkey, list}: {rkey: string; list: AppBskyGraphDefs.ListView}) {
   const isBlocking = !!list.viewer?.blocked
   const isMuting = !!list.viewer?.muted
   const isOwner = list.creator.did === currentAccount?.did
-  const {isPending: isPinPending, mutateAsync: pinFeed} = usePinFeedMutation()
-  const {isPending: isUnpinPending, mutateAsync: unpinFeed} =
-    useUnpinFeedMutation()
-  const isPending = isPinPending || isUnpinPending
-  const {data: preferences} = usePreferencesQuery()
-  const {mutate: setSavedFeeds} = useSetSaveFeedsMutation()
-  const {track} = useAnalytics()
+  const playHaptic = useHaptics()
+
+  const {mutateAsync: addSavedFeeds, isPending: isAddSavedFeedPending} =
+    useAddSavedFeedsMutation()
+  const {mutateAsync: removeSavedFeed, isPending: isRemovePending} =
+    useRemoveFeedMutation()
+  const {mutateAsync: updateSavedFeeds, isPending: isUpdatingSavedFeeds} =
+    useUpdateSavedFeedsMutation()
+
+  const isPending =
+    isAddSavedFeedPending || isRemovePending || isUpdatingSavedFeeds
 
   const deleteListPromptControl = useDialogControl()
   const subscribeMutePromptControl = useDialogControl()
   const subscribeBlockPromptControl = useDialogControl()
 
-  const isPinned = preferences?.feeds?.pinned?.includes(list.uri)
-  const isSaved = preferences?.feeds?.saved?.includes(list.uri)
+  const savedFeedConfig = preferences?.savedFeeds?.find(
+    f => f.value === list.uri,
+  )
+  const isPinned = Boolean(savedFeedConfig?.pinned)
 
   const onTogglePinned = React.useCallback(async () => {
-    Haptics.default()
+    playHaptic()
 
     try {
-      if (isPinned) {
-        await unpinFeed({uri: list.uri})
+      if (savedFeedConfig) {
+        const pinned = !savedFeedConfig.pinned
+        await updateSavedFeeds([
+          {
+            ...savedFeedConfig,
+            pinned,
+          },
+        ])
+        Toast.show(
+          pinned
+            ? _(msg`Pinned to your feeds`)
+            : _(msg`Unpinned from your feeds`),
+        )
       } else {
-        await pinFeed({uri: list.uri})
+        await addSavedFeeds([
+          {
+            type: 'list',
+            value: list.uri,
+            pinned: true,
+          },
+        ])
+        Toast.show(_(msg`Saved to your feeds`))
       }
     } catch (e) {
-      Toast.show(_(msg`There was an issue contacting the server`))
+      Toast.show(_(msg`There was an issue contacting the server`), 'xmark')
       logger.error('Failed to toggle pinned feed', {message: e})
     }
-  }, [list.uri, isPinned, pinFeed, unpinFeed, _])
+  }, [
+    playHaptic,
+    addSavedFeeds,
+    updateSavedFeeds,
+    list.uri,
+    _,
+    savedFeedConfig,
+  ])
+
+  const onRemoveFromSavedFeeds = React.useCallback(async () => {
+    playHaptic()
+    if (!savedFeedConfig) return
+    try {
+      await removeSavedFeed(savedFeedConfig)
+      Toast.show(_(msg`Removed from your feeds`))
+    } catch (e) {
+      Toast.show(_(msg`There was an issue contacting the server`), 'xmark')
+      logger.error('Failed to remove pinned list', {message: e})
+    }
+  }, [playHaptic, removeSavedFeed, _, savedFeedConfig])
 
   const onSubscribeMute = useCallback(async () => {
     try {
       await listMuteMutation.mutateAsync({uri: list.uri, mute: true})
       Toast.show(_(msg`List muted`))
-      track('Lists:Mute')
     } catch {
       Toast.show(
         _(
@@ -289,13 +401,12 @@ function Header({rkey, list}: {rkey: string; list: AppBskyGraphDefs.ListView}) {
         ),
       )
     }
-  }, [list, listMuteMutation, track, _])
+  }, [list, listMuteMutation, _])
 
   const onUnsubscribeMute = useCallback(async () => {
     try {
       await listMuteMutation.mutateAsync({uri: list.uri, mute: false})
       Toast.show(_(msg`List unmuted`))
-      track('Lists:Unmute')
     } catch {
       Toast.show(
         _(
@@ -303,13 +414,12 @@ function Header({rkey, list}: {rkey: string; list: AppBskyGraphDefs.ListView}) {
         ),
       )
     }
-  }, [list, listMuteMutation, track, _])
+  }, [list, listMuteMutation, _])
 
   const onSubscribeBlock = useCallback(async () => {
     try {
       await listBlockMutation.mutateAsync({uri: list.uri, block: true})
       Toast.show(_(msg`List blocked`))
-      track('Lists:Block')
     } catch {
       Toast.show(
         _(
@@ -317,13 +427,12 @@ function Header({rkey, list}: {rkey: string; list: AppBskyGraphDefs.ListView}) {
         ),
       )
     }
-  }, [list, listBlockMutation, track, _])
+  }, [list, listBlockMutation, _])
 
   const onUnsubscribeBlock = useCallback(async () => {
     try {
       await listBlockMutation.mutateAsync({uri: list.uri, block: false})
       Toast.show(_(msg`List unblocked`))
-      track('Lists:Unblock')
     } catch {
       Toast.show(
         _(
@@ -331,7 +440,7 @@ function Header({rkey, list}: {rkey: string; list: AppBskyGraphDefs.ListView}) {
         ),
       )
     }
-  }, [list, listBlockMutation, track, _])
+  }, [list, listBlockMutation, _])
 
   const onPressEdit = useCallback(() => {
     openModal({
@@ -343,17 +452,11 @@ function Header({rkey, list}: {rkey: string; list: AppBskyGraphDefs.ListView}) {
   const onPressDelete = useCallback(async () => {
     await listDeleteMutation.mutateAsync({uri: list.uri})
 
-    if (isSaved || isPinned) {
-      const {saved, pinned} = preferences!.feeds
-
-      setSavedFeeds({
-        saved: isSaved ? saved.filter(uri => uri !== list.uri) : saved,
-        pinned: isPinned ? pinned.filter(uri => uri !== list.uri) : pinned,
-      })
+    if (savedFeedConfig) {
+      await removeSavedFeed(savedFeedConfig)
     }
 
     Toast.show(_(msg`List deleted`))
-    track('Lists:Delete')
     if (navigation.canGoBack()) {
       navigation.goBack()
     } else {
@@ -363,12 +466,9 @@ function Header({rkey, list}: {rkey: string; list: AppBskyGraphDefs.ListView}) {
     list,
     listDeleteMutation,
     navigation,
-    track,
     _,
-    preferences,
-    isPinned,
-    isSaved,
-    setSavedFeeds,
+    removeSavedFeed,
+    savedFeedConfig,
   ])
 
   const onPressReport = useCallback(() => {
@@ -378,8 +478,7 @@ function Header({rkey, list}: {rkey: string; list: AppBskyGraphDefs.ListView}) {
   const onPressShare = useCallback(() => {
     const url = toShareUrl(`/profile/${list.creator.did}/lists/${rkey}`)
     shareUrl(url)
-    track('Lists:Share')
-  }, [list, rkey, track])
+  }, [list, rkey])
 
   const dropdownItems: DropdownItem[] = useMemo(() => {
     let items: DropdownItem[] = [
@@ -396,6 +495,22 @@ function Header({rkey, list}: {rkey: string; list: AppBskyGraphDefs.ListView}) {
         },
       },
     ]
+
+    if (savedFeedConfig) {
+      items.push({
+        testID: 'listHeaderDropdownRemoveFromFeedsBtn',
+        label: _(msg`Remove from my feeds`),
+        onPress: onRemoveFromSavedFeeds,
+        icon: {
+          ios: {
+            name: 'trash',
+          },
+          android: '',
+          web: ['far', 'trash-can'],
+        },
+      })
+    }
+
     if (isOwner) {
       items.push({label: 'separator'})
       items.push({
@@ -442,7 +557,10 @@ function Header({rkey, list}: {rkey: string; list: AppBskyGraphDefs.ListView}) {
       items.push({
         testID: 'listHeaderDropdownUnpinBtn',
         label: _(msg`Unpin moderation list`),
-        onPress: isPending ? undefined : () => unpinFeed({uri: list.uri}),
+        onPress:
+          isPending || !savedFeedConfig
+            ? undefined
+            : () => removeSavedFeed(savedFeedConfig),
         icon: {
           ios: {
             name: 'pin',
@@ -452,33 +570,29 @@ function Header({rkey, list}: {rkey: string; list: AppBskyGraphDefs.ListView}) {
         },
       })
     }
-    if (isCurateList) {
+    if (isCurateList && (isBlocking || isMuting)) {
       items.push({label: 'separator'})
 
-      if (!isBlocking) {
+      if (isMuting) {
         items.push({
           testID: 'listHeaderDropdownMuteBtn',
-          label: isMuting ? _(msg`Un-mute list`) : _(msg`Mute list`),
-          onPress: isMuting
-            ? onUnsubscribeMute
-            : subscribeMutePromptControl.open,
+          label: _(msg`Un-mute list`),
+          onPress: onUnsubscribeMute,
           icon: {
             ios: {
-              name: isMuting ? 'eye' : 'eye.slash',
+              name: 'eye',
             },
             android: '',
-            web: isMuting ? 'eye' : ['far', 'eye-slash'],
+            web: 'eye',
           },
         })
       }
 
-      if (!isMuting) {
+      if (isBlocking) {
         items.push({
           testID: 'listHeaderDropdownBlockBtn',
-          label: isBlocking ? _(msg`Un-block list`) : _(msg`Block list`),
-          onPress: isBlocking
-            ? onUnsubscribeBlock
-            : subscribeBlockPromptControl.open,
+          label: _(msg`Un-block list`),
+          onPress: onUnsubscribeBlock,
           icon: {
             ios: {
               name: 'person.fill.xmark',
@@ -501,14 +615,13 @@ function Header({rkey, list}: {rkey: string; list: AppBskyGraphDefs.ListView}) {
     deleteListPromptControl.open,
     onPressReport,
     isPending,
-    unpinFeed,
-    list.uri,
     isBlocking,
     isMuting,
     onUnsubscribeMute,
-    subscribeMutePromptControl.open,
     onUnsubscribeBlock,
-    subscribeBlockPromptControl.open,
+    removeSavedFeed,
+    savedFeedConfig,
+    onRemoveFromSavedFeeds,
   ])
 
   const subscribeDropdownItems: DropdownItem[] = useMemo(() => {
@@ -556,7 +669,7 @@ function Header({rkey, list}: {rkey: string; list: AppBskyGraphDefs.ListView}) {
           cid: list.cid,
         }}
       />
-      {isCurateList || isPinned ? (
+      {isCurateList ? (
         <Button
           testID={isPinned ? 'unpinBtn' : 'pinBtn'}
           type={isPinned ? 'default' : 'inverted'}
@@ -672,7 +785,7 @@ const FeedSection = React.forwardRef<SectionRef, FeedSectionProps>(
     }, [onScrollToTop, isScreenFocused])
 
     const renderPostsEmpty = useCallback(() => {
-      return <EmptyState icon="feed" message={_(msg`This feed is empty!`)} />
+      return <EmptyState icon="hashtag" message={_(msg`This feed is empty.`)} />
     }, [_])
 
     return (
@@ -749,7 +862,7 @@ const AboutSection = React.forwardRef<SectionRef, AboutSectionProps>(
           <View
             style={[
               {
-                borderTopWidth: 1,
+                borderTopWidth: StyleSheet.hairlineWidth,
                 padding: isMobile ? 14 : 20,
                 gap: 12,
               },
@@ -900,7 +1013,7 @@ function ErrorScreen({error}: {error: string}) {
           marginTop: 10,
           paddingHorizontal: 18,
           paddingVertical: 14,
-          borderTopWidth: 1,
+          borderTopWidth: StyleSheet.hairlineWidth,
         },
       ]}>
       <Text type="title-lg" style={[pal.text, s.mb10]}>

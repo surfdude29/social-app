@@ -35,12 +35,30 @@ module.exports = function (config) {
    */
   const PLATFORM = process.env.EAS_BUILD_PLATFORM
 
-  const DIST_BUILD_NUMBER =
-    PLATFORM === 'android'
-      ? process.env.BSKY_ANDROID_VERSION_CODE
-      : process.env.BSKY_IOS_BUILD_NUMBER
-
   const IS_DEV = process.env.EXPO_PUBLIC_ENV === 'development'
+  const IS_TESTFLIGHT = process.env.EXPO_PUBLIC_ENV === 'testflight'
+  const IS_PRODUCTION = process.env.EXPO_PUBLIC_ENV === 'production'
+
+  const ASSOCIATED_DOMAINS = [
+    'applinks:bsky.app',
+    'applinks:staging.bsky.app',
+    'appclips:bsky.app',
+    'appclips:go.bsky.app', // Allows App Clip to work when scanning QR codes
+    // When testing local services, enter an ngrok (et al) domain here. It must use a standard HTTP/HTTPS port.
+    ...(IS_DEV || IS_TESTFLIGHT ? [] : []),
+  ]
+
+  const UPDATES_CHANNEL = IS_TESTFLIGHT
+    ? 'testflight'
+    : IS_PRODUCTION
+    ? 'production'
+    : undefined
+  const UPDATES_ENABLED = !!UPDATES_CHANNEL
+
+  const USE_SENTRY = Boolean(process.env.SENTRY_AUTH_TOKEN)
+  const SENTRY_DIST = `${PLATFORM}.${VERSION}.${IS_TESTFLIGHT ? 'tf' : ''}${
+    IS_DEV ? 'dev' : ''
+  }`
 
   return {
     expo: {
@@ -56,6 +74,8 @@ module.exports = function (config) {
       icon: './assets/icon.png',
       userInterfaceStyle: 'automatic',
       splash: SPLASH_CONFIG,
+      // hsl(211, 99%, 53%), same as palette.default.brandText
+      primaryColor: '#1083fe',
       ios: {
         supportsTablet: false,
         bundleIdentifier: 'xyz.blueskyweb.app',
@@ -77,19 +97,50 @@ module.exports = function (config) {
             ['en', 'ca', 'de', 'es', 'fi', 'fr', 'ga', 'hi', 'hu', 'id',
              'it', 'ja', 'ko', 'pl', 'pt-BR', 'ru', 'th', 'tr', 'uk',
              'zh-CN', 'zh-HK', 'zh-TW'],
+          CFBundleSpokenName: 'Blue Sky',
         },
-        associatedDomains: ['applinks:bsky.app', 'applinks:staging.bsky.app'],
+        associatedDomains: ASSOCIATED_DOMAINS,
         splash: {
           ...SPLASH_CONFIG,
           dark: DARK_SPLASH_CONFIG,
         },
         entitlements: {
+          'com.apple.developer.kernel.increased-memory-limit': true,
+          'com.apple.developer.kernel.extended-virtual-addressing': true,
           'com.apple.security.application-groups': 'group.app.bsky',
+        },
+        privacyManifests: {
+          NSPrivacyAccessedAPITypes: [
+            {
+              NSPrivacyAccessedAPIType:
+                'NSPrivacyAccessedAPICategoryFileTimestamp',
+              NSPrivacyAccessedAPITypeReasons: ['C617.1', '3B52.1', '0A2A.1'],
+            },
+            {
+              NSPrivacyAccessedAPIType: 'NSPrivacyAccessedAPICategoryDiskSpace',
+              NSPrivacyAccessedAPITypeReasons: ['E174.1', '85F4.1'],
+            },
+            {
+              NSPrivacyAccessedAPIType:
+                'NSPrivacyAccessedAPICategorySystemBootTime',
+              NSPrivacyAccessedAPITypeReasons: ['35F9.1'],
+            },
+            {
+              NSPrivacyAccessedAPIType:
+                'NSPrivacyAccessedAPICategoryUserDefaults',
+              NSPrivacyAccessedAPITypeReasons: ['CA92.1', '1C8F.1'],
+            },
+          ],
         },
       },
       androidStatusBar: {
         barStyle: 'light-content',
         backgroundColor: '#00000000',
+      },
+      // Dark nav bar in light mode is better than light nav bar in dark mode
+      androidNavigationBar: {
+        barStyle: 'light-content',
+        backgroundColor: DARK_SPLASH_CONFIG_ANDROID.backgroundColor,
       },
       android: {
         icon: './assets/icon.png',
@@ -127,18 +178,37 @@ module.exports = function (config) {
         favicon: './assets/favicon.png',
       },
       updates: {
-        enabled: true,
-        fallbackToCacheTimeout: 1000,
-        url: 'https://u.expo.dev/55bd077a-d905-4184-9c7f-94789ba0f302',
+        url: 'https://updates.bsky.app/manifest',
+        enabled: UPDATES_ENABLED,
+        fallbackToCacheTimeout: 30000,
+        codeSigningCertificate: UPDATES_ENABLED
+          ? './code-signing/certificate.pem'
+          : undefined,
+        codeSigningMetadata: UPDATES_ENABLED
+          ? {
+              keyid: 'main',
+              alg: 'rsa-v1_5-sha256',
+            }
+          : undefined,
+        checkAutomatically: 'NEVER',
+        channel: UPDATES_CHANNEL,
       },
       plugins: [
         'expo-localization',
-        Boolean(process.env.SENTRY_AUTH_TOKEN) && 'sentry-expo',
+        USE_SENTRY && [
+          '@sentry/react-native/expo',
+          {
+            organization: 'blueskyweb',
+            project: 'react-native',
+            release: VERSION,
+            dist: SENTRY_DIST,
+          },
+        ],
         [
           'expo-build-properties',
           {
             ios: {
-              deploymentTarget: '13.4',
+              deploymentTarget: '15.1',
               newArchEnabled: false,
             },
             android: {
@@ -151,23 +221,39 @@ module.exports = function (config) {
           },
         ],
         [
-          'expo-updates',
-          {
-            username: 'blueskysocial',
-          },
-        ],
-        [
           'expo-notifications',
           {
             icon: './assets/icon-android-notification.png',
             color: '#1185fe',
+            sounds: PLATFORM === 'ios' ? ['assets/dm.aiff'] : ['assets/dm.mp3'],
           },
         ],
+        'react-native-compressor',
+        './plugins/starterPackAppClipExtension/withStarterPackAppClip.js',
         './plugins/withAndroidManifestPlugin.js',
         './plugins/withAndroidManifestFCMIconPlugin.js',
         './plugins/withAndroidStylesWindowBackgroundPlugin.js',
+        './plugins/withAndroidStylesAccentColorPlugin.js',
         './plugins/withAndroidSplashScreenStatusBarTranslucentPlugin.js',
         './plugins/shareExtension/withShareExtensions.js',
+        './plugins/notificationsExtension/withNotificationsExtension.js',
+        './plugins/withAppDelegateReferrer.js',
+        [
+          'expo-font',
+          {
+            fonts: [
+              './assets/fonts/inter/InterVariable.ttf',
+              './assets/fonts/inter/InterVariable-Italic.ttf',
+              // Android only
+              './assets/fonts/inter/Inter-Regular.otf',
+              './assets/fonts/inter/Inter-Italic.otf',
+              './assets/fonts/inter/Inter-SemiBold.otf',
+              './assets/fonts/inter/Inter-SemiBoldItalic.otf',
+              './assets/fonts/inter/Inter-ExtraBold.otf',
+              './assets/fonts/inter/Inter-ExtraBoldItalic.otf',
+            ],
+          },
+        ],
       ].filter(Boolean),
       extra: {
         eas: {
@@ -184,6 +270,19 @@ module.exports = function (config) {
                       ],
                     },
                   },
+                  {
+                    targetName: 'BlueskyNSE',
+                    bundleIdentifier: 'xyz.blueskyweb.app.BlueskyNSE',
+                    entitlements: {
+                      'com.apple.security.application-groups': [
+                        'group.app.bsky',
+                      ],
+                    },
+                  },
+                  {
+                    targetName: 'BlueskyClip',
+                    bundleIdentifier: 'xyz.blueskyweb.app.AppClip',
+                  },
                 ],
               },
             },
@@ -197,12 +296,12 @@ module.exports = function (config) {
            * @see https://docs.expo.dev/guides/using-sentry/#app-configuration
            */
           {
-            file: 'sentry-expo/upload-sourcemaps',
+            file: './postHooks/uploadSentrySourcemapsPostHook',
             config: {
               organization: 'blueskyweb',
               project: 'react-native',
               release: VERSION,
-              dist: `${PLATFORM}.${VERSION}.${DIST_BUILD_NUMBER}`,
+              dist: SENTRY_DIST,
             },
           },
         ],

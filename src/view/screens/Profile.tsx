@@ -1,53 +1,73 @@
-import React, {useMemo} from 'react'
+import React, {useCallback, useMemo} from 'react'
 import {StyleSheet} from 'react-native'
-import {useFocusEffect} from '@react-navigation/native'
 import {
   AppBskyActorDefs,
+  AppBskyGraphGetActorStarterPacks,
   moderateProfile,
   ModerationOpts,
   RichText as RichTextAPI,
 } from '@atproto/api'
 import {msg} from '@lingui/macro'
 import {useLingui} from '@lingui/react'
-import {NativeStackScreenProps, CommonNavigatorParams} from 'lib/routes/types'
-import {CenteredView} from '../com/util/Views'
-import {ListRef} from '../com/util/List'
-import {ScreenHider} from '#/components/moderation/ScreenHider'
-import {ProfileLists} from '../com/lists/ProfileLists'
-import {ProfileFeedgens} from '../com/feeds/ProfileFeedgens'
-import {PagerWithHeader} from 'view/com/pager/PagerWithHeader'
-import {ErrorScreen} from '../com/util/error/ErrorScreen'
-import {FAB} from '../com/util/fab/FAB'
-import {s, colors} from 'lib/styles'
-import {useAnalytics} from 'lib/analytics/analytics'
-import {ComposeIcon2} from 'lib/icons'
-import {useSetTitle} from 'lib/hooks/useSetTitle'
-import {combinedDisplayName} from 'lib/strings/display-names'
-import {resetProfilePostsQueries} from '#/state/queries/post-feed'
-import {useResolveDidQuery} from '#/state/queries/resolve-uri'
-import {useProfileQuery} from '#/state/queries/profile'
-import {useProfileShadow} from '#/state/cache/profile-shadow'
-import {useSession, getAgent} from '#/state/session'
-import {useModerationOpts} from '#/state/queries/preferences'
-import {useLabelerInfoQuery} from '#/state/queries/labeler'
-import {useSetDrawerSwipeDisabled, useSetMinimalShellMode} from '#/state/shell'
-import {cleanError} from '#/lib/strings/errors'
-import {useComposerControls} from '#/state/shell/composer'
-import {listenSoftReset} from '#/state/events'
-import {isInvalidHandle} from '#/lib/strings/handles'
+import {useFocusEffect} from '@react-navigation/native'
+import {
+  InfiniteData,
+  UseInfiniteQueryResult,
+  useQueryClient,
+} from '@tanstack/react-query'
 
+import {useSetTitle} from '#/lib/hooks/useSetTitle'
+import {ComposeIcon2} from '#/lib/icons'
+import {CommonNavigatorParams, NativeStackScreenProps} from '#/lib/routes/types'
+import {combinedDisplayName} from '#/lib/strings/display-names'
+import {cleanError} from '#/lib/strings/errors'
+import {isInvalidHandle} from '#/lib/strings/handles'
+import {colors, s} from '#/lib/styles'
+import {useProfileShadow} from '#/state/cache/profile-shadow'
+import {listenSoftReset} from '#/state/events'
+import {useModerationOpts} from '#/state/preferences/moderation-opts'
+import {useActorStarterPacksQuery} from '#/state/queries/actor-starter-packs'
+import {useLabelerInfoQuery} from '#/state/queries/labeler'
+import {resetProfilePostsQueries} from '#/state/queries/post-feed'
+import {useProfileQuery} from '#/state/queries/profile'
+import {useResolveDidQuery} from '#/state/queries/resolve-uri'
+import {useAgent, useSession} from '#/state/session'
+import {useSetDrawerSwipeDisabled, useSetMinimalShellMode} from '#/state/shell'
+import {useComposerControls} from '#/state/shell/composer'
+import {ProfileFeedgens} from '#/view/com/feeds/ProfileFeedgens'
+import {ProfileLists} from '#/view/com/lists/ProfileLists'
+import {PagerWithHeader} from '#/view/com/pager/PagerWithHeader'
+import {ErrorScreen} from '#/view/com/util/error/ErrorScreen'
+import {FAB} from '#/view/com/util/fab/FAB'
+import {ListRef} from '#/view/com/util/List'
+import {CenteredView} from '#/view/com/util/Views'
+import {ProfileHeader, ProfileHeaderLoading} from '#/screens/Profile/Header'
 import {ProfileFeedSection} from '#/screens/Profile/Sections/Feed'
 import {ProfileLabelsSection} from '#/screens/Profile/Sections/Labels'
-import {ProfileHeader, ProfileHeaderLoading} from '#/screens/Profile/Header'
+import {web} from '#/alf'
+import * as Layout from '#/components/Layout'
+import {ScreenHider} from '#/components/moderation/ScreenHider'
+import {ProfileStarterPacks} from '#/components/StarterPack/ProfileStarterPacks'
+import {navigate} from '#/Navigation'
+import {ExpoScrollForwarderView} from '../../../modules/expo-scroll-forwarder'
 
 interface SectionRef {
   scrollToTop: () => void
 }
 
 type Props = NativeStackScreenProps<CommonNavigatorParams, 'Profile'>
-export function ProfileScreen({route}: Props) {
+export function ProfileScreen(props: Props) {
+  return (
+    <Layout.Screen testID="profileScreen">
+      <ProfileScreenInner {...props} />
+    </Layout.Screen>
+  )
+}
+
+function ProfileScreenInner({route}: Props) {
   const {_} = useLingui()
   const {currentAccount} = useSession()
+  const queryClient = useQueryClient()
   const name =
     route.params.name === 'me' ? currentAccount?.did : route.params.name
   const moderationOpts = useModerationOpts()
@@ -66,6 +86,7 @@ export function ProfileScreen({route}: Props) {
   } = useProfileQuery({
     did: resolvedDid,
   })
+  const starterPacksQuery = useActorStarterPacksQuery({did: resolvedDid})
 
   const onPressTryAgain = React.useCallback(() => {
     if (resolveError) {
@@ -75,17 +96,27 @@ export function ProfileScreen({route}: Props) {
     }
   }, [resolveError, refetchDid, refetchProfile])
 
+  // Apply hard-coded redirects as need
+  React.useEffect(() => {
+    if (resolveError) {
+      if (name === 'lulaoficial.bsky.social') {
+        console.log('Applying redirect to lula.com.br')
+        navigate('Profile', {name: 'lula.com.br'})
+      }
+    }
+  }, [name, resolveError])
+
   // When we open the profile, we want to reset the posts query if we are blocked.
   React.useEffect(() => {
     if (resolvedDid && profile?.viewer?.blockedBy) {
-      resetProfilePostsQueries(resolvedDid)
+      resetProfilePostsQueries(queryClient, resolvedDid)
     }
-  }, [profile?.viewer?.blockedBy, resolvedDid])
+  }, [queryClient, profile?.viewer?.blockedBy, resolvedDid])
 
   // Most pushes will happen here, since we will have only placeholder data
-  if (isLoadingDid || isLoadingProfile) {
+  if (isLoadingDid || isLoadingProfile || starterPacksQuery.isLoading) {
     return (
-      <CenteredView>
+      <CenteredView sideBorders style={web({height: '100vh'})}>
         <ProfileHeaderLoading />
       </CenteredView>
     )
@@ -105,6 +136,7 @@ export function ProfileScreen({route}: Props) {
     return (
       <ProfileScreenLoaded
         profile={profile}
+        starterPacksQuery={starterPacksQuery}
         moderationOpts={moderationOpts}
         isPlaceholderProfile={isPlaceholderProfile}
         hideBackButton={!!route.params.hideBackButton}
@@ -128,17 +160,21 @@ function ProfileScreenLoaded({
   isPlaceholderProfile,
   moderationOpts,
   hideBackButton,
+  starterPacksQuery,
 }: {
   profile: AppBskyActorDefs.ProfileViewDetailed
   moderationOpts: ModerationOpts
   hideBackButton: boolean
   isPlaceholderProfile: boolean
+  starterPacksQuery: UseInfiniteQueryResult<
+    InfiniteData<AppBskyGraphGetActorStarterPacks.OutputSchema, unknown>,
+    Error
+  >
 }) {
   const profile = useProfileShadow(profileUnshadowed)
   const {hasSession, currentAccount} = useSession()
   const setMinimalShellMode = useSetMinimalShellMode()
   const {openComposer} = useComposerControls()
-  const {screen, track} = useAnalytics()
   const {
     data: labelerInfo,
     error: labelerError,
@@ -150,12 +186,16 @@ function ProfileScreenLoaded({
   const [currentPage, setCurrentPage] = React.useState(0)
   const {_} = useLingui()
   const setDrawerSwipeDisabled = useSetDrawerSwipeDisabled()
+
+  const [scrollViewTag, setScrollViewTag] = React.useState<number | null>(null)
+
   const postsSectionRef = React.useRef<SectionRef>(null)
   const repliesSectionRef = React.useRef<SectionRef>(null)
   const mediaSectionRef = React.useRef<SectionRef>(null)
   const likesSectionRef = React.useRef<SectionRef>(null)
   const feedsSectionRef = React.useRef<SectionRef>(null)
   const listsSectionRef = React.useRef<SectionRef>(null)
+  const starterPacksSectionRef = React.useRef<SectionRef>(null)
   const labelsSectionRef = React.useRef<SectionRef>(null)
 
   useSetTitle(combinedDisplayName(profile))
@@ -176,33 +216,23 @@ function ProfileScreenLoaded({
   const showRepliesTab = hasSession
   const showMediaTab = !hasLabeler
   const showLikesTab = isMe
-  const showFeedsTab =
-    hasSession && (isMe || (profile.associated?.feedgens || 0) > 0)
+  const showFeedsTab = isMe || (profile.associated?.feedgens || 0) > 0
+  const showStarterPacksTab =
+    isMe || !!starterPacksQuery.data?.pages?.[0].starterPacks.length
   const showListsTab =
     hasSession && (isMe || (profile.associated?.lists || 0) > 0)
 
-  const sectionTitles = useMemo<string[]>(() => {
-    return [
-      showFiltersTab ? _(msg`Labels`) : undefined,
-      showListsTab && hasLabeler ? _(msg`Lists`) : undefined,
-      showPostsTab ? _(msg`Posts`) : undefined,
-      showRepliesTab ? _(msg`Replies`) : undefined,
-      showMediaTab ? _(msg`Media`) : undefined,
-      showLikesTab ? _(msg`Likes`) : undefined,
-      showFeedsTab ? _(msg`Feeds`) : undefined,
-      showListsTab && !hasLabeler ? _(msg`Lists`) : undefined,
-    ].filter(Boolean) as string[]
-  }, [
-    showPostsTab,
-    showRepliesTab,
-    showMediaTab,
-    showLikesTab,
-    showFeedsTab,
-    showListsTab,
-    showFiltersTab,
-    hasLabeler,
-    _,
-  ])
+  const sectionTitles = [
+    showFiltersTab ? _(msg`Labels`) : undefined,
+    showListsTab && hasLabeler ? _(msg`Lists`) : undefined,
+    showPostsTab ? _(msg`Posts`) : undefined,
+    showRepliesTab ? _(msg`Replies`) : undefined,
+    showMediaTab ? _(msg`Media`) : undefined,
+    showLikesTab ? _(msg`Likes`) : undefined,
+    showFeedsTab ? _(msg`Feeds`) : undefined,
+    showStarterPacksTab ? _(msg`Starter Packs`) : undefined,
+    showListsTab && !hasLabeler ? _(msg`Lists`) : undefined,
+  ].filter(Boolean) as string[]
 
   let nextIndex = 0
   let filtersIndex: number | null = null
@@ -211,6 +241,7 @@ function ProfileScreenLoaded({
   let mediaIndex: number | null = null
   let likesIndex: number | null = null
   let feedsIndex: number | null = null
+  let starterPacksIndex: number | null = null
   let listsIndex: number | null = null
   if (showFiltersTab) {
     filtersIndex = nextIndex++
@@ -230,11 +261,14 @@ function ProfileScreenLoaded({
   if (showFeedsTab) {
     feedsIndex = nextIndex++
   }
+  if (showStarterPacksTab) {
+    starterPacksIndex = nextIndex++
+  }
   if (showListsTab) {
     listsIndex = nextIndex++
   }
 
-  const scrollSectionToTop = React.useCallback(
+  const scrollSectionToTop = useCallback(
     (index: number) => {
       if (index === filtersIndex) {
         labelsSectionRef.current?.scrollToTop()
@@ -248,6 +282,8 @@ function ProfileScreenLoaded({
         likesSectionRef.current?.scrollToTop()
       } else if (index === feedsIndex) {
         feedsSectionRef.current?.scrollToTop()
+      } else if (index === starterPacksIndex) {
+        starterPacksSectionRef.current?.scrollToTop()
       } else if (index === listsIndex) {
         listsSectionRef.current?.scrollToTop()
       }
@@ -260,17 +296,17 @@ function ProfileScreenLoaded({
       likesIndex,
       feedsIndex,
       listsIndex,
+      starterPacksIndex,
     ],
   )
 
   useFocusEffect(
     React.useCallback(() => {
       setMinimalShellMode(false)
-      screen('Profile')
       return listenSoftReset(() => {
         scrollSectionToTop(currentPage)
       })
-    }, [setMinimalShellMode, screen, currentPage, scrollSectionToTop]),
+    }, [setMinimalShellMode, currentPage, scrollSectionToTop]),
   )
 
   useFocusEffect(
@@ -285,53 +321,40 @@ function ProfileScreenLoaded({
   // events
   // =
 
-  const onPressCompose = React.useCallback(() => {
-    track('ProfileScreen:PressCompose')
+  const onPressCompose = () => {
     const mention =
       profile.handle === currentAccount?.handle ||
       isInvalidHandle(profile.handle)
         ? undefined
         : profile.handle
     openComposer({mention})
-  }, [openComposer, currentAccount, track, profile])
+  }
 
-  const onPageSelected = React.useCallback(
-    (i: number) => {
-      setCurrentPage(i)
-    },
-    [setCurrentPage],
-  )
+  const onPageSelected = (i: number) => {
+    setCurrentPage(i)
+  }
 
-  const onCurrentPageSelected = React.useCallback(
-    (index: number) => {
-      scrollSectionToTop(index)
-    },
-    [scrollSectionToTop],
-  )
+  const onCurrentPageSelected = (index: number) => {
+    scrollSectionToTop(index)
+  }
 
   // rendering
   // =
 
-  const renderHeader = React.useCallback(() => {
+  const renderHeader = () => {
     return (
-      <ProfileHeader
-        profile={profile}
-        labeler={labelerInfo}
-        descriptionRT={hasDescription ? descriptionRT : null}
-        moderationOpts={moderationOpts}
-        hideBackButton={hideBackButton}
-        isPlaceholderProfile={showPlaceholder}
-      />
+      <ExpoScrollForwarderView scrollViewTag={scrollViewTag}>
+        <ProfileHeader
+          profile={profile}
+          labeler={labelerInfo}
+          descriptionRT={hasDescription ? descriptionRT : null}
+          moderationOpts={moderationOpts}
+          hideBackButton={hideBackButton}
+          isPlaceholderProfile={showPlaceholder}
+        />
+      </ExpoScrollForwarderView>
     )
-  }, [
-    profile,
-    labelerInfo,
-    descriptionRT,
-    hasDescription,
-    moderationOpts,
-    hideBackButton,
-    showPlaceholder,
-  ])
+  }
 
   return (
     <ScreenHider
@@ -345,9 +368,10 @@ function ProfileScreenLoaded({
         items={sectionTitles}
         onPageSelected={onPageSelected}
         onCurrentPageSelected={onCurrentPageSelected}
-        renderHeader={renderHeader}>
+        renderHeader={renderHeader}
+        allowHeaderOverScroll>
         {showFiltersTab
-          ? ({headerHeight, scrollElRef}) => (
+          ? ({headerHeight, isFocused, scrollElRef}) => (
               <ProfileLabelsSection
                 ref={labelsSectionRef}
                 labelerInfo={labelerInfo}
@@ -356,6 +380,8 @@ function ProfileScreenLoaded({
                 moderationOpts={moderationOpts}
                 scrollElRef={scrollElRef as ListRef}
                 headerHeight={headerHeight}
+                isFocused={isFocused}
+                setScrollViewTag={setScrollViewTag}
               />
             )
           : null}
@@ -367,6 +393,7 @@ function ProfileScreenLoaded({
                 scrollElRef={scrollElRef as ListRef}
                 headerOffset={headerHeight}
                 enabled={isFocused}
+                setScrollViewTag={setScrollViewTag}
               />
             )
           : null}
@@ -379,6 +406,7 @@ function ProfileScreenLoaded({
                 isFocused={isFocused}
                 scrollElRef={scrollElRef as ListRef}
                 ignoreFilterFor={profile.did}
+                setScrollViewTag={setScrollViewTag}
               />
             )
           : null}
@@ -391,6 +419,7 @@ function ProfileScreenLoaded({
                 isFocused={isFocused}
                 scrollElRef={scrollElRef as ListRef}
                 ignoreFilterFor={profile.did}
+                setScrollViewTag={setScrollViewTag}
               />
             )
           : null}
@@ -403,6 +432,7 @@ function ProfileScreenLoaded({
                 isFocused={isFocused}
                 scrollElRef={scrollElRef as ListRef}
                 ignoreFilterFor={profile.did}
+                setScrollViewTag={setScrollViewTag}
               />
             )
           : null}
@@ -415,6 +445,7 @@ function ProfileScreenLoaded({
                 isFocused={isFocused}
                 scrollElRef={scrollElRef as ListRef}
                 ignoreFilterFor={profile.did}
+                setScrollViewTag={setScrollViewTag}
               />
             )
           : null}
@@ -426,6 +457,20 @@ function ProfileScreenLoaded({
                 scrollElRef={scrollElRef as ListRef}
                 headerOffset={headerHeight}
                 enabled={isFocused}
+                setScrollViewTag={setScrollViewTag}
+              />
+            )
+          : null}
+        {showStarterPacksTab
+          ? ({headerHeight, isFocused, scrollElRef}) => (
+              <ProfileStarterPacks
+                ref={starterPacksSectionRef}
+                isMe={isMe}
+                starterPacksQuery={starterPacksQuery}
+                scrollElRef={scrollElRef as ListRef}
+                headerOffset={headerHeight}
+                enabled={isFocused}
+                setScrollViewTag={setScrollViewTag}
               />
             )
           : null}
@@ -437,6 +482,7 @@ function ProfileScreenLoaded({
                 scrollElRef={scrollElRef as ListRef}
                 headerOffset={headerHeight}
                 enabled={isFocused}
+                setScrollViewTag={setScrollViewTag}
               />
             )
           : null}
@@ -456,6 +502,7 @@ function ProfileScreenLoaded({
 }
 
 function useRichText(text: string): [RichTextAPI, boolean] {
+  const agent = useAgent()
   const [prevText, setPrevText] = React.useState(text)
   const [rawRT, setRawRT] = React.useState(() => new RichTextAPI({text}))
   const [resolvedRT, setResolvedRT] = React.useState<RichTextAPI | null>(null)
@@ -470,7 +517,7 @@ function useRichText(text: string): [RichTextAPI, boolean] {
     async function resolveRTFacets() {
       // new each time
       const resolvedRT = new RichTextAPI({text})
-      await resolvedRT.detectFacets(getAgent())
+      await resolvedRT.detectFacets(agent)
       if (!ignore) {
         setResolvedRT(resolvedRT)
       }
@@ -479,7 +526,7 @@ function useRichText(text: string): [RichTextAPI, boolean] {
     return () => {
       ignore = true
     }
-  }, [text])
+  }, [text, agent])
   const isResolving = resolvedRT === null
   return [resolvedRT ?? rawRT, isResolving]
 }

@@ -1,21 +1,26 @@
-import React from 'react'
 import {StyleSheet, View} from 'react-native'
-import {usePalette} from 'lib/hooks/usePalette'
-import {DesktopSearch} from './Search'
-import {DesktopFeeds} from './Feeds'
-import {Text} from 'view/com/util/text/Text'
-import {TextLink} from 'view/com/util/Link'
-import {FEEDBACK_FORM_URL, HELP_DESK_URL} from 'lib/constants'
-import {s} from 'lib/styles'
-import {useWebMediaQueries} from 'lib/hooks/useWebMediaQueries'
+import {msg, Trans} from '@lingui/macro'
 import {useLingui} from '@lingui/react'
-import {msg} from '@lingui/macro'
+
+import {FEEDBACK_FORM_URL, HELP_DESK_URL} from '#/lib/constants'
+import {usePalette} from '#/lib/hooks/usePalette'
+import {useWebMediaQueries} from '#/lib/hooks/useWebMediaQueries'
+import {s} from '#/lib/styles'
+import {useKawaiiMode} from '#/state/preferences/kawaii'
 import {useSession} from '#/state/session'
+import {TextLink} from '#/view/com/util/Link'
+import {Text} from '#/view/com/util/text/Text'
+import {atoms as a} from '#/alf'
+import {ProgressGuideList} from '#/components/ProgressGuide/List'
+import {DesktopFeeds} from './Feeds'
+import {DesktopSearch} from './Search'
 
 export function DesktopRightNav({routeName}: {routeName: string}) {
   const pal = usePalette('default')
   const {_} = useLingui()
   const {hasSession, currentAccount} = useSession()
+
+  const kawaii = useKawaiiMode()
 
   const {isTablet} = useWebMediaQueries()
   if (isTablet) {
@@ -34,9 +39,12 @@ export function DesktopRightNav({routeName}: {routeName: string}) {
             <DesktopSearch />
 
             {hasSession && (
-              <View style={[pal.border, styles.desktopFeedsContainer]}>
-                <DesktopFeeds />
-              </View>
+              <>
+                <ProgressGuideList style={[{marginTop: 22, marginBottom: 8}]} />
+                <View style={[pal.border, styles.desktopFeedsContainer]}>
+                  <DesktopFeeds />
+                </View>
+              </>
             )}
           </>
         )}
@@ -48,7 +56,7 @@ export function DesktopRightNav({routeName}: {routeName: string}) {
               paddingTop: hasSession ? 0 : 18,
             },
           ]}>
-          <View style={[{flexWrap: 'wrap'}, s.flexRow]}>
+          <View style={[{flexWrap: 'wrap'}, s.flexRow, a.gap_xs]}>
             {hasSession && (
               <>
                 <TextLink
@@ -61,7 +69,7 @@ export function DesktopRightNav({routeName}: {routeName: string}) {
                   text={_(msg`Feedback`)}
                 />
                 <Text type="md" style={pal.textLight}>
-                  &nbsp;&middot;&nbsp;
+                  &middot;
                 </Text>
               </>
             )}
@@ -72,7 +80,7 @@ export function DesktopRightNav({routeName}: {routeName: string}) {
               text={_(msg`Privacy`)}
             />
             <Text type="md" style={pal.textLight}>
-              &nbsp;&middot;&nbsp;
+              &middot;
             </Text>
             <TextLink
               type="md"
@@ -81,7 +89,7 @@ export function DesktopRightNav({routeName}: {routeName: string}) {
               text={_(msg`Terms`)}
             />
             <Text type="md" style={pal.textLight}>
-              &nbsp;&middot;&nbsp;
+              &middot;
             </Text>
             <TextLink
               type="md"
@@ -90,6 +98,19 @@ export function DesktopRightNav({routeName}: {routeName: string}) {
               text={_(msg`Help`)}
             />
           </View>
+          {kawaii && (
+            <Text type="md" style={[pal.textLight, {marginTop: 12}]}>
+              <Trans>
+                Logo by{' '}
+                <TextLink
+                  type="md"
+                  href="/profile/sawaratsuki.bsky.social"
+                  text="@sawaratsuki.bsky.social"
+                  style={pal.link}
+                />
+              </Trans>
+            </Text>
+          )}
         </View>
       </View>
     </View>
@@ -115,8 +136,8 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   desktopFeedsContainer: {
-    borderTopWidth: 1,
-    borderBottomWidth: 1,
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderBottomWidth: StyleSheet.hairlineWidth,
     marginTop: 18,
     marginBottom: 18,
   },

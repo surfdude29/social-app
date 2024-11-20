@@ -1,12 +1,5 @@
-export function pluralize(n: number, base: string, plural?: string): string {
-  if (n === 1) {
-    return base
-  }
-  if (plural) {
-    return plural
-  }
-  return base + 's'
-}
+import {useCallback, useMemo} from 'react'
+import Graphemer from 'graphemer'
 
 export function enforceLen(
   str: string,
@@ -31,6 +24,35 @@ export function enforceLen(
     }
   }
   return str
+}
+
+export function useEnforceMaxGraphemeCount() {
+  const splitter = useMemo(() => new Graphemer(), [])
+
+  return useCallback(
+    (text: string, maxCount: number) => {
+      if (splitter.countGraphemes(text) > maxCount) {
+        return splitter.splitGraphemes(text).slice(0, maxCount).join('')
+      } else {
+        return text
+      }
+    },
+    [splitter],
+  )
+}
+
+export function useWarnMaxGraphemeCount({
+  text,
+  maxCount,
+}: {
+  text: string
+  maxCount: number
+}) {
+  const splitter = useMemo(() => new Graphemer(), [])
+
+  return useMemo(() => {
+    return splitter.countGraphemes(text) > maxCount
+  }, [splitter, maxCount, text])
 }
 
 // https://stackoverflow.com/a/52171480

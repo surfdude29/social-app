@@ -1,7 +1,7 @@
-import {msg} from '@lingui/macro'
-import {useLingui} from '@lingui/react'
 import {useMemo} from 'react'
 import {ComAtprotoModerationDefs} from '@atproto/api'
+import {msg} from '@lingui/macro'
+import {useLingui} from '@lingui/react'
 
 export interface ReportOption {
   reason: string
@@ -13,8 +13,10 @@ interface ReportOptions {
   account: ReportOption[]
   post: ReportOption[]
   list: ReportOption[]
+  starterpack: ReportOption[]
   feedgen: ReportOption[]
   other: ReportOption[]
+  convoMessage: ReportOption[]
 }
 
 export function useReportOptions(): ReportOptions {
@@ -61,6 +63,11 @@ export function useReportOptions(): ReportOptions {
       ],
       post: [
         {
+          reason: ComAtprotoModerationDefs.REASONMISLEADING,
+          title: _(msg`Misleading Post`),
+          description: _(msg`Impersonation, misinformation, or false claims`),
+        },
+        {
           reason: ComAtprotoModerationDefs.REASONSPAM,
           title: _(msg`Spam`),
           description: _(msg`Excessive mentions or replies`),
@@ -68,11 +75,32 @@ export function useReportOptions(): ReportOptions {
         {
           reason: ComAtprotoModerationDefs.REASONSEXUAL,
           title: _(msg`Unwanted Sexual Content`),
-          description: _(msg`Nudity or pornography not labeled as such`),
+          description: _(msg`Nudity or adult content not labeled as such`),
+        },
+        ...common,
+      ],
+      convoMessage: [
+        {
+          reason: ComAtprotoModerationDefs.REASONSPAM,
+          title: _(msg`Spam`),
+          description: _(msg`Excessive or unwanted messages`),
+        },
+        {
+          reason: ComAtprotoModerationDefs.REASONSEXUAL,
+          title: _(msg`Unwanted Sexual Content`),
+          description: _(msg`Inappropriate messages or explicit links`),
         },
         ...common,
       ],
       list: [
+        {
+          reason: ComAtprotoModerationDefs.REASONVIOLATION,
+          title: _(msg`Name or Description Violates Community Standards`),
+          description: _(msg`Terms used violate community standards`),
+        },
+        ...common,
+      ],
+      starterpack: [
         {
           reason: ComAtprotoModerationDefs.REASONVIOLATION,
           title: _(msg`Name or Description Violates Community Standards`),
