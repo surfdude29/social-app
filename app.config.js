@@ -72,6 +72,11 @@ module.exports = function (config) {
             'Used to save images to your library.',
           NSPhotoLibraryUsageDescription:
             'Used for profile pictures, posts, and other kinds of content',
+          CFBundleAllowMixedLocalizations: true,
+          CFBundleLocalizations:
+            ['en', 'ca', 'de', 'es', 'fi', 'fr', 'ga', 'hi', 'hu', 'id',
+             'it', 'ja', 'ko', 'pl', 'pt-BR', 'ru', 'th', 'tr', 'uk',
+             'zh-CN', 'zh-HK', 'zh-TW'],
         },
         associatedDomains: ['applinks:bsky.app', 'applinks:staging.bsky.app'],
         splash: {
