@@ -13,6 +13,7 @@ import {useAgent} from '#/state/session'
 import {ScreenTransition} from '#/screens/Login/ScreenTransition'
 import {useSignupContext} from '#/screens/Signup/state'
 import {atoms as a, useTheme} from '#/alf'
+import {Admonition} from '#/components/Admonition'
 import * as TextField from '#/components/forms/TextField'
 import {useThrottledValue} from '#/components/hooks/useThrottledValue'
 import {At_Stroke2_Corner0_Rounded as At} from '#/components/icons/At'
@@ -183,6 +184,24 @@ export function StepHandle() {
             </View>
           </View>
         )}
+        <View>
+          <Admonition type="tip">
+            <Trans>
+              You can use a domain name you own as your username on Bluesky, for
+              example <Text style={[a.font_bold]}>@mywebsite.com</Text>. Create
+              an account with a temporary username first and then change it to
+              your domain name when you're ready to self-verify your
+              identity.{' '}
+              <InlineLinkText
+                label={_(msg`learn more`)}
+                to="https://bsky.social/about/blog/4-28-2023-domain-handle-tutorial"
+                style={[a.font_bold]}
+                disableMismatchWarning>
+                Learn more here.
+              </InlineLinkText>
+            </Trans>
+          </Admonition>
+        </View>
       </View>
       <BackNextButtons
         isLoading={isLoading}
