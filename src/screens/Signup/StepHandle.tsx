@@ -191,8 +191,7 @@ export function StepHandle() {
               You can use a domain name you own as your username on Bluesky, for
               example <Text style={[a.font_bold]}>@mywebsite.com</Text>. Create
               an account with a temporary username first and then change it to
-              your domain name when you're ready to self-verify your
-              identity.{' '}
+              your domain name when you're ready to self-verify your identity.{' '}
               <InlineLinkText
                 label={_(msg`learn more`)}
                 to="https://bsky.social/about/blog/4-28-2023-domain-handle-tutorial"
