@@ -19,6 +19,7 @@ import {useThrottledValue} from '#/components/hooks/useThrottledValue'
 import {At_Stroke2_Corner0_Rounded as At} from '#/components/icons/At'
 import {Check_Stroke2_Corner0_Rounded as Check} from '#/components/icons/Check'
 import {TimesLarge_Stroke2_Corner0_Rounded as Times} from '#/components/icons/Times'
+import {InlineLinkText} from '#/components/Link'
 import {Text} from '#/components/Typography'
 import {BackNextButtons} from './BackNextButtons'
 
