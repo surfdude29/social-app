@@ -204,7 +204,10 @@ export function BottomBar({navigation}: BottomTabBarProps) {
               accessibilityLabel={_(msg`Chat`)}
               accessibilityHint={
                 numUnreadMessages.count > 0
-                  ? _(msg`${numUnreadMessages.numUnread} unread items`)
+                  ? _(msg`${plural(numUnreadMessages.numUnread || 0, {
+                    one: '# unread item',
+                    other: '# unread items',
+                    })})`,
                   : ''
               }
             />
