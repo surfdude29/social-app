@@ -2,7 +2,7 @@ import React from 'react'
 import {StyleSheet, View} from 'react-native'
 import {AppBskyActorDefs} from '@atproto/api'
 import {FontAwesomeIconStyle} from '@fortawesome/react-native-fontawesome'
-import {msg, Trans} from '@lingui/macro'
+import {msg, plural, Trans} from '@lingui/macro'
 import {useLingui} from '@lingui/react'
 import {
   useLinkProps,
