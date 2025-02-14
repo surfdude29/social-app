@@ -205,11 +205,11 @@ export function BottomBar({navigation}: BottomTabBarProps) {
               accessibilityHint={
                 numUnreadMessages.count > 0
                   ? _(
-                    msg`${plural(numUnreadMessages.numUnread ?? 0, {
-                      one: '# unread item',
-                      other: '# unread items',
-                    })}` || ''
-                  )
+                      msg`${plural(numUnreadMessages.numUnread ?? 0, {
+                        one: '# unread item',
+                        other: '# unread items',
+                      })}` || '',
+                    )
                   : ''
               }
             />
