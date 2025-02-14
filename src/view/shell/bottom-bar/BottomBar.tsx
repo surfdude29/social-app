@@ -236,7 +236,12 @@ export function BottomBar({navigation}: BottomTabBarProps) {
               accessibilityHint={
                 numUnreadNotifications === ''
                   ? ''
-                  : _(msg`${numUnreadNotifications} unread items`)
+                  : _(
+                      msg`${plural(numUnreadNotifications ?? 0, {
+                        one: '# unread item',
+                        other: '# unread items',
+                      })}` || '',
+                    )
               }
             />
             <Btn
