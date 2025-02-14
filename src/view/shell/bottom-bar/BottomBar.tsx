@@ -206,8 +206,8 @@ export function BottomBar({navigation}: BottomTabBarProps) {
                 numUnreadMessages.count > 0
                   ? _(
                     msg`${plural(numUnreadMessages.numUnread, {
-                      one: "# unread item",
-                      other: "# unread items",
+                      one: '# unread item',
+                      other: '# unread items',
                     })}`,
                   )
                 : ''
