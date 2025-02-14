@@ -384,7 +384,12 @@ function NavItem({count, hasNew, href, icon, iconFilled, label}: NavItemProps) {
               {right: -20}, // more breathing room
             ]}>
             <Text
-              accessibilityLabel={_(msg`${count} unread items`)}
+              accessibilityLabel={_(
+                msg`${plural(count, {
+                  one: '# unread item',
+                  other: '# unread items',
+                })}`,
+              )}
               accessibilityHint=""
               accessible={true}
               numberOfLines={1}
