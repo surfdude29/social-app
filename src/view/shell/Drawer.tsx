@@ -451,11 +451,11 @@ let NotificationsMenuItem = ({
         numUnreadNotifications === ''
           ? ''
           : _(
-            msg`${plural(numUnreadNotifications ?? 0, {
-              one: '# unread notification',
-              other: '# unread notifications',
-            })}` || '',
-          )
+              msg`${plural(numUnreadNotifications ?? 0, {
+                one: '# unread notification',
+                other: '# unread notifications',
+              })}` || '',
+            )
       }
       count={numUnreadNotifications}
       bold={isActive}
