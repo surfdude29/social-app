@@ -42,22 +42,24 @@ export function HostingProvider({
       />
       {minimal ? (
         <View style={[a.flex_row, a.align_center, a.flex_wrap]}>
-          <Text style={[a.text_sm, t.atoms.text_contrast_medium]}>
-            You are creating an account on{' '}
-          </Text>
-          <Button
-            label={toNiceDomain(serviceUrl)}
-            accessibilityHint={_(msg`Changes hosting provider`)}
-            onPress={onPressSelectService}
-            variant="ghost"
-            color="secondary"
-            size="tiny"
-            style={[a.px_xs, {marginLeft: tokens.space.xs * -1}]}>
-            <ButtonText style={[a.text_sm]}>
-              {toNiceDomain(serviceUrl)}
-            </ButtonText>
-            <ButtonIcon icon={PencilIcon} />
-          </Button>
+          <Trans>
+            <Text style={[a.text_sm, t.atoms.text_contrast_medium]}>
+              You are creating an account on{' '}
+            </Text>
+            <Button
+              label={toNiceDomain(serviceUrl)}
+              accessibilityHint={_(msg`Changes hosting provider`)}
+              onPress={onPressSelectService}
+              variant="ghost"
+              color="secondary"
+              size="tiny"
+              style={[a.px_xs, { marginLeft: tokens.space.xs * -1 }]}>
+              <ButtonText style={[a.text_sm]}>
+                {toNiceDomain(serviceUrl)}
+              </ButtonText>
+              <ButtonIcon icon={PencilIcon} />
+            </Button>
+          </Trans>
         </View>
       ) : (
         <Button
