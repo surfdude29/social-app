@@ -2,7 +2,7 @@ import React from 'react'
 import {View} from 'react-native'
 import {Image} from 'expo-image'
 import {AppBskyGraphStarterpack, AtUri} from '@atproto/api'
-import {msg} from '@lingui/macro'
+import {msg, Plural, Trans} from '@lingui/macro'
 import {useLingui} from '@lingui/react'
 import {useQueryClient} from '@tanstack/react-query'
 
@@ -95,7 +95,10 @@ export function Card({
       ) : null}
       {!!joinedAllTimeCount && joinedAllTimeCount >= 50 && (
         <Text style={[a.font_bold, t.atoms.text_contrast_medium]}>
-          {joinedAllTimeCount} users have joined!
+          <Trans comment="Number of users who have joined Bluesky using a specific starter pack, will always be at least 50">
+            <Plural value={joinedAllTimeCount} other="# users" />
+            {' '}have joined!
+          </Trans>
         </Text>
       )}
     </View>
