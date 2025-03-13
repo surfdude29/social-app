@@ -82,7 +82,7 @@ import {
 import * as Prompt from '#/components/Prompt'
 import {RichText} from '#/components/RichText'
 
-const SECTION_TITLES_CURATE = ['Posts', 'People']
+const SECTION_TITLES_CURATE = [msg`Posts`, msg`People`]
 
 interface SectionRef {
   scrollToTop: () => void
