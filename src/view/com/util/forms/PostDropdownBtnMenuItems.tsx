@@ -826,8 +826,22 @@ let PostDropdownMenuItems = ({
         control={blockPromptControl}
         title={_(msg`Block Account?`)}
         description={_(
-          msg`Blocked accounts cannot reply in your threads, mention you, or otherwise interact with you.`,
+          msg`Blocked accounts will be prevented from seeing your content and they cannot reply in your threads, mention you, or otherwise interact with you. You will not see their content.`,
         )}
+        admonitionContent={
+          <Admonition type="info">
+            <Trans>
+              Bluesky does not allow others to view in the app which accounts
+              you have blocked. However, this is publicly available information
+              and third-party services may provide access to it.
+            </Trans>{' '}
+            <InlineLinkText
+              label={_(msg`Learn more about how blocking works on Bluesky.`)}
+              to="https://docs.bsky.app/blog/block-implementation">
+              <Trans>Learn more.</Trans>
+            </InlineLinkText>
+          </Admonition>
+        }
         onConfirm={onBlockAuthor}
         confirmButtonCta={_(msg`Block`)}
         confirmButtonColor="negative"
