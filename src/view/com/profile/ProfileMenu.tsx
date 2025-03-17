@@ -77,7 +77,7 @@ let ProfileMenu = ({
   const showLoggedOutWarning = React.useMemo(() => {
     return (
       profile.did !== currentAccount?.did &&
-      !!profile.labels?.find(label => label.val === '!no-unauthenticated')
+      !!profile.labels?.find((label) => label.val === '!no-unauthenticated')
     )
   }, [currentAccount, profile])
 
