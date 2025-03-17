@@ -389,11 +389,11 @@ let ProfileMenu = ({
                 msg`The account will be able to interact with you after unblocking.`,
               )
             : profile.associated?.labeler
-            ? _(
-                msg`Blocking will not prevent labels from being applied on your account, but it will stop this account from replying in your threads or interacting with you.`,
-              )
-            : _(
-                msg`Blocked accounts will be prevented from seeing your content and they cannot reply in your threads, mention you, or otherwise interact with you. You will not see their content.`,
+              ? _(
+                  msg`Blocking will not prevent labels from being applied on your account, but it will stop this account from replying in your threads or interacting with you.`,
+                )
+              : _(
+                  msg`Blocked accounts will be prevented from seeing your content and they cannot reply in your threads, mention you, or otherwise interact with you. You will not see their content.`,
                 )
         }
         admonitionContent={
