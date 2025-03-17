@@ -380,8 +380,8 @@ let ProfileMenu = ({
         control={blockPromptControl}
         title={
           profile.viewer?.blocking
-            ? _(msg`Unblock Account?`)
-            : _(msg`Block Account?`)
+            ? _(msg`Unblock account?`)
+            : _(msg`Block account?`)
         }
         description={
           profile.viewer?.blocking
