@@ -40,8 +40,8 @@ export function NewskieDialog({
     if (!moderationOpts) return profile.displayName || profile.handle
     const moderation = moderateProfile(profile, moderationOpts)
     return sanitizeDisplayName(
-      profile.displayName || profile.handle, 
-      moderation.ui('displayName')
+      profile.displayName || profile.handle,
+      moderation.ui('displayName'),
     )
   }, [moderationOpts, profile])
 
@@ -55,16 +55,20 @@ export function NewskieDialog({
 
   const getJoinMessage = () => {
     const timeAgoString = timeAgo(createdAt, now, {format: 'long'})
-    
+
     if (isMe) {
       if (profile.joinedViaStarterPack) {
-        return _(msg`You joined Bluesky using a starter pack ${timeAgoString} ago`)
+        return _(
+          msg`You joined Bluesky using a starter pack ${timeAgoString} ago`,
+        )
       } else {
         return _(msg`You joined Bluesky ${timeAgoString} ago`)
       }
     } else {
       if (profile.joinedViaStarterPack) {
-        return _(msg`${profileName} joined Bluesky using a starter pack ${timeAgoString} ago`)
+        return _(
+          msg`${profileName} joined Bluesky using a starter pack ${timeAgoString} ago`,
+        )
       } else {
         return _(msg`${profileName} joined Bluesky ${timeAgoString} ago`)
       }
