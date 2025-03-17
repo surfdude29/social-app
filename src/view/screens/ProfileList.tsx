@@ -70,10 +70,12 @@ import {Text} from '#/view/com/util/text/Text'
 import * as Toast from '#/view/com/util/Toast'
 import {ListHiddenScreen} from '#/screens/List/ListHiddenScreen'
 import {atoms as a} from '#/alf'
+import {Admonition} from '#/components/Admonition'
 import {Button as NewButton, ButtonIcon, ButtonText} from '#/components/Button'
 import {useDialogControl} from '#/components/Dialog'
 import {PersonPlus_Stroke2_Corner0_Rounded as PersonPlusIcon} from '#/components/icons/Person'
 import * as Layout from '#/components/Layout'
+import {InlineLinkText} from '#/components/Link'
 import * as Hider from '#/components/moderation/Hider'
 import {
   ReportDialog,
