@@ -399,9 +399,9 @@ let ProfileMenu = ({
         admonitionContent={
           <Admonition type="info">
             <Trans>
-              Bluesky does not allow others to view in the app which accounts
-              you have blocked. However, this is publicly available information
-              and third-party services may provide access to it.
+              The Bluesky app does not allow others to see which accounts you
+              have blocked. However, this information is publicly available and
+              third parties may provide access to it.
             </Trans>{' '}
             <InlineLinkText
               label={_(msg`Learn more about how blocking works on Bluesky.`)}
