@@ -826,9 +826,9 @@ let PostDropdownMenuItems = ({
 
       <Prompt.Basic
         control={blockPromptControl}
-        title={_(msg`Block Account?`)}
+        title={_(msg`Block account?`)}
         description={_(
-          msg`Blocked accounts will be prevented from seeing your content and they cannot reply in your threads, mention you, or otherwise interact with you. You will not see their content.`,
+          msg`Blocked accounts will not be able to see your content, reply in your threads, mention you, or otherwise interact with you. You will not see their content.`,
         )}
         admonitionContent={
           <Admonition type="info">
