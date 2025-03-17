@@ -225,11 +225,7 @@ export function Basic({
     <Outer control={control} testID="confirmModal">
       <TitleText>{title}</TitleText>
       <DescriptionText>{description}</DescriptionText>
-      {admonitionContent && (
-        <View style={[a.mb_lg]}>
-          {admonitionContent}
-        </View>
-      )}
+      {admonitionContent && <View style={[a.mb_lg]}>{admonitionContent}</View>}
       <Actions>
         <Action
           cta={confirmButtonCta}
