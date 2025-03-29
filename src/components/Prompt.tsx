@@ -4,6 +4,7 @@ import {msg} from '@lingui/macro'
 import {useLingui} from '@lingui/react'
 
 import {atoms as a, useBreakpoints, useTheme} from '#/alf'
+import {Admonition} from '#/components/Admonition'
 import {Button, ButtonColor, ButtonText} from '#/components/Button'
 import * as Dialog from '#/components/Dialog'
 import {Text} from '#/components/Typography'
@@ -86,6 +87,20 @@ export function DescriptionText({
       style={[a.text_md, a.leading_snug, t.atoms.text_contrast_high, a.pb_lg]}>
       {children}
     </Text>
+  )
+}
+
+export function AdmonitionContent({
+  children,
+  type,
+}: {
+  children: React.ReactNode
+  type?: 'info' | 'tip' | 'warning' | 'error'
+}) {
+  return (
+    <View style={[a.mb_lg]}>
+      <Admonition type={type}>{children}</Admonition>
+    </View>
   )
 }
 
@@ -182,6 +197,7 @@ export function Basic({
   control,
   title,
   description,
+  admonitionContent,
   cancelButtonCta,
   confirmButtonCta,
   onConfirm,
@@ -191,6 +207,7 @@ export function Basic({
   control: Dialog.DialogOuterProps['control']
   title: string
   description: string
+  admonitionContent?: React.ReactNode
   cancelButtonCta?: string
   confirmButtonCta?: string
   /**
@@ -208,6 +225,7 @@ export function Basic({
     <Outer control={control} testID="confirmModal">
       <TitleText>{title}</TitleText>
       <DescriptionText>{description}</DescriptionText>
+      {admonitionContent && <View style={[a.mb_lg]}>{admonitionContent}</View>}
       <Actions>
         <Action
           cta={confirmButtonCta}
