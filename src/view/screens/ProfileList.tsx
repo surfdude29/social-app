@@ -70,10 +70,12 @@ import {Text} from '#/view/com/util/text/Text'
 import * as Toast from '#/view/com/util/Toast'
 import {ListHiddenScreen} from '#/screens/List/ListHiddenScreen'
 import {atoms as a} from '#/alf'
+import {Admonition} from '#/components/Admonition'
 import {Button as NewButton, ButtonIcon, ButtonText} from '#/components/Button'
 import {useDialogControl} from '#/components/Dialog'
 import {PersonPlus_Stroke2_Corner0_Rounded as PersonPlusIcon} from '#/components/icons/Person'
 import * as Layout from '#/components/Layout'
+import {InlineLinkText} from '#/components/Link'
 import * as Hider from '#/components/moderation/Hider'
 import {
   ReportDialog,
@@ -775,8 +777,23 @@ function Header({
           control={subscribeBlockPromptControl}
           title={_(msg`Block these accounts?`)}
           description={_(
-            msg`Blocking is public. Blocked accounts cannot reply in your threads, mention you, or otherwise interact with you.`,
+            msg`Blocked accounts will not be able to see your content, reply in your threads, mention you, or otherwise interact with you. You will not see their content.`,
           )}
+          admonitionContent={
+            <Admonition type="info">
+              <Trans>
+                The Bluesky app does not allow others to see which moderation
+                lists you have subscribed to and blocked. However, this
+                information is publicly available and third parties may provide
+                access to it.
+              </Trans>{' '}
+              <InlineLinkText
+                label={_(msg`Learn more about how blocking works on Bluesky.`)}
+                to="https://docs.bsky.app/blog/block-implementation">
+                <Trans>Learn more.</Trans>
+              </InlineLinkText>
+            </Admonition>
+          }
           onConfirm={onSubscribeBlock}
           confirmButtonCta={_(msg`Block list`)}
           confirmButtonColor="negative"

@@ -49,6 +49,7 @@ import {useToggleReplyVisibilityMutation} from '#/state/queries/threadgate'
 import {useSession} from '#/state/session'
 import {useMergedThreadgateHiddenReplies} from '#/state/threadgate-hidden-replies'
 import {useBreakpoints} from '#/alf'
+import {Admonition} from '#/components/Admonition'
 import {useDialogControl} from '#/components/Dialog'
 import {useGlobalDialogsControlContext} from '#/components/dialogs/Context'
 import {EmbedDialog} from '#/components/dialogs/Embed'
@@ -78,6 +79,7 @@ import {SpeakerVolumeFull_Stroke2_Corner0_Rounded as UnmuteIcon} from '#/compone
 import {SpeakerVolumeFull_Stroke2_Corner0_Rounded as Unmute} from '#/components/icons/Speaker'
 import {Trash_Stroke2_Corner0_Rounded as Trash} from '#/components/icons/Trash'
 import {Warning_Stroke2_Corner0_Rounded as Warning} from '#/components/icons/Warning'
+import {InlineLinkText} from '#/components/Link'
 import {Loader} from '#/components/Loader'
 import * as Menu from '#/components/Menu'
 import {
@@ -824,10 +826,24 @@ let PostDropdownMenuItems = ({
 
       <Prompt.Basic
         control={blockPromptControl}
-        title={_(msg`Block Account?`)}
+        title={_(msg`Block account?`)}
         description={_(
-          msg`Blocked accounts cannot reply in your threads, mention you, or otherwise interact with you.`,
+          msg`Blocked accounts will not be able to see your content, reply in your threads, mention you, or otherwise interact with you. You will not see their content.`,
         )}
+        admonitionContent={
+          <Admonition type="info">
+            <Trans>
+              The Bluesky app does not allow others to see which accounts you
+              have blocked. However, this information is publicly available and
+              third parties may provide access to it.
+            </Trans>{' '}
+            <InlineLinkText
+              label={_(msg`Learn more about how blocking works on Bluesky.`)}
+              to="https://docs.bsky.app/blog/block-implementation">
+              <Trans>Learn more.</Trans>
+            </InlineLinkText>
+          </Admonition>
+        }
         onConfirm={onBlockAuthor}
         confirmButtonCta={_(msg`Block`)}
         confirmButtonColor="negative"
