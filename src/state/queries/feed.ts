@@ -391,7 +391,7 @@ const PWI_DISCOVER_FEED_STUB: SavedFeedSourceInfo = {
   displayName: msg({
     message: 'Discover',
     context: 'feed-name',
-  }),
+  }).toString(),
   uri: DISCOVER_FEED_URI,
   feedDescriptor: `feedgen|${DISCOVER_FEED_URI}`,
   route: {
@@ -485,7 +485,7 @@ export function usePinnedFeedsInfos() {
             displayName: msg({
               message: 'Following',
               context: 'feed-name',
-            }),
+            }).toString(),
             uri: pinnedItem.value,
             feedDescriptor: 'following',
             route: {
