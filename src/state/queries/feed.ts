@@ -9,6 +9,7 @@ import {
   RichText,
 } from '@atproto/api'
 import {msg} from '@lingui/macro'
+import {useLingui} from '@lingui/react'
 import {
   type InfiniteData,
   keepPreviousData,
@@ -388,10 +389,10 @@ export type SavedFeedSourceInfo = FeedSourceInfo & {
 
 const PWI_DISCOVER_FEED_STUB: SavedFeedSourceInfo = {
   type: 'feed',
-  displayName: msg({
+  displayName: _msg({
     message: 'Discover',
     context: 'feed-name',
-  }).toString(),
+  }),
   uri: DISCOVER_FEED_URI,
   feedDescriptor: `feedgen|${DISCOVER_FEED_URI}`,
   route: {
@@ -421,6 +422,7 @@ export function usePinnedFeedsInfos() {
   const agent = useAgent()
   const {data: preferences, isLoading: isLoadingPrefs} = usePreferencesQuery()
   const pinnedItems = preferences?.savedFeeds.filter(feed => feed.pinned) ?? []
+  const {_} = useLingui()
 
   return useQuery({
     staleTime: STALE.INFINITY,
@@ -482,10 +484,10 @@ export function usePinnedFeedsInfos() {
         } else if (pinnedItem.type === 'timeline') {
           result.push({
             type: 'feed',
-            displayName: msg({
+            displayName: _msg({
               message: 'Following',
               context: 'feed-name',
-            }).toString(),
+            }),
             uri: pinnedItem.value,
             feedDescriptor: 'following',
             route: {
