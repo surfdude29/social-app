@@ -8,6 +8,7 @@ import {
   moderateFeedGenerator,
   RichText,
 } from '@atproto/api'
+import {msg} from '@lingui/macro'
 import {
   type InfiniteData,
   keepPreviousData,
@@ -387,7 +388,7 @@ export type SavedFeedSourceInfo = FeedSourceInfo & {
 
 const PWI_DISCOVER_FEED_STUB: SavedFeedSourceInfo = {
   type: 'feed',
-  displayName: 'Discover',
+  displayName: msg`Discover`,
   uri: DISCOVER_FEED_URI,
   feedDescriptor: `feedgen|${DISCOVER_FEED_URI}`,
   route: {
@@ -478,7 +479,7 @@ export function usePinnedFeedsInfos() {
         } else if (pinnedItem.type === 'timeline') {
           result.push({
             type: 'feed',
-            displayName: 'Following',
+            displayName: msg`Following`,
             uri: pinnedItem.value,
             feedDescriptor: 'following',
             route: {
