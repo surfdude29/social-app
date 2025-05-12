@@ -33,7 +33,7 @@ export function DiscoverFallbackHeader() {
             <TextLink
               type="md-medium"
               href="/profile/bsky.app/feed/whats-hot"
-              text="Discover"
+              text={_(msg({message: 'Discover', context: 'feed-name'}))}
               style={pal.link}
             />
             .
