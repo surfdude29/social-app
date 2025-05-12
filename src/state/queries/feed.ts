@@ -389,7 +389,7 @@ export type SavedFeedSourceInfo = FeedSourceInfo & {
 
 const PWI_DISCOVER_FEED_STUB: SavedFeedSourceInfo = {
   type: 'feed',
-  displayName: _(msg({message: 'Discover', context: 'feed-name'})),
+  displayName: 'Discover',
   uri: DISCOVER_FEED_URI,
   feedDescriptor: `feedgen|${DISCOVER_FEED_URI}`,
   route: {
@@ -431,7 +431,10 @@ export function usePinnedFeedsInfos() {
     ],
     queryFn: async () => {
       if (!hasSession) {
-        return [PWI_DISCOVER_FEED_STUB]
+        return [{
+          ...PWI_DISCOVER_FEED_STUB,
+          displayName: _(msg({message: 'Discover', context: 'feed-name'})),
+        }]
       }
 
       let resolved = new Map<string, FeedSourceInfo>()
