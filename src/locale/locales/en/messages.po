@@ -2476,6 +2476,12 @@ msgstr ""
 msgid "Discourage apps from showing my account to logged-out users"
 msgstr ""
 
+#: src/state/queries/feed.ts:437
+#: src/view/com/posts/DiscoverFallbackHeader.tsx:36
+msgctxt "feed-name"
+msgid "Discover"
+msgstr ""
+
 #: src/screens/Search/Explore.tsx:436
 msgid "Discover Feeds"
 msgstr ""
@@ -3490,6 +3496,11 @@ msgstr ""
 #: src/screens/Profile/KnownFollowers.tsx:104
 #: src/screens/Profile/KnownFollowers.tsx:121
 msgid "Followers you know"
+msgstr ""
+
+#: src/state/queries/feed.ts:489
+msgctxt "feed-name"
+msgid "Following"
 msgstr ""
 
 #. User is following this account, click to unfollow
@@ -9050,7 +9061,7 @@ msgstr ""
 msgid "We hope you have a wonderful time. Remember, Bluesky is:"
 msgstr ""
 
-#: src/view/com/posts/DiscoverFallbackHeader.tsx:29
+#: src/view/com/posts/DiscoverFallbackHeader.tsx:31
 msgid "We ran out of posts from your follows. Here's the latest from <0/>."
 msgstr ""
 
