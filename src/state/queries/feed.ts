@@ -431,10 +431,12 @@ export function usePinnedFeedsInfos() {
     ],
     queryFn: async () => {
       if (!hasSession) {
-        return [{
-          ...PWI_DISCOVER_FEED_STUB,
-          displayName: _(msg({message: 'Discover', context: 'feed-name'})),
-        }]
+        return [
+          {
+            ...PWI_DISCOVER_FEED_STUB,
+            displayName: _(msg({message: 'Discover', context: 'feed-name'})),
+          },
+        ]
       }
 
       let resolved = new Map<string, FeedSourceInfo>()
