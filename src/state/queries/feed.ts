@@ -389,7 +389,7 @@ export type SavedFeedSourceInfo = FeedSourceInfo & {
 
 const PWI_DISCOVER_FEED_STUB: SavedFeedSourceInfo = {
   type: 'feed',
-  displayName: {_(msg({message: 'Discover', context: 'feed-name'}))},
+  displayName: _(msg({message: 'Discover', context: 'feed-name'})),
   uri: DISCOVER_FEED_URI,
   feedDescriptor: `feedgen|${DISCOVER_FEED_URI}`,
   route: {
@@ -481,7 +481,7 @@ export function usePinnedFeedsInfos() {
         } else if (pinnedItem.type === 'timeline') {
           result.push({
             type: 'feed',
-            displayName: {_(msg({message: 'Following', context: 'feed-name'}))},
+            displayName: _(msg({message: 'Following', context: 'feed-name'})),
             uri: pinnedItem.value,
             feedDescriptor: 'following',
             route: {
