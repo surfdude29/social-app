@@ -3498,11 +3498,6 @@ msgstr ""
 msgid "Followers you know"
 msgstr ""
 
-#: src/state/queries/feed.ts:489
-msgctxt "feed-name"
-msgid "Following"
-msgstr ""
-
 #. User is following this account, click to unfollow
 #: src/components/ProfileCard.tsx:413
 #: src/components/ProfileHoverCard/index.web.tsx:487
@@ -3512,6 +3507,11 @@ msgstr ""
 #: src/view/com/post-thread/PostThreadFollowBtn.tsx:134
 #: src/view/screens/Feeds.tsx:602
 #: src/view/screens/SavedFeeds.tsx:422
+msgid "Following"
+msgstr ""
+
+#: src/state/queries/feed.ts:489
+msgctxt "feed-name"
 msgid "Following"
 msgstr ""
 
