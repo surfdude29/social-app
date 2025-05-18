@@ -1,3 +1,5 @@
+import {type FeedDescriptor} from '#/state/queries/post-feed'
+
 export type MetricEvents = {
   // App events
   init: {
@@ -202,6 +204,7 @@ export type MetricEvents = {
       | 'ProfileHeaderSuggestedFollows'
       | 'PostOnboardingFindFollows'
       | 'ImmersiveVideo'
+      | 'ExploreSuggestedAccounts'
   }
   'suggestedUser:follow': {
     logContext:
@@ -239,6 +242,7 @@ export type MetricEvents = {
       | 'ProfileHeaderSuggestedFollows'
       | 'PostOnboardingFindFollows'
       | 'ImmersiveVideo'
+      | 'ExploreSuggestedAccounts'
   }
   'chat:create': {
     logContext: 'ProfileHeader' | 'NewChatDialog' | 'SendViaChatDialog'
@@ -318,6 +322,22 @@ export type MetricEvents = {
     context: 'interstitial:discover' | 'interstitial:explore' | 'feed'
   }
 
+  'explore:module:seen': {
+    module:
+      | 'trendingTopics'
+      | 'trendingVideos'
+      | 'suggestedAccounts'
+      | 'suggestedFeeds'
+      | 'suggestedStarterPacks'
+      | `feed:${FeedDescriptor}`
+  }
+  'explore:module:searchButtonPress': {
+    module: 'suggestedAccounts' | 'suggestedFeeds'
+  }
+  'explore:suggestedAccounts:tabPressed': {
+    tab: string
+  }
+
   'progressGuide:hide': {}
   'progressGuide:followDialog:open': {}
 
@@ -344,4 +364,32 @@ export type MetricEvents = {
     details: boolean
   }
   'reportDialog:failure': {}
+
+  translate: {
+    sourceLanguages: string[]
+    targetLanguage: string
+    textLength: number
+  }
+
+  'verification:create': {}
+  'verification:revoke': {}
+  'verification:badge:click': {}
+  'verification:learn-more': {
+    location:
+      | 'initialAnnouncementeNux'
+      | 'verificationsDialog'
+      | 'verifierDialog'
+      | 'verificationSettings'
+  }
+  'verification:settings:hideBadges': {}
+  'verification:settings:unHideBadges': {}
+
+  'live:create': {duration: number}
+  'live:edit': {}
+  'live:remove': {}
+  'live:card:open': {subject: string; from: 'post' | 'profile'}
+  'live:card:watch': {subject: string}
+  'live:card:openProfile': {subject: string}
+  'live:view:profile': {subject: string}
+  'live:view:post': {subject: string; feed?: string}
 }
