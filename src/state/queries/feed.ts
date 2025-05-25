@@ -33,6 +33,30 @@ import {useModerationOpts} from '../preferences/moderation-opts'
 import {type FeedDescriptor} from './post-feed'
 import {precacheResolvedUri} from './resolve-uri'
 
+// Constants for magic strings
+const FEED_NAMES = {
+  DISCOVER: 'Discover',
+  FOLLOWING: 'Following',
+} as const
+
+const FEED_IDS = {
+  PWI_DISCOVER: 'pwi-discover',
+} as const
+
+const ROUTE_NAMES = {
+  HOME: 'Home',
+} as const
+
+const FEED_COLLECTIONS = {
+  GENERATOR: 'app.bsky.feed.generator',
+  LIST: 'app.bsky.graph.list',
+} as const
+
+const FEED_ROUTE_COLLECTIONS = {
+  FEED: 'feed',
+  LISTS: 'lists',
+} as const
+
 export type FeedSourceFeedInfo = {
   type: 'feed'
   view?: AppBskyFeedDefs.GeneratorView
@@ -82,18 +106,55 @@ export const feedSourceInfoQueryKey = ({uri}: {uri: string}) => [
 ]
 
 const feedSourceNSIDs = {
-  feed: 'app.bsky.feed.generator',
-  list: 'app.bsky.graph.list',
+  feed: FEED_COLLECTIONS.GENERATOR,
+  list: FEED_COLLECTIONS.LIST,
+}
+
+// Helper function to generate feed routes
+function generateFeedRoute(uri: string): {
+  href: string
+  name: string
+  params: Record<string, string>
+} {
+  const urip = new AtUri(uri)
+  const collection =
+    urip.collection === FEED_COLLECTIONS.GENERATOR
+      ? FEED_ROUTE_COLLECTIONS.FEED
+      : FEED_ROUTE_COLLECTIONS.LISTS
+  const href = `/profile/${urip.hostname}/${collection}/${urip.rkey}`
+  const route = router.matchPath(href)
+
+  if (!route || route.length < 2) {
+    throw new Error(`Invalid route for ${href}`)
+  }
+
+  return {
+    href,
+    name: route[0],
+    params: route[1],
+  }
+}
+
+// Helper function for translating feed names
+function getTranslatedFeedName(
+  feedUri: string,
+  defaultName: string,
+  _: any,
+): string {
+  switch (feedUri) {
+    case DISCOVER_FEED_URI:
+      return _(msg({message: FEED_NAMES.DISCOVER, context: 'feed-name'}))
+    case 'following':
+      return _(msg({message: FEED_NAMES.FOLLOWING, context: 'feed-name'}))
+    default:
+      return defaultName
+  }
 }
 
 export function hydrateFeedGenerator(
   view: AppBskyFeedDefs.GeneratorView,
 ): FeedSourceInfo {
-  const urip = new AtUri(view.uri)
-  const collection =
-    urip.collection === 'app.bsky.feed.generator' ? 'feed' : 'lists'
-  const href = `/profile/${urip.hostname}/${collection}/${urip.rkey}`
-  const route = router.matchPath(href)
+  const route = generateFeedRoute(view.uri)
 
   return {
     type: 'feed',
@@ -101,11 +162,7 @@ export function hydrateFeedGenerator(
     uri: view.uri,
     feedDescriptor: `feedgen|${view.uri}`,
     cid: view.cid,
-    route: {
-      href,
-      name: route[0],
-      params: route[1],
-    },
+    route,
     avatar: view.avatar,
     displayName: view.displayName
       ? sanitizeDisplayName(view.displayName)
@@ -123,22 +180,14 @@ export function hydrateFeedGenerator(
 }
 
 export function hydrateList(view: AppBskyGraphDefs.ListView): FeedSourceInfo {
-  const urip = new AtUri(view.uri)
-  const collection =
-    urip.collection === 'app.bsky.feed.generator' ? 'feed' : 'lists'
-  const href = `/profile/${urip.hostname}/${collection}/${urip.rkey}`
-  const route = router.matchPath(href)
+  const route = generateFeedRoute(view.uri)
 
   return {
     type: 'list',
     view,
     uri: view.uri,
     feedDescriptor: `list|${view.uri}`,
-    route: {
-      href,
-      name: route[0],
-      params: route[1],
-    },
+    route,
     cid: view.cid,
     avatar: view.avatar,
     description: new RichText({
@@ -387,29 +436,58 @@ export type SavedFeedSourceInfo = FeedSourceInfo & {
   savedFeed: AppBskyActorDefs.SavedFeed
 }
 
-const PWI_DISCOVER_FEED_STUB: SavedFeedSourceInfo = {
-  type: 'feed',
-  displayName: 'Discover',
-  uri: DISCOVER_FEED_URI,
-  feedDescriptor: `feedgen|${DISCOVER_FEED_URI}`,
-  route: {
-    href: '/',
-    name: 'Home',
-    params: {},
-  },
-  cid: '',
-  avatar: '',
-  description: new RichText({text: ''}),
-  creatorDid: '',
-  creatorHandle: '',
-  likeCount: 0,
-  likeUri: '',
-  // ---
-  savedFeed: {
-    id: 'pwi-discover',
-    ...DISCOVER_SAVED_FEED,
-  },
-  contentMode: undefined,
+// Helper function to create Discover feed info
+function createDiscoverFeedInfo(_: any): SavedFeedSourceInfo {
+  return {
+    type: 'feed',
+    displayName: _(msg({message: FEED_NAMES.DISCOVER, context: 'feed-name'})),
+    uri: DISCOVER_FEED_URI,
+    feedDescriptor: `feedgen|${DISCOVER_FEED_URI}`,
+    route: {
+      href: '/',
+      name: ROUTE_NAMES.HOME,
+      params: {},
+    },
+    cid: '',
+    avatar: '',
+    description: new RichText({text: ''}),
+    creatorDid: '',
+    creatorHandle: '',
+    likeCount: 0,
+    likeUri: '',
+    savedFeed: {
+      id: FEED_IDS.PWI_DISCOVER,
+      ...DISCOVER_SAVED_FEED,
+    },
+    contentMode: undefined,
+  }
+}
+
+// Helper function to create Following feed info
+function createFollowingFeedInfo(
+  pinnedItem: AppBskyActorDefs.SavedFeed,
+  _: any,
+): SavedFeedSourceInfo {
+  return {
+    type: 'feed',
+    displayName: _(msg({message: FEED_NAMES.FOLLOWING, context: 'feed-name'})),
+    uri: pinnedItem.value,
+    feedDescriptor: 'following',
+    route: {
+      href: '/',
+      name: ROUTE_NAMES.HOME,
+      params: {},
+    },
+    cid: '',
+    avatar: '',
+    description: new RichText({text: ''}),
+    creatorDid: '',
+    creatorHandle: '',
+    likeCount: 0,
+    likeUri: '',
+    savedFeed: pinnedItem,
+    contentMode: undefined,
+  }
 }
 
 const pinnedFeedInfosQueryKeyRoot = 'pinnedFeedsInfos'
@@ -431,12 +509,7 @@ export function usePinnedFeedsInfos() {
     ],
     queryFn: async () => {
       if (!hasSession) {
-        return [
-          {
-            ...PWI_DISCOVER_FEED_STUB,
-            displayName: _(msg({message: 'Discover', context: 'feed-name'})),
-          },
-        ]
+        return [createDiscoverFeedInfo(_)]
       }
 
       let resolved = new Map<string, FeedSourceInfo>()
@@ -452,7 +525,14 @@ export function usePinnedFeedsInfos() {
           .then(res => {
             for (let i = 0; i < res.data.feeds.length; i++) {
               const feedView = res.data.feeds[i]
-              resolved.set(feedView.uri, hydrateFeedGenerator(feedView))
+              const hydratedFeed = hydrateFeedGenerator(feedView)
+              // Apply translations
+              hydratedFeed.displayName = getTranslatedFeedName(
+                hydratedFeed.uri,
+                hydratedFeed.displayName,
+                _,
+              )
+              resolved.set(feedView.uri, hydratedFeed)
             }
           })
       }
@@ -484,41 +564,10 @@ export function usePinnedFeedsInfos() {
             savedFeed: pinnedItem,
           })
         } else if (pinnedItem.type === 'timeline') {
-          result.push({
-            type: 'feed',
-            displayName: _(msg({message: 'Following', context: 'feed-name'})),
-            uri: pinnedItem.value,
-            feedDescriptor: 'following',
-            route: {
-              href: '/',
-              name: 'Home',
-              params: {},
-            },
-            cid: '',
-            avatar: '',
-            description: new RichText({text: ''}),
-            creatorDid: '',
-            creatorHandle: '',
-            likeCount: 0,
-            likeUri: '',
-            savedFeed: pinnedItem,
-            contentMode: undefined,
-          })
+          result.push(createFollowingFeedInfo(pinnedItem, _))
         }
       }
 
-      // Translate "Discover" feed displayName if present
-      for (let i = 0; i < result.length; i++) {
-        if (
-          result[i].uri === DISCOVER_FEED_URI &&
-          result[i].displayName === 'Discover'
-        ) {
-          result[i] = {
-            ...result[i],
-            displayName: _(msg({message: 'Discover', context: 'feed-name'})),
-          }
-        }
-      }
       return result
     },
   })
