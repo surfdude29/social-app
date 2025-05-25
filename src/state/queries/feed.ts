@@ -8,6 +8,8 @@ import {
   moderateFeedGenerator,
   RichText,
 } from '@atproto/api'
+import {msg} from '@lingui/macro'
+import {useLingui} from '@lingui/react'
 import {
   type InfiniteData,
   keepPreviousData,
@@ -415,6 +417,7 @@ const pinnedFeedInfosQueryKeyRoot = 'pinnedFeedsInfos'
 export function usePinnedFeedsInfos() {
   const {hasSession} = useSession()
   const agent = useAgent()
+  const {_} = useLingui()
   const {data: preferences, isLoading: isLoadingPrefs} = usePreferencesQuery()
   const pinnedItems = preferences?.savedFeeds.filter(feed => feed.pinned) ?? []
 
@@ -428,7 +431,12 @@ export function usePinnedFeedsInfos() {
     ],
     queryFn: async () => {
       if (!hasSession) {
-        return [PWI_DISCOVER_FEED_STUB]
+        return [
+          {
+            ...PWI_DISCOVER_FEED_STUB,
+            displayName: _(msg({message: 'Discover', context: 'feed-name'})),
+          },
+        ]
       }
 
       let resolved = new Map<string, FeedSourceInfo>()
@@ -478,7 +486,7 @@ export function usePinnedFeedsInfos() {
         } else if (pinnedItem.type === 'timeline') {
           result.push({
             type: 'feed',
-            displayName: 'Following',
+            displayName: _(msg({message: 'Following', context: 'feed-name'})),
             uri: pinnedItem.value,
             feedDescriptor: 'following',
             route: {
@@ -496,6 +504,19 @@ export function usePinnedFeedsInfos() {
             savedFeed: pinnedItem,
             contentMode: undefined,
           })
+        }
+      }
+
+      // Translate "Discover" feed displayName if present
+      for (let i = 0; i < result.length; i++) {
+        if (
+          result[i].uri === DISCOVER_FEED_URI &&
+          result[i].displayName === 'Discover'
+        ) {
+          result[i] = {
+            ...result[i],
+            displayName: _(msg({message: 'Discover', context: 'feed-name'})),
+          }
         }
       }
       return result
