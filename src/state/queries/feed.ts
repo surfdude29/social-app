@@ -1,4 +1,6 @@
 import {useCallback, useEffect, useMemo, useRef} from 'react'
+import {msg} from '@lingui/macro'
+import {useLingui} from '@lingui/react'
 import {
   type AppBskyActorDefs,
   type AppBskyFeedDefs,
@@ -417,6 +419,7 @@ export function usePinnedFeedsInfos() {
   const agent = useAgent()
   const {data: preferences, isLoading: isLoadingPrefs} = usePreferencesQuery()
   const pinnedItems = preferences?.savedFeeds.filter(feed => feed.pinned) ?? []
+  const { _ } = useLingui()
 
   return useQuery({
     staleTime: STALE.INFINITY,
@@ -428,7 +431,10 @@ export function usePinnedFeedsInfos() {
     ],
     queryFn: async () => {
       if (!hasSession) {
-        return [PWI_DISCOVER_FEED_STUB]
+        return [{
+          ...PWI_DISCOVER_FEED_STUB,
+          displayName: _(msg({ message: "Discover", context: "feed-name" })),
+        }]
       }
 
       let resolved = new Map<string, FeedSourceInfo>()
@@ -496,6 +502,16 @@ export function usePinnedFeedsInfos() {
             savedFeed: pinnedItem,
             contentMode: undefined,
           })
+        }
+      }
+
+      // Translate "Discover" feed displayName if present
+      for (let i = 0; i < result.length; i++) {
+        if (result[i].uri === DISCOVER_FEED_URI && result[i].displayName === 'Discover') {
+          result[i] = {
+            ...result[i],
+            displayName: _(msg({ message: "Discover", context: "feed-name" })),
+          };
         }
       }
       return result
