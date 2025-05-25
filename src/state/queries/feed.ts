@@ -534,7 +534,6 @@ export function usePinnedFeedsInfos() {
           result.push(createFollowingFeedInfo(pinnedItem, _))
         }
       }
-
       return result
     },
   })
