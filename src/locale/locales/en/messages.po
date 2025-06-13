@@ -5905,14 +5905,14 @@ msgstr ""
 msgid "Porn"
 msgstr ""
 
-#: src/view/com/composer/Composer.tsx:1030
-msgctxt "action"
-msgid "Post"
-msgstr ""
-
 #: src/screens/PostThread/index.tsx:490
 #: src/view/com/post-thread/PostThread.tsx:561
 msgctxt "description"
+msgid "Post"
+msgstr ""
+
+#: src/view/com/composer/Composer.tsx:1030
+msgctxt "action"
 msgid "Post"
 msgstr ""
 
