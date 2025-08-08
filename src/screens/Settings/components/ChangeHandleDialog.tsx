@@ -209,9 +209,14 @@ function ProvidedHandlePage({
                 You are verified. You will lose your verification status if you
                 change your handle.{' '}
                 <InlineLinkText
-                  label={_(msg`Learn more`)}
+                  label={_(
+                    msg({
+                      message: `Learn more`,
+                      context: `en-only-resource`,
+                    }),
+                  )}
                   to={urls.website.blog.initialVerificationAnnouncement}>
-                  <Trans>Learn more.</Trans>
+                  <Trans context="en-only-resource">Learn more.</Trans>
                 </InlineLinkText>
               </Trans>
             </Admonition>
