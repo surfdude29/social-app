@@ -148,11 +148,11 @@ function Inner({
           overridePresentation
           to={urls.website.blog.initialVerificationAnnouncement}
           label={_(
-                  msg({
-                    message: `Learn more about verification on Bluesky`,
-                    context: `en-only-resource`,
-                  }),
-                )}
+            msg({
+              message: `Learn more about verification on Bluesky`,
+              context: `en-only-resource`,
+            }),
+          )}
           size="small"
           variant="solid"
           color="secondary"
