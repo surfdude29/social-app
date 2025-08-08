@@ -276,7 +276,7 @@ function ProvidedHandlePage({
                 label={_(
                   msg({
                     message: `Learn more`,
-                    context: `en-resource`,
+                    context: `en-only-resource`,
                   }),
                 )}
                 to="https://bsky.social/about/blog/4-28-2023-domain-handle-tutorial"
