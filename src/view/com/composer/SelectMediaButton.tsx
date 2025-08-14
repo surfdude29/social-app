@@ -4,7 +4,7 @@ import {
   launchImageLibraryAsync,
   UIImagePickerPreferredAssetRepresentationMode,
 } from 'expo-image-picker'
-import {msg} from '@lingui/macro'
+import {msg, plural} from '@lingui/macro'
 import {useLingui} from '@lingui/react'
 
 import {VIDEO_MAX_DURATION_MS} from '#/lib/constants'
