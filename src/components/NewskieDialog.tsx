@@ -39,6 +39,28 @@ export function NewskieDialog({
 
   if (!createdAt || daysOld > 7) return null
 
+  const getJoinMessage = () => {
+    const timeAgoString = timeAgo(createdAt, now, {format: 'long'})
+
+    if (isMe) {
+      if (profile.joinedViaStarterPack) {
+        return _(
+          msg`You joined Bluesky using a starter pack ${timeAgoString} ago`,
+        )
+      } else {
+        return _(msg`You joined Bluesky ${timeAgoString} ago`)
+      }
+    } else {
+      if (profile.joinedViaStarterPack) {
+        return _(
+          msg`${profileName} joined Bluesky using a starter pack ${timeAgoString} ago`,
+        )
+      } else {
+        return _(msg`${profileName} joined Bluesky ${timeAgoString} ago`)
+      }
+    }
+  }
+
   return (
     <View style={[a.pr_2xs]}>
       <Button
@@ -85,14 +107,13 @@ function DialogInner({
   const isMe = profile.did === currentAccount?.did
 
   const profileName = useMemo(() => {
-    const name = profile.displayName || profile.handle
-
-    if (isMe) {
-      return _(msg`You`)
-    }
-
-    if (!moderationOpts) return name
+    if (!moderationOpts) return profile.displayName || profile.handle
     const moderation = moderateProfile(profile, moderationOpts)
+    return sanitizeDisplayName(
+      profile.displayName || profile.handle,
+      moderation.ui('displayName'),
+    )
+  }, [moderationOpts, profile])
 
     return sanitizeDisplayName(name, moderation.ui('displayName'))
   }, [_, isMe, moderationOpts, profile])
@@ -122,17 +143,7 @@ function DialogInner({
           </Text>
         </View>
         <Text style={[a.text_md, a.text_center, a.leading_snug]}>
-          {profile.joinedViaStarterPack ? (
-            <Trans>
-              {profileName} joined Bluesky using a starter pack{' '}
-              {timeAgo(createdAt, now, {format: 'long'})} ago
-            </Trans>
-          ) : (
-            <Trans>
-              {profileName} joined Bluesky{' '}
-              {timeAgo(createdAt, now, {format: 'long'})} ago
-            </Trans>
-          )}
+          {getJoinMessage()}
         </Text>
         {profile.joinedViaStarterPack ? (
           <StarterPackCard.Link
