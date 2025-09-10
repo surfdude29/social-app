@@ -115,9 +115,6 @@ function DialogInner({
     )
   }, [moderationOpts, profile])
 
-    return sanitizeDisplayName(name, moderation.ui('displayName'))
-  }, [_, isMe, moderationOpts, profile])
-
   return (
     <Dialog.ScrollableInner
       label={_(msg`New user info dialog`)}
