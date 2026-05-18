@@ -1,4 +1,4 @@
-# CLAUDE.md – Bluesky Social App Development Guide
+# CLAUDE.md – Bluesky Social App Development Guid
 
 This document provides guidance for working effectively in the Bluesky Social app codebase.
 
