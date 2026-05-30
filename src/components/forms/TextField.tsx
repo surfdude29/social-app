@@ -266,6 +266,10 @@ export function createInput(Component: typeof TextInput) {
             ctx.onBlur()
             onBlur?.(e)
           }}
+          // Single-line inputs must stay on one line. Without this, Android can
+          // wrap a placeholder that is wider than the field onto multiple lines
+          // (notably after the field is cleared), growing the input height.
+          numberOfLines={rest.numberOfLines ?? (rest.multiline ? undefined : 1)}
           placeholder={placeholder === null ? undefined : placeholder || label}
           placeholderTextColor={t.palette.contrast_500}
           keyboardAppearance={t.name === 'light' ? 'light' : 'dark'}
