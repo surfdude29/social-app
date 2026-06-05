@@ -59,12 +59,11 @@ export function EditNamePrompt({
                   {color: t.palette.negative_400},
                 ]}>
                 <Trans>
-                  Group name is too long. The maximum length is{' '}
+                  Group name is too long.{' '}
                   <Plural
                     value={MAX_GROUP_NAME_GRAPHEME_LENGTH}
-                    other="# characters"
+                    other="The maximum length is # characters."
                   />
-                  .
                 </Trans>
               </Text>
             ) : null}
