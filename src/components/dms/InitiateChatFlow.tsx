@@ -603,7 +603,7 @@ export function InitiateChatFlow({
                       Group name is too long.{' '}
                       <Plural
                         value={MAX_GROUP_NAME_GRAPHEME_LENGTH}
-                        other="The maximum length is # characters."
+                        other="The maximum number of characters is #."
                       />
                     </Trans>
                   </Text>
