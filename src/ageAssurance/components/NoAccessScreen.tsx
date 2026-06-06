@@ -20,8 +20,8 @@ import {AgeAssuranceAppealDialog} from '#/components/ageAssurance/AgeAssuranceAp
 import {AgeAssuranceBadge} from '#/components/ageAssurance/AgeAssuranceBadge'
 import {AgeAssuranceInitDialog} from '#/components/ageAssurance/AgeAssuranceInitDialog'
 import {Button, ButtonIcon, ButtonText} from '#/components/Button'
-import {useDialogControl} from '#/components/Dialog'
 import * as Dialog from '#/components/Dialog'
+import {useDialogControl} from '#/components/Dialog'
 import {BirthDateSettingsDialog} from '#/components/dialogs/BirthDateSettings'
 import {DeviceLocationRequestDialog} from '#/components/dialogs/DeviceLocationRequestDialog'
 import {Full as Logo} from '#/components/icons/Logo'
@@ -394,11 +394,11 @@ function AccessSection() {
                 <Trans>
                   Is your location not accurate?{' '}
                   <SimpleInlineLinkText
-                    label={_(msg`Confirm your location`)}
+                    label={_(msg`Update your location`)}
                     {...createStaticClick(() => {
                       locationControl.open()
                     })}>
-                    Tap here to confirm your location.
+                    Tap here to update your location with GPS.
                   </SimpleInlineLinkText>{' '}
                 </Trans>
               </Admonition>

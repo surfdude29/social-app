@@ -1,26 +1,44 @@
-import {useCallback, useEffect, useRef, useState} from 'react'
-import {type LayoutChangeEvent, View} from 'react-native'
-import {useKeyboardHandler} from 'react-native-keyboard-controller'
+import {
+  useCallback,
+  useEffect,
+  useId,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from 'react'
+import {type LayoutChangeEvent, type ScrollViewProps, View} from 'react-native'
+import {
+  KeyboardChatScrollView,
+  type KeyboardChatScrollViewProps,
+  KeyboardGestureArea,
+} from 'react-native-keyboard-controller'
 import Animated, {
   runOnJS,
-  scrollTo,
+  type ScrollEvent,
+  type SharedValue,
   useAnimatedRef,
   useAnimatedStyle,
+  useDerivedValue,
   useSharedValue,
+  withTiming,
 } from 'react-native-reanimated'
-import {type ReanimatedScrollEvent} from 'react-native-reanimated/lib/typescript/hook/commonTypes'
+import {useSafeAreaInsets} from 'react-native-safe-area-context'
 import {
   type $Typed,
   type AppBskyEmbedRecord,
   AppBskyRichtextFacet,
+  ChatBskyConvoDefs,
+  type ChatBskyEmbedJoinLink,
   RichText,
 } from '@atproto/api'
+import {useScrollEdgeEffectRef} from '@bsky.app/expo-scroll-edge-effect'
 
-import {useHideBottomBarBorderForScreen} from '#/lib/hooks/useHideBottomBarBorder'
+import {mergeRefs} from '#/lib/merge-refs'
 import {ScrollProvider} from '#/lib/ScrollContext'
 import {shortenLinks, stripInvalidMentions} from '#/lib/strings/rich-text-manip'
 import {
   convertBskyAppUrlIfNeeded,
+  getChatInviteCodeFromUrl,
   isBskyPostUrl,
 } from '#/lib/strings/url-helpers'
 import {logger} from '#/logger'
@@ -29,31 +47,33 @@ import {
   isConvoActive,
   useConvoActive,
 } from '#/state/messages/convo'
-import {
-  type ConvoItem,
-  type ConvoState,
-  ConvoStatus,
-} from '#/state/messages/convo/types'
+import {type ConvoState, ConvoStatus} from '#/state/messages/convo/types'
+import {useGetJoinLinkPreview} from '#/state/queries/join-links'
 import {useGetPost} from '#/state/queries/post'
-import {useAgent} from '#/state/session'
-import {useShellLayout} from '#/state/shell/shell-layout'
-import {
-  EmojiPicker,
-  type EmojiPickerState,
-} from '#/view/com/composer/text-input/web/EmojiPicker'
+import {createEmbedViewRecordFromPost} from '#/state/queries/postgate/util'
+import {useAgent, useSession} from '#/state/session'
 import {List, type ListMethods} from '#/view/com/util/List'
-import {ChatDisabled} from '#/screens/Messages/components/ChatDisabled'
+import {MessageComposer} from '#/screens/Messages/components/MessageComposer'
 import {MessageInput} from '#/screens/Messages/components/MessageInput'
 import {MessageListError} from '#/screens/Messages/components/MessageListError'
-import {ChatEmptyPill} from '#/components/dms/ChatEmptyPill'
+import {atoms as a, platform, tokens, useTheme, web} from '#/alf'
+import {DateDivider} from '#/components/dms/DateDivider'
 import {MessageItem} from '#/components/dms/MessageItem'
+import {MessageOverlays} from '#/components/dms/MessageOverlays'
 import {NewMessagesPill} from '#/components/dms/NewMessagesPill'
+import {SystemMessageGroup} from '#/components/dms/SystemMessageGroup'
+import {SystemMessageItem} from '#/components/dms/SystemMessageItem'
 import {Loader} from '#/components/Loader'
 import {Text} from '#/components/Typography'
-import {IS_NATIVE} from '#/env'
-import {IS_WEB} from '#/env'
+import {useAnalytics} from '#/analytics'
+import {IS_ANDROID, IS_NATIVE, IS_WEB} from '#/env'
 import {ChatStatusInfo} from './ChatStatusInfo'
+import {groupSystemMessages, type RenderItem} from './groupSystemMessages'
+import {InviteLinkDialogProvider} from './InviteLinkDialogProvider'
 import {MessageInputEmbed, useMessageEmbed} from './MessageInputEmbed'
+import {MessagesListGroupInfoPanel} from './MessagesListGroupInfoPanel'
+import {MessagesListInfoPanel} from './MessagesListInfoPanel'
+import {KeyboardStickyView} from './vendor/KeyboardStickyView'
 
 function MaybeLoader({isLoading}: {isLoading: boolean}) {
   return (
@@ -69,20 +89,29 @@ function MaybeLoader({isLoading}: {isLoading: boolean}) {
   )
 }
 
-function renderItem({item}: {item: ConvoItem}) {
-  if (item.type === 'message' || item.type === 'pending-message') {
-    return <MessageItem item={item} />
-  } else if (item.type === 'deleted-message') {
-    return <Text>Deleted message</Text>
-  } else if (item.type === 'error') {
-    return <MessageListError item={item} />
-  }
-
-  return null
+function keyExtractor(item: RenderItem) {
+  return item.key
 }
 
-function keyExtractor(item: ConvoItem) {
-  return item.key
+function getNeighborMessage(
+  items: RenderItem[],
+  index: number,
+): ChatBskyConvoDefs.MessageView | ChatBskyConvoDefs.DeletedMessageView | null {
+  const neighbor = items[index]
+  if (!neighbor) return null
+  if (
+    neighbor.type === 'message' ||
+    neighbor.type === 'pending-message' ||
+    neighbor.type === 'deleted-message'
+  ) {
+    if (
+      ChatBskyConvoDefs.isMessageView(neighbor.message) ||
+      ChatBskyConvoDefs.isDeletedMessageView(neighbor.message)
+    ) {
+      return neighbor.message
+    }
+  }
+  return null
 }
 
 function onScrollToIndexFailed() {
@@ -92,34 +121,71 @@ function onScrollToIndexFailed() {
 export function MessagesList({
   hasScrolled,
   setHasScrolled,
-  blocked,
   footer,
   hasAcceptOverride,
+  transparentHeaderHeight,
 }: {
   hasScrolled: boolean
   setHasScrolled: React.Dispatch<React.SetStateAction<boolean>>
-  blocked?: boolean
   footer?: React.ReactNode
   hasAcceptOverride?: boolean
+  transparentHeaderHeight?: number
 }) {
+  const ax = useAnalytics()
   const convoState = useConvoActive()
   const agent = useAgent()
+  const {hasSession} = useSession()
   const getPost = useGetPost()
-  const {embedUri, setEmbed} = useMessageEmbed()
+  const getJoinLinkPreview = useGetJoinLinkPreview()
+  const {embed: messageEmbed, setEmbed} = useMessageEmbed()
+  const t = useTheme()
 
-  useHideBottomBarBorderForScreen()
-
+  const textInputId = 'chat-input-' + useId()
   const flatListRef = useAnimatedRef<ListMethods>()
+
+  const [expandedGroups, setExpandedGroups] = useState<Set<string>>(
+    () => new Set(),
+  )
+  const onToggleGroup = (key: string) => {
+    setExpandedGroups(prev => {
+      const next = new Set(prev)
+      if (next.has(key)) {
+        next.delete(key)
+      } else {
+        next.add(key)
+      }
+      return next
+    })
+  }
+
+  const renderItems = groupSystemMessages(convoState.items)
 
   const [newMessagesPill, setNewMessagesPill] = useState({
     show: false,
     startContentOffset: 0,
   })
 
-  const [emojiPickerState, setEmojiPickerState] = useState<EmojiPickerState>({
-    isOpen: false,
-    pos: {top: 0, left: 0, right: 0, bottom: 0, nextFocusRef: null},
-  })
+  const listOpacity = useSharedValue(0)
+
+  useEffect(() => {
+    if (hasScrolled) {
+      listOpacity.set(withTiming(1, {duration: 200}))
+    } else {
+      listOpacity.set(0)
+    }
+  }, [hasScrolled, listOpacity])
+
+  const inputHeightUI = useSharedValue(0)
+  const [inputHeightJS, setInputHeightJS] = useState(0)
+
+  const onInputLayout = useCallback(
+    (event: LayoutChangeEvent) => {
+      const inputHeight = event.nativeEvent.layout.height
+      inputHeightUI.set(inputHeight)
+      setInputHeightJS(inputHeight)
+    },
+    [inputHeightUI],
+  )
 
   // We need to keep track of when the scroll offset is at the bottom of the list to know when to scroll as new items
   // are added to the list. For example, if the user is scrolled up to 1iew older messages, we don't want to scroll to
@@ -133,6 +199,18 @@ export function MessagesList({
   // onStartReached to fire.
   const prevContentHeight = useRef(0)
   const prevItemCount = useRef(0)
+
+  // Tracks whether the initial scroll-to-bottom has been triggered. Separated from isAtBottom so that contentInset
+  // (which causes an early onScroll with negative offset) can't prevent the first scroll.
+  // Reset when hasScrolled goes back to false (e.g. convo re-initialization after backgrounding).
+  const hasInitiallyScrolled = useRef(false)
+  const prevHasScrolled = useRef(hasScrolled)
+  useLayoutEffect(() => {
+    if (prevHasScrolled.current && !hasScrolled) {
+      hasInitiallyScrolled.current = false
+    }
+    prevHasScrolled.current = hasScrolled
+  }, [hasScrolled])
 
   // -- Keep track of background state and positioning for new pill
   const layoutHeight = useSharedValue(0)
@@ -166,8 +244,29 @@ export function MessagesList({
         })
       }
 
-      // This number _must_ be the height of the MaybeLoader component
-      if (height > 50 && isAtBottom.get()) {
+      // Initial scroll to bottom — unconditional, not gated on isAtBottom. This is separated because contentInset
+      // can cause an early onScroll with a negative offset that sets isAtBottom to false before we get here.
+      // Empty convos take this path too (once history is done) so hasScrolled gets set without an animated scroll.
+      if (
+        !hasInitiallyScrolled.current &&
+        (renderItems.length > 0 || !convoState.isFetchingHistory)
+      ) {
+        hasInitiallyScrolled.current = true
+        flatListRef.current?.scrollToOffset({offset: height, animated: false})
+        // If history is already done loading, mark ready after a frame for the scroll to settle.
+        // Otherwise, the footer sentinel's onLayout will handle it when history finishes.
+        if (!convoState.isFetchingHistory) {
+          requestAnimationFrame(() => {
+            setHasScrolled(true)
+          })
+        }
+        prevContentHeight.current = height
+        prevItemCount.current = renderItems.length
+        return
+      }
+
+      // Subsequent: auto-scroll only if user is at the bottom
+      if (isAtBottom.get()) {
         // If the size of the content is changing by more than the height of the screen, then we don't
         // want to scroll further than the start of all the new content. Since we are storing the previous offset,
         // we can just scroll the user to that offset and add a little bit of padding. We'll also show the pill
@@ -176,7 +275,7 @@ export function MessagesList({
           didBackground.current &&
           hasScrolled &&
           height - prevContentHeight.current > layoutHeight.get() - 50 &&
-          convoState.items.length - prevItemCount.current > 1
+          renderItems.length - prevItemCount.current > 1
         ) {
           flatListRef.current?.scrollToOffset({
             offset: prevContentHeight.current - 65,
@@ -191,29 +290,18 @@ export function MessagesList({
             offset: height,
             animated: hasScrolled && height > prevContentHeight.current,
           })
-
-          // HACK Unfortunately, we need to call `setHasScrolled` after a brief delay,
-          // because otherwise there is too much of a delay between the time the content
-          // scrolls and the time the screen appears, causing a flicker.
-          // We cannot actually use a synchronous scroll here, because `onContentSizeChange`
-          // is actually async itself - all the info has to come across the bridge first.
-          if (!hasScrolled && !convoState.isFetchingHistory) {
-            setTimeout(() => {
-              setHasScrolled(true)
-            }, 100)
-          }
         }
       }
 
       prevContentHeight.current = height
-      prevItemCount.current = convoState.items.length
+      prevItemCount.current = renderItems.length
       didBackground.current = false
     },
     [
       hasScrolled,
       setHasScrolled,
       convoState.isFetchingHistory,
-      convoState.items.length,
+      renderItems.length,
       // these are stable
       flatListRef,
       isAtTop,
@@ -223,13 +311,11 @@ export function MessagesList({
   )
 
   const onStartReached = useCallback(() => {
-    if (hasScrolled && prevContentHeight.current > layoutHeight.get()) {
-      convoState.fetchMessageHistory()
-    }
-  }, [convoState, hasScrolled, layoutHeight])
+    void convoState.fetchMessageHistory()
+  }, [convoState])
 
   const onScroll = useCallback(
-    (e: ReanimatedScrollEvent) => {
+    (e: ScrollEvent) => {
       'worklet'
       layoutHeight.set(e.layoutMeasurement.height)
       const bottomOffset = e.contentOffset.y + e.layoutMeasurement.height
@@ -254,56 +340,8 @@ export function MessagesList({
   )
 
   // -- Keyboard animation handling
-  const {footerHeight} = useShellLayout()
 
-  const keyboardHeight = useSharedValue(0)
-  const keyboardIsOpening = useSharedValue(false)
-
-  // In some cases - like when the emoji piker opens - we don't want to animate the scroll in the list onLayout event.
-  // We use this value to keep track of when we want to disable the animation.
-  const layoutScrollWithoutAnimation = useSharedValue(false)
-
-  useKeyboardHandler(
-    {
-      onStart: e => {
-        'worklet'
-        // Immediate updates - like opening the emoji picker - will have a duration of zero. In those cases, we should
-        // just update the height here instead of having the `onMove` event do it (that event will not fire!)
-        if (e.duration === 0) {
-          layoutScrollWithoutAnimation.set(true)
-          keyboardHeight.set(e.height)
-        } else {
-          keyboardIsOpening.set(true)
-        }
-      },
-      onMove: e => {
-        'worklet'
-        keyboardHeight.set(e.height)
-        if (e.height > footerHeight.get()) {
-          scrollTo(flatListRef, 0, 1e7, false)
-        }
-      },
-      onEnd: e => {
-        'worklet'
-        keyboardHeight.set(e.height)
-        if (e.height > footerHeight.get()) {
-          scrollTo(flatListRef, 0, 1e7, false)
-        }
-        keyboardIsOpening.set(false)
-      },
-    },
-    [footerHeight],
-  )
-
-  const animatedListStyle = useAnimatedStyle(() => ({
-    marginBottom: Math.max(keyboardHeight.get(), footerHeight.get()),
-  }))
-
-  const animatedStickyViewStyle = useAnimatedStyle(() => ({
-    transform: [
-      {translateY: -Math.max(keyboardHeight.get(), footerHeight.get())},
-    ],
-  }))
+  const {bottom: bottomInset} = useSafeAreaInsets()
 
   // -- Message sending
   const onSendMessage = useCallback(
@@ -315,11 +353,38 @@ export function MessagesList({
       // we want to remove the post link from the text, re-trim, then detect facets
       rt.detectFacetsWithoutResolution()
 
-      let embed: $Typed<AppBskyEmbedRecord.Main> | undefined
+      let embed:
+        | $Typed<AppBskyEmbedRecord.Main>
+        | $Typed<ChatBskyEmbedJoinLink.Main>
+        | undefined
+      let embedView:
+        | $Typed<AppBskyEmbedRecord.View>
+        | $Typed<ChatBskyEmbedJoinLink.View>
+        | undefined
 
-      if (embedUri) {
+      // Find the embedded link facet and, if it's at the start or end of the
+      // message, remove it from the text (the embed card replaces it).
+      const stripLinkFacet = (predicate: (uri: string) => boolean) => {
+        const linkFacet = rt.facets?.find(facet =>
+          facet.features.find(
+            feature =>
+              AppBskyRichtextFacet.isLink(feature) && predicate(feature.uri),
+          ),
+        )
+        if (linkFacet) {
+          const isAtStart = linkFacet.index.byteStart === 0
+          const isAtEnd =
+            linkFacet.index.byteEnd === rt.unicodeText.graphemeLength
+          if (isAtStart || isAtEnd) {
+            rt.delete(linkFacet.index.byteStart, linkFacet.index.byteEnd)
+          }
+          rt = new RichText({text: rt.text.trim()}, {cleanNewlines: true})
+        }
+      }
+
+      if (messageEmbed?.type === 'post') {
         try {
-          const post = await getPost({uri: embedUri})
+          const post = await getPost({uri: messageEmbed.uri})
           if (post) {
             embed = {
               $type: 'app.bsky.embed.record',
@@ -329,42 +394,39 @@ export function MessagesList({
               },
             }
 
-            // look for the embed uri in the facets, so we can remove it from the text
-            const postLinkFacet = rt.facets?.find(facet => {
-              return facet.features.find(feature => {
-                if (AppBskyRichtextFacet.isLink(feature)) {
-                  if (isBskyPostUrl(feature.uri)) {
-                    const url = convertBskyAppUrlIfNeeded(feature.uri)
-                    const [_0, _1, _2, rkey] = url.split('/').filter(Boolean)
-
-                    // this might have a handle instead of a DID
-                    // so just compare the rkey - not particularly dangerous
-                    return post.uri.endsWith(rkey)
-                  }
-                }
-                return false
-              })
-            })
-
-            if (postLinkFacet) {
-              const isAtStart = postLinkFacet.index.byteStart === 0
-              const isAtEnd =
-                postLinkFacet.index.byteEnd === rt.unicodeText.graphemeLength
-
-              // remove the post link from the text
-              if (isAtStart || isAtEnd) {
-                rt.delete(
-                  postLinkFacet.index.byteStart,
-                  postLinkFacet.index.byteEnd,
-                )
-              }
-
-              rt = new RichText({text: rt.text.trim()}, {cleanNewlines: true})
+            embedView = {
+              $type: 'app.bsky.embed.record#view',
+              record: createEmbedViewRecordFromPost(post),
             }
+
+            stripLinkFacet(uri => {
+              if (!isBskyPostUrl(uri)) return false
+              const url = convertBskyAppUrlIfNeeded(uri)
+              const [_0, _1, _2, rkey] = url.split('/').filter(Boolean)
+              // this might have a handle instead of a DID
+              // so just compare the rkey - not particularly dangerous
+              return post.uri.endsWith(rkey)
+            })
           }
         } catch (error) {
           logger.error('Failed to get post as quote for DM', {error})
         }
+      } else if (messageEmbed?.type === 'invite') {
+        const code = messageEmbed.code
+        embed = {
+          $type: 'chat.bsky.embed.joinLink',
+          code,
+        }
+
+        const joinLinkPreview = await getJoinLinkPreview({code, hasSession})
+        if (joinLinkPreview) {
+          embedView = {
+            $type: 'chat.bsky.embed.joinLink#view',
+            joinLinkPreview,
+          }
+        }
+
+        stripLinkFacet(uri => getChatInviteCodeFromUrl(uri) === code)
       }
 
       await rt.detectFacets(agent)
@@ -376,32 +438,24 @@ export function MessagesList({
         setHasScrolled(true)
       }
 
-      convoState.sendMessage({
-        text: rt.text,
-        facets: rt.facets,
-        embed,
-      })
-    },
-    [agent, convoState, embedUri, getPost, hasScrolled, setHasScrolled],
-  )
-
-  // -- List layout changes (opening emoji keyboard, etc.)
-  const onListLayout = useCallback(
-    (e: LayoutChangeEvent) => {
-      layoutHeight.set(e.nativeEvent.layout.height)
-
-      if (IS_WEB || !keyboardIsOpening.get()) {
-        flatListRef.current?.scrollToEnd({
-          animated: !layoutScrollWithoutAnimation.get(),
-        })
-        layoutScrollWithoutAnimation.set(false)
-      }
+      convoState.sendMessage(
+        {
+          text: rt.text,
+          facets: rt.facets,
+          embed,
+        },
+        embedView,
+      )
     },
     [
-      flatListRef,
-      keyboardIsOpening,
-      layoutScrollWithoutAnimation,
-      layoutHeight,
+      agent,
+      convoState,
+      messageEmbed,
+      getPost,
+      getJoinLinkPreview,
+      hasSession,
+      hasScrolled,
+      setHasScrolled,
     ],
   )
 
@@ -412,72 +466,240 @@ export function MessagesList({
     })
   }, [flatListRef])
 
-  const onOpenEmojiPicker = useCallback((pos: any) => {
-    setEmojiPickerState({isOpen: true, pos})
-  }, [])
+  const renderItem = ({item, index}: {item: RenderItem; index: number}) => {
+    if (item.type === 'message' || item.type === 'pending-message') {
+      return (
+        <MessageItem
+          item={item}
+          isGroupChat={convoState.convo.kind === 'group'}
+          prevMessage={getNeighborMessage(renderItems, index - 1)}
+          nextMessage={getNeighborMessage(renderItems, index + 1)}
+          relatedProfiles={convoState.relatedProfiles}
+        />
+      )
+    } else if (item.type === 'deleted-message') {
+      return <Text>Deleted message</Text>
+    } else if (item.type === 'system-message') {
+      return (
+        <SystemMessageItem
+          item={item}
+          relatedProfiles={convoState.relatedProfiles}
+        />
+      )
+    } else if (item.type === 'system-message-group') {
+      return (
+        <SystemMessageGroup
+          item={item}
+          expanded={expandedGroups.has(item.key)}
+          onToggle={onToggleGroup}
+          relatedProfiles={convoState.relatedProfiles}
+        />
+      )
+    } else if (item.type === 'system-message-date-divider') {
+      return <DateDivider date={item.sentAt} />
+    } else if (item.type === 'error') {
+      return <MessageListError item={item} />
+    }
+
+    return null
+  }
+
+  // Footer sentinel: when history is still loading during the initial scroll, the footer's onLayout fires each time
+  // new items are prepended (shifting its position). Once history finishes, this triggers setHasScrolled.
+  const onFooterLayout = useCallback(() => {
+    if (
+      hasInitiallyScrolled.current &&
+      !hasScrolled &&
+      !convoState.isFetchingHistory
+    ) {
+      requestAnimationFrame(() => {
+        setHasScrolled(true)
+      })
+    }
+  }, [hasScrolled, setHasScrolled, convoState.isFetchingHistory])
+
+  const renderScrollComponent = useCallback(
+    (props: ScrollViewProps) => (
+      <ChatScrollComponent {...props} inputHeight={inputHeightUI} />
+    ),
+    [inputHeightUI],
+  )
+
+  const animatedListStyle = useAnimatedStyle(() => ({
+    opacity: listOpacity.get(),
+  }))
 
   return (
-    <>
-      {/* Custom scroll provider so that we can use the `onScroll` event in our custom List implementation */}
-      <ScrollProvider onScroll={onScroll}>
-        <List
-          ref={flatListRef}
-          data={convoState.items}
-          renderItem={renderItem}
-          keyExtractor={keyExtractor}
-          disableFullWindowScroll={true}
-          disableVirtualization={true}
-          style={animatedListStyle}
-          // The extra two items account for the header and the footer components
-          initialNumToRender={IS_NATIVE ? 32 : 62}
-          maxToRenderPerBatch={IS_WEB ? 32 : 62}
-          keyboardDismissMode="on-drag"
-          keyboardShouldPersistTaps="handled"
-          maintainVisibleContentPosition={{
-            minIndexForVisible: 0,
-          }}
-          removeClippedSubviews={false}
-          sideBorders={false}
-          onContentSizeChange={onContentSizeChange}
-          onLayout={onListLayout}
-          onStartReached={onStartReached}
-          onScrollToIndexFailed={onScrollToIndexFailed}
-          scrollEventThrottle={100}
-          ListHeaderComponent={
-            <MaybeLoader isLoading={convoState.isFetchingHistory} />
-          }
-        />
-      </ScrollProvider>
-      <Animated.View style={animatedStickyViewStyle}>
-        {convoState.status === ConvoStatus.Disabled ? (
-          <ChatDisabled />
-        ) : blocked ? (
-          footer
-        ) : (
-          <ConversationFooter
-            convoState={convoState}
-            hasAcceptOverride={hasAcceptOverride}>
-            <MessageInput
-              onSendMessage={onSendMessage}
-              hasEmbed={!!embedUri}
-              setEmbed={setEmbed}
-              openEmojiPicker={onOpenEmojiPicker}>
-              <MessageInputEmbed embedUri={embedUri} setEmbed={setEmbed} />
-            </MessageInput>
-          </ConversationFooter>
+    <InviteLinkDialogProvider convo={convoState.convo}>
+      <MessageOverlays>
+        <KeyboardGestureArea
+          interpolator="ios"
+          // HACKFIX: https://github.com/kirillzyusko/react-native-keyboard-controller/issues/1419
+          offset={Math.round(inputHeightJS)}
+          // slightly too buggy unfortunately, enable when possible
+          // textInputNativeID={textInputId}
+          style={[a.flex_1]}>
+          {/* Custom scroll provider so that we can use the `onScroll` event in our custom List implementation */}
+          <Animated.View style={[a.flex_1, animatedListStyle]}>
+            <ScrollProvider onScroll={onScroll}>
+              <List
+                ref={flatListRef}
+                data={renderItems}
+                renderItem={renderItem}
+                keyExtractor={keyExtractor}
+                disableFullWindowScroll={true}
+                disableVirtualization={true}
+                // The extra two items account for the header and the footer components
+                initialNumToRender={IS_NATIVE ? 32 : 62}
+                maxToRenderPerBatch={IS_WEB ? 32 : 62}
+                keyboardDismissMode="interactive"
+                keyboardShouldPersistTaps="handled"
+                maintainVisibleContentPosition={{minIndexForVisible: 0}}
+                removeClippedSubviews={false}
+                sideBorders={false}
+                onContentSizeChange={onContentSizeChange}
+                onStartReached={onStartReached}
+                onScrollToIndexFailed={onScrollToIndexFailed}
+                showsVerticalScrollIndicator={!IS_ANDROID}
+                scrollEventThrottle={100}
+                ListHeaderComponent={
+                  <>
+                    <MaybeLoader isLoading={convoState.isFetchingHistory} />
+                    {convoState.hasAllHistory ? (
+                      convoState.convo?.kind === 'group' ? (
+                        <MessagesListGroupInfoPanel convo={convoState.convo} />
+                      ) : (
+                        <MessagesListInfoPanel convo={convoState.convo} />
+                      )
+                    ) : null}
+                  </>
+                }
+                // native only (prop is not supported on web)
+                renderScrollComponent={renderScrollComponent}
+                contentContainerStyle={{
+                  paddingBottom: platform({
+                    // ios is slightly larger as the input has no top padding
+                    ios: tokens.space.lg,
+                    android: tokens.space.md,
+                    web: 0, // web uses ListFooterComponent instead for scroll reasons
+                  }),
+                }}
+                ListFooterComponent={
+                  <View
+                    style={web({height: tokens.space.md + inputHeightJS})}
+                    onLayout={onFooterLayout}
+                  />
+                }
+                style={[
+                  web({
+                    scrollbarWidth: 'thin',
+                    scrollbarColor: `${t.palette.contrast_100} transparent`,
+                    scrollbarGutter: 'stable',
+                  }),
+                ]}
+                pointerEvents={!hasScrolled ? 'none' : 'auto'}
+                contentInset={{top: transparentHeaderHeight}}
+                scrollIndicatorInsets={{top: transparentHeaderHeight}}
+              />
+            </ScrollProvider>
+          </Animated.View>
+          <KeyboardStickyView
+            style={[a.absolute, a.bottom_0, a.left_0, a.right_0]}
+            onLayout={onInputLayout}
+            minimumOffset={bottomInset}
+            offset={{
+              closed: platform({
+                ios: tokens.space.lg, // hide bottom padding when closed
+                default: 0,
+              }),
+              opened: 0,
+            }}>
+            {footer ?? (
+              <ConversationFooter
+                convoState={convoState}
+                hasAcceptOverride={hasAcceptOverride}>
+                {({loading}) =>
+                  ax.features.enabled(
+                    ax.features.DmsNewMessageComposerEnable,
+                  ) ? (
+                    <MessageComposer
+                      textInputId={textInputId}
+                      onSendMessage={(message: string) =>
+                        void onSendMessage(message)
+                      }
+                      hasEmbed={!!messageEmbed}
+                      setEmbed={setEmbed}
+                      loading={loading}>
+                      <MessageInputEmbed
+                        embed={messageEmbed}
+                        setEmbed={setEmbed}
+                      />
+                    </MessageComposer>
+                  ) : (
+                    <MessageInput
+                      textInputId={textInputId}
+                      onSendMessage={onSendMessage}
+                      hasEmbed={!!messageEmbed}
+                      setEmbed={setEmbed}
+                      loading={loading}>
+                      <MessageInputEmbed
+                        embed={messageEmbed}
+                        setEmbed={setEmbed}
+                      />
+                    </MessageInput>
+                  )
+                }
+              </ConversationFooter>
+            )}
+          </KeyboardStickyView>
+        </KeyboardGestureArea>
+
+        {newMessagesPill.show && (
+          <NewMessagesPill onPress={scrollToEndOnPress} />
         )}
-      </Animated.View>
+      </MessageOverlays>
+    </InviteLinkDialogProvider>
+  )
+}
 
-      {IS_WEB && (
-        <EmojiPicker
-          pinToTop
-          state={emojiPickerState}
-          close={() => setEmojiPickerState(prev => ({...prev, isOpen: false}))}
-        />
-      )}
+/** Note: native only */
+function ChatScrollComponent({
+  ref,
+  inputHeight,
+  ...props
+}: ScrollViewProps & {
+  ref?: React.RefObject<KeyboardChatScrollViewProps>
+  inputHeight: SharedValue<number>
+}) {
+  const scrollEdgeRef = useScrollEdgeEffectRef()
+  const {bottom: bottomInset} = useSafeAreaInsets()
 
-      {newMessagesPill.show && <NewMessagesPill onPress={scrollToEndOnPress} />}
-    </>
+  const offset = platform({
+    ios: bottomInset - tokens.space.lg,
+    android: bottomInset,
+    default: 0,
+  })
+
+  const inputOffset = platform({
+    ios: bottomInset - tokens.space.lg,
+    android: bottomInset,
+    default: 0,
+  })
+
+  const extraContentPadding = useDerivedValue(
+    () => inputHeight.get() + inputOffset,
+  )
+
+  return (
+    <KeyboardChatScrollView
+      ref={mergeRefs([scrollEdgeRef, ref])}
+      automaticallyAdjustContentInsets={false}
+      keyboardDismissMode="interactive"
+      keyboardLiftBehavior="always"
+      extraContentPadding={extraContentPadding}
+      offset={offset}
+      {...props}
+    />
   )
 }
 
@@ -495,7 +717,7 @@ function getFooterState(
     }
   }
 
-  if (convoState.convo.status === 'request' && !hasAcceptOverride) {
+  if (convoState.convo.view.status === 'request' && !hasAcceptOverride) {
     return 'request'
   }
 
@@ -509,27 +731,25 @@ function ConversationFooter({
 }: {
   convoState: ConvoState
   hasAcceptOverride?: boolean
-  children?: React.ReactNode // message input
+  children?: ((props: {loading?: boolean}) => React.ReactNode) | React.ReactNode
 }) {
   if (!isConvoActive(convoState)) {
     return null
   }
 
   const footerState = getFooterState(convoState, hasAcceptOverride)
+  const renderChildren = (loading?: boolean) =>
+    typeof children === 'function' ? children({loading}) : children
 
   switch (footerState) {
     case 'loading':
-      return null
+      return renderChildren(true)
     case 'new-chat':
-      return (
-        <>
-          <ChatEmptyPill />
-          {children}
-        </>
-      )
+      // new chat pill goes here - removed for now
+      return renderChildren()
     case 'request':
       return <ChatStatusInfo convoState={convoState} />
     case 'standard':
-      return children
+      return renderChildren()
   }
 }

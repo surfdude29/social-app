@@ -2,14 +2,25 @@ import {memo} from 'react'
 import {useWindowDimensions, View} from 'react-native'
 import {type $Typed, type AppBskyEmbedRecord} from '@atproto/api'
 
-import {atoms as a, native, tokens, useTheme, web} from '#/alf'
+import {atoms as a, native, useTheme, web} from '#/alf'
 import {Embed, PostEmbedViewContext} from '#/components/Post/Embed'
 import {MessageContextProvider} from './MessageContext'
 
+const BORDER_RADIUS = 20
+const SQUARED_BORDER_RADIUS = 4
+
 let MessageItemEmbed = ({
   embed,
+  isFromSelf,
+  isGroupChat,
+  squaredTopCorner,
+  squaredBottomCorner,
 }: {
   embed: $Typed<AppBskyEmbedRecord.View>
+  isFromSelf: boolean
+  isGroupChat: boolean
+  squaredTopCorner: boolean
+  squaredBottomCorner: boolean
 }): React.ReactNode => {
   const t = useTheme()
   const screen = useWindowDimensions()
@@ -18,9 +29,7 @@ let MessageItemEmbed = ({
     <MessageContextProvider>
       <View
         style={[
-          a.my_xs,
-          t.atoms.bg,
-          a.rounded_md,
+          !isFromSelf && isGroupChat && a.ml_sm,
           native({
             flexBasis: 0,
             width: Math.min(screen.width, 600) / 1.4,
@@ -30,12 +39,39 @@ let MessageItemEmbed = ({
             minWidth: 280,
             maxWidth: 360,
           }),
+          // Cancel out the embed's internal a.mt_sm so the container's
+          // CLUSTERED_MESSAGE_GAP (2px) is the only spacing applied
+          {marginTop: -a.mt_sm.marginTop},
         ]}>
-        <View style={{marginTop: tokens.space.sm * -1}}>
+        <View>
           <Embed
             embed={embed}
             allowNestedQuotes
-            viewContext={PostEmbedViewContext.Feed}
+            viewContext={PostEmbedViewContext.ChatMessage}
+            style={[
+              a.rounded_xl,
+              a.overflow_hidden,
+              a.border_0,
+              isFromSelf
+                ? {
+                    backgroundColor: t.palette.primary_50,
+                    borderBottomRightRadius: squaredBottomCorner
+                      ? SQUARED_BORDER_RADIUS
+                      : BORDER_RADIUS,
+                    borderTopRightRadius: squaredTopCorner
+                      ? SQUARED_BORDER_RADIUS
+                      : BORDER_RADIUS,
+                  }
+                : {
+                    backgroundColor: t.palette.contrast_50,
+                    borderBottomLeftRadius: squaredBottomCorner
+                      ? SQUARED_BORDER_RADIUS
+                      : BORDER_RADIUS,
+                    borderTopLeftRadius: squaredTopCorner
+                      ? SQUARED_BORDER_RADIUS
+                      : BORDER_RADIUS,
+                  },
+            ]}
           />
         </View>
       </View>

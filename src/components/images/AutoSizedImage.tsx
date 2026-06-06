@@ -1,4 +1,4 @@
-import {useMemo, useRef} from 'react'
+import {useEffect, useMemo, useRef} from 'react'
 import {type DimensionValue, Pressable, View} from 'react-native'
 import Animated, {
   type AnimatedRef,
@@ -13,7 +13,7 @@ import {Trans} from '@lingui/react/macro'
 
 import {type Dimensions} from '#/lib/media/types'
 import {useLargeAltBadgeEnabled} from '#/state/preferences/large-alt-badge'
-import {atoms as a, useTheme} from '#/alf'
+import {atoms as a, useTheme, web} from '#/alf'
 import {ArrowsDiagonalOut_Stroke2_Corner0_Rounded as Fullscreen} from '#/components/icons/ArrowsDiagonal'
 import {MediaInsetBorder} from '#/components/MediaInsetBorder'
 import {Text} from '#/components/Typography'
@@ -69,6 +69,8 @@ export function AutoSizedImage({
   onPress,
   onLongPress,
   onPressIn,
+  onContainerRef,
+  onDimsChange,
 }: {
   image: AppBskyEmbedImages.ViewImage
   crop?: 'none' | 'square' | 'constrained'
@@ -79,12 +81,21 @@ export function AutoSizedImage({
   ) => void
   onLongPress?: () => void
   onPressIn?: () => void
+  /** Fires once with the internal container ref so a parent can drive its
+   *  own lightbox-return animation without waiting for an `onPress`. */
+  onContainerRef?: (ref: AnimatedRef<any>) => void
+  /** Fires when the underlying image reports its natural dimensions. */
+  onDimsChange?: (dims: Dimensions) => void
 }) {
   const t = useTheme()
   const {_} = useLingui()
   const largeAlt = useLargeAltBadgeEnabled()
   const containerRef = useAnimatedRef()
   const fetchedDimsRef = useRef<{width: number; height: number} | null>(null)
+
+  useEffect(() => {
+    onContainerRef?.(containerRef)
+  }, [containerRef, onContainerRef])
 
   let aspectRatio: number | undefined
   const dims = image.aspectRatio
@@ -122,13 +133,16 @@ export function AutoSizedImage({
         accessibilityHint=""
         onLoad={e => {
           if (!isContain) {
-            fetchedDimsRef.current = {
+            const dims = {
               width: e.source.width,
               height: e.source.height,
             }
+            fetchedDimsRef.current = dims
+            onDimsChange?.(dims)
           }
         }}
         loading="lazy"
+        useAppleWebpCodec
       />
       <MediaInsetBorder />
 
@@ -210,12 +224,17 @@ export function AutoSizedImage({
           color: utils.alpha(t.atoms.bg.backgroundColor, 0.2),
           foreground: true,
         }}
-        style={[
+        style={({pressed}) => [
           a.w_full,
           a.rounded_md,
           a.overflow_hidden,
           t.atoms.bg_contrast_25,
           {aspectRatio: max ?? 1},
+          web([
+            a.transition_transform,
+            {transitionDuration: '200ms'},
+            pressed && {transform: [{scale: 0.99}]},
+          ]),
         ]}>
         {contents}
       </Pressable>
@@ -237,7 +256,16 @@ export function AutoSizedImage({
             color: utils.alpha(t.atoms.bg.backgroundColor, 0.2),
             foreground: true,
           }}
-          style={[a.h_full]}>
+          style={({pressed}) => [
+            a.h_full,
+            a.rounded_md,
+            a.overflow_hidden,
+            web([
+              a.transition_transform,
+              {transitionDuration: '200ms'},
+              pressed && {transform: [{scale: 0.99}]},
+            ]),
+          ]}>
           {contents}
         </Pressable>
       </ConstrainedImage>

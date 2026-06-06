@@ -1,5 +1,10 @@
 import {useCallback, useMemo} from 'react'
-import {type GestureResponderEvent, Linking} from 'react-native'
+import {
+  type GestureResponderEvent,
+  Linking,
+  type NativeSyntheticEvent,
+  type TargetedEvent,
+} from 'react-native'
 import {sanitizeUrl} from '@braintree/sanitize-url'
 import {
   type LinkProps as RNLinkProps,
@@ -7,6 +12,7 @@ import {
 } from '@react-navigation/native'
 
 import {BSKY_DOWNLOAD_URL} from '#/lib/constants'
+import {useGroupChatJoinIntent} from '#/lib/hooks/useIntentHandler'
 import {useNavigationDeduped} from '#/lib/hooks/useNavigationDeduped'
 import {useOpenLink} from '#/lib/hooks/useOpenLink'
 import {type AllNavigatorParams, type RouteParams} from '#/lib/routes/types'
@@ -14,6 +20,7 @@ import {shareUrl} from '#/lib/sharing'
 import {
   convertBskyAppUrlIfNeeded,
   createProxiedUrl,
+  getChatInviteCodeFromUrl,
   isBskyDownloadUrl,
   isExternalUrl,
   linkRequiresWarning,
@@ -78,6 +85,15 @@ type BaseLinkProps = {
    * Whether the link should be opened through the redirect proxy.
    */
   shouldProxy?: boolean
+
+  /**
+   * Web only
+   */
+  onMouseEnter?: () => void
+  /**
+   * Web only
+   */
+  onMouseLeave?: () => void
 }
 
 export function useLink({
@@ -116,6 +132,7 @@ export function useLink({
   const {closeModal} = useModalControls()
   const {linkWarningDialogControl} = useGlobalDialogsControlContext()
   const openLink = useOpenLink()
+  const groupChatJoinIntent = useGroupChatJoinIntent()
 
   const onPress = useCallback(
     (e: GestureResponderEvent) => {
@@ -125,13 +142,19 @@ export function useLink({
 
       const requiresWarning = Boolean(
         !disableMismatchWarning &&
-          displayText &&
-          isExternal &&
-          linkRequiresWarning(href, displayText),
+        displayText &&
+        isExternal &&
+        linkRequiresWarning(href, displayText),
       )
 
       if (IS_WEB) {
         e.preventDefault()
+      }
+
+      const chatInviteCode = getChatInviteCodeFromUrl(href)
+      if (chatInviteCode) {
+        groupChatJoinIntent(chatInviteCode, href)
+        return
       }
 
       if (requiresWarning) {
@@ -141,18 +164,18 @@ export function useLink({
         })
       } else {
         if (isExternal) {
-          openLink(href, overridePresentation, shouldProxy)
+          void openLink(href, overridePresentation, shouldProxy)
         } else {
           const shouldOpenInNewTab = shouldClickOpenNewTab(e)
 
           if (isBskyDownloadUrl(href)) {
-            shareUrl(BSKY_DOWNLOAD_URL)
+            void shareUrl(BSKY_DOWNLOAD_URL)
           } else if (
             shouldOpenInNewTab ||
             href.startsWith('http') ||
             href.startsWith('mailto')
           ) {
-            openLink(href)
+            void openLink(href)
           } else {
             closeModal() // close any active modals
 
@@ -214,15 +237,16 @@ export function useLink({
       overridePresentation,
       shouldProxy,
       linkWarningDialogControl,
+      groupChatJoinIntent,
     ],
   )
 
   const handleLongPress = useCallback(() => {
     const requiresWarning = Boolean(
       !disableMismatchWarning &&
-        displayText &&
-        isExternal &&
-        linkRequiresWarning(href, displayText),
+      displayText &&
+      isExternal &&
+      linkRequiresWarning(href, displayText),
     )
 
     if (requiresWarning) {
@@ -232,7 +256,7 @@ export function useLink({
         share: true,
       })
     } else {
-      shareUrl(href)
+      void shareUrl(href)
     }
   }, [
     disableMismatchWarning,
@@ -322,7 +346,7 @@ export type InlineLinkProps = React.PropsWithChildren<
   BaseLinkProps &
     TextStyleProp &
     Pick<TextProps, 'selectable' | 'numberOfLines' | 'emoji'> &
-    Pick<ButtonProps, 'label' | 'accessibilityHint'> & {
+    Pick<ButtonProps, 'label' | 'accessibilityHint' | 'onFocus' | 'onBlur'> & {
       disableUnderline?: boolean
       title?: TextProps['title']
       overridePresentation?: boolean
@@ -360,9 +384,9 @@ export function InlineLinkText({
     shouldProxy: shouldProxy,
   })
   const {
-    state: hovered,
-    onIn: onHoverIn,
-    onOut: onHoverOut,
+    state: interacted,
+    onIn: onInteract,
+    onOut: onInteractOut,
   } = useInteractionState()
   const flattenedStyle = flatten(style) || {}
 
@@ -374,7 +398,7 @@ export function InlineLinkText({
       {...rest}
       style={[
         {color: t.palette.primary_500},
-        hovered &&
+        interacted &&
           !disableUnderline && {
             ...web({
               outline: 0,
@@ -388,8 +412,24 @@ export function InlineLinkText({
       role="link"
       onPress={download ? undefined : onPress}
       onLongPress={onLongPress}
-      onMouseEnter={onHoverIn}
-      onMouseLeave={onHoverOut}
+      {...web({
+        onMouseEnter: () => {
+          rest.onMouseEnter?.()
+          onInteract()
+        },
+        onMouseLeave: () => {
+          rest.onMouseLeave?.()
+          onInteractOut()
+        },
+      })}
+      onFocus={(e: NativeSyntheticEvent<TargetedEvent>) => {
+        rest.onFocus?.(e)
+        onInteract()
+      }}
+      onBlur={(e: NativeSyntheticEvent<TargetedEvent>) => {
+        rest.onBlur?.(e)
+        onInteractOut()
+      }}
       accessibilityRole="link"
       href={href}
       {...web({
@@ -436,9 +476,9 @@ export function SimpleInlineLinkText({
 }) {
   const t = useTheme()
   const {
-    state: hovered,
-    onIn: onHoverIn,
-    onOut: onHoverOut,
+    state: interacted,
+    onIn: onInteract,
+    onOut: onInteractOut,
   } = useInteractionState()
   const flattenedStyle = flatten(style) || {}
   const isExternal = isExternalUrl(to)
@@ -451,7 +491,7 @@ export function SimpleInlineLinkText({
   const onPress = (e: GestureResponderEvent) => {
     const exitEarlyIfFalse = outerOnPress?.(e)
     if (exitEarlyIfFalse === false) return
-    Linking.openURL(href)
+    void Linking.openURL(href)
   }
 
   return (
@@ -462,7 +502,7 @@ export function SimpleInlineLinkText({
       {...rest}
       style={[
         {color: t.palette.primary_500},
-        hovered &&
+        interacted &&
           !disableUnderline && {
             ...web({
               outline: 0,
@@ -475,8 +515,24 @@ export function SimpleInlineLinkText({
       ]}
       role="link"
       onPress={onPress}
-      onMouseEnter={onHoverIn}
-      onMouseLeave={onHoverOut}
+      {...web({
+        onMouseEnter: () => {
+          rest.onMouseEnter?.()
+          onInteract()
+        },
+        onMouseLeave: () => {
+          rest.onMouseLeave?.()
+          onInteractOut()
+        },
+      })}
+      onFocus={(e: NativeSyntheticEvent<TargetedEvent>) => {
+        rest.onFocus?.(e)
+        onInteract()
+      }}
+      onBlur={(e: NativeSyntheticEvent<TargetedEvent>) => {
+        rest.onBlur?.(e)
+        onInteractOut()
+      }}
       accessibilityRole="link"
       href={href}
       {...web({

@@ -60,6 +60,20 @@ export type Events = {
   'router:navigate': {
     from?: string
   }
+  'nav:click': {
+    item:
+      | 'home'
+      | 'search'
+      | 'chat'
+      | 'notifications'
+      | 'profile'
+      | 'feeds'
+      | 'lists'
+      | 'saved'
+      | 'settings'
+      | 'menu'
+    surface: 'bottomBar' | 'drawer' | 'drawerHeader' | 'topBar' | 'leftNav'
+  }
   'deepLink:referrerReceived': {
     to: string
     referrer: string
@@ -230,6 +244,9 @@ export type Events = {
 
   'composer:gif:open': {}
   'composer:gif:select': {}
+  'composer:image:edit': {
+    platform: Platform['OS']
+  }
   'composerPrompt:press': {}
   'composerPrompt:camera:press': {}
   'composerPrompt:gallery:press': {}
@@ -446,6 +463,7 @@ export type Events = {
       | 'ExploreSuggestedAccounts'
       | 'OnboardingSuggestedAccounts'
       | 'FindContacts'
+      | 'GroupChat'
   }
   'profile:followers:view': {
     contextProfileDid: string
@@ -477,11 +495,14 @@ export type Events = {
   'suggestedUser:follow': {
     logContext:
       | 'Explore'
-      | 'InterstitialDiscover'
-      | 'InterstitialProfile'
-      | 'Profile'
+      | 'DiscoverInterstitial'
+      | 'ProfileInterstitial'
+      | 'ProfileHeader'
       | 'Onboarding'
+      | 'SeeMoreSuggestedUsers'
+      | 'ProgressGuide'
     location: 'Card' | 'Profile' | 'FollowAll'
+    recSource?: 'Search'
     recId?: number | string
     position: number
     suggestedDid: string
@@ -490,9 +511,11 @@ export type Events = {
   'suggestedUser:press': {
     logContext:
       | 'Explore'
-      | 'InterstitialDiscover'
-      | 'InterstitialProfile'
+      | 'DiscoverInterstitial'
+      | 'ProfileInterstitial'
+      | 'ProfileHeader'
       | 'Onboarding'
+      | 'SeeMoreSuggestedUsers'
     recId?: number | string
     position: number
     suggestedDid: string
@@ -501,11 +524,13 @@ export type Events = {
   'suggestedUser:seen': {
     logContext:
       | 'Explore'
-      | 'InterstitialDiscover'
-      | 'InterstitialProfile'
-      | 'Profile'
+      | 'DiscoverInterstitial'
+      | 'ProfileInterstitial'
+      | 'ProfileHeader'
       | 'Onboarding'
+      | 'SeeMoreSuggestedUsers'
       | 'ProgressGuide'
+    recSource?: 'Search'
     recId?: number | string
     position: number
     suggestedDid: string
@@ -514,13 +539,14 @@ export type Events = {
   'suggestedUser:seeMore': {
     logContext:
       | 'Explore'
-      | 'InterstitialDiscover'
-      | 'InterstitialProfile'
-      | 'Profile'
+      | 'DiscoverInterstitial'
+      | 'ProfileInterstitial'
+      | 'ProfileHeader'
       | 'Onboarding'
+    recId?: number | string
   }
   'suggestedUser:dismiss': {
-    logContext: 'InterstitialDiscover' | 'InterstitialProfile'
+    logContext: 'DiscoverInterstitial' | 'ProfileInterstitial' | 'ProfileHeader'
     recId?: number | string
     position: number
     suggestedDid: string
@@ -543,9 +569,14 @@ export type Events = {
       | 'ExploreSuggestedAccounts'
       | 'OnboardingSuggestedAccounts'
       | 'FindContacts'
+      | 'GroupChat'
   }
   'chat:create': {
-    logContext: 'ProfileHeader' | 'NewChatDialog' | 'SendViaChatDialog'
+    logContext:
+      | 'ProfileHeader'
+      | 'NewChatDialog'
+      | 'SendViaChatDialog'
+      | 'ConvoSettings'
   }
   'chat:open': {
     logContext:
@@ -553,6 +584,10 @@ export type Events = {
       | 'NewChatDialog'
       | 'ChatsList'
       | 'SendViaChatDialog'
+      | 'ConvoSettings'
+  }
+  'groupchat:create': {
+    logContext: 'NewChatDialog'
   }
   'starterPack:addUser': {
     starterPack?: string
@@ -707,20 +742,178 @@ export type Events = {
   'reportDialog:failure': {}
 
   translate: {
-    sourceLanguages: string[]
-    targetLanguage: string
+    os: Platform['OS']
+    /**
+     * The languages the content might be in, such as the user-supplied
+     * language codes on posts. Currently only available on posts.
+     */
+    possibleSourceLanguages: string[] | undefined
+    /**
+     * This is the user's configured primary language, which is always defined.
+     */
+    expectedTargetLanguage: string
+    /**
+     * The length of the text being translated. We assume shorter texts are
+     * more likely to have inaccurate translations.
+     */
     textLength: number
+    googleTranslate: boolean
   }
   'translate:result': {
-    method: 'on-device' | 'google-translate' | 'fallback-alert'
+    success: boolean
     os: Platform['OS']
-    sourceLanguage: string | null
-    targetLanguage: string
+    /**
+     * The languages the content might be in, such as the user-supplied
+     * language codes on posts. Currently only available on posts.
+     */
+    possibleSourceLanguages: string[] | undefined
+    /**
+     * The language we expected the content to be in. This could be based on
+     * user selection or on our confidence in the detected language. This is
+     * nullable because we may not always have an expected source language.
+     */
+    expectedSourceLanguage: string | null
+    /**
+     * This is the user's configured primary language, which is always defined.
+     */
+    expectedTargetLanguage: string
+    /**
+     * The language the translation result was actually in. This is nullable
+     * because the translation could have failed, in which case we won't have a
+     * result source language.
+     */
+    resultSourceLanguage: string | null
+    /**
+     * The language the translation result was translated into. This should be
+     * the same as `expectedTargetLanguage`, but we include it for completeness
+     * and in case there are any edge cases where they differ. This is nullable
+     * because if the translation failed, we won't have a result target
+     * language.
+     */
+    resultTargetLanguage: string | null
+    /**
+     * The length of the text being translated. We assume shorter texts are
+     * more likely to have inaccurate translations.
+     */
+    textLength: number
   }
   'translate:override': {
     os: Platform['OS']
-    sourceLanguage: string
-    targetLanguage: string
+    /**
+     * The languages the content might be in, such as the user-supplied
+     * language codes on posts. Currently only available on posts.
+     */
+    possibleSourceLanguages: string[] | undefined
+    /**
+     * The language the user has indicated the content is actually in, which
+     * may be different from the expected source language if the user is
+     * overriding the auto-detected language. This is the language the user
+     * wants to translate from after overriding.
+     */
+    expectedSourceLanguage: string
+    /**
+     * This is the user's configured primary language, which is always defined.
+     */
+    expectedTargetLanguage: string
+    /**
+     * The language the translation result was actually in, which the user now
+     * wishes to override.
+     */
+    resultSourceLanguage: string
+  }
+  'composer:language:suggestLanguage': {
+    os: Platform['OS']
+    /**
+     * The language we detected and suggested to the user as an override for the
+     * expected target language.
+     */
+    suggestedLanguage: string | undefined
+    /**
+     * This is the user's current composer languages, which are always defined.
+     */
+    currentTargetLanguages: string[]
+    /**
+     * The length of the text being translated. We assume shorter texts are
+     * more likely to have inaccurate translations.
+     */
+    textLength: number
+  }
+  'composer:language:acceptSuggestion': {
+    os: Platform['OS']
+    /**
+     * The language we detected and suggested to the user as an override for the
+     * expected target language.
+     */
+    suggestedLanguage: string | undefined
+    /**
+     * This is the user's current composer languages, which are always defined.
+     */
+    currentTargetLanguages: string[]
+    /**
+     * The length of the text being translated. We assume shorter texts are
+     * more likely to have inaccurate translations.
+     */
+    textLength: number
+  }
+  'composer:language:declineSuggestion': {
+    os: Platform['OS']
+    /**
+     * The language we detected and suggested to the user as an override for the
+     * expected target language.
+     */
+    suggestedLanguage: string | undefined
+    /**
+     * This is the user's current composer languages, which are always defined.
+     */
+    currentTargetLanguages: string[]
+    /**
+     * The length of the text being translated. We assume shorter texts are
+     * more likely to have inaccurate translations.
+     */
+    textLength: number
+  }
+  'composer:language:replyNudgeAccept': {
+    /**
+     * The language of the post the user is replying to.
+     */
+    replyToLanguage: string
+    /**
+     * This is the user's current composer languages, which are always defined.
+     */
+    currentTargetLanguages: string[]
+  }
+  'composer:language:replyNudgeDecline': {
+    /**
+     * The language of the post the user is replying to.
+     */
+    replyToLanguage: string
+    /**
+     * This is the user's current composer languages, which are always defined.
+     */
+    currentTargetLanguages: string[]
+  }
+  'composer:language:nudgeUser': {
+    os: Platform['OS']
+    /**
+     * The language we detected and suggested to the user as an override for the
+     * expected target language.
+     */
+    suggestedLanguage: string | undefined
+    /**
+     * This is the user's current composer languages, which are always defined.
+     */
+    currentTargetLanguages: string[]
+    /**
+     * The length of the text being translated. We assume shorter texts are
+     * more likely to have inaccurate translations.
+     */
+    textLength: number
+  }
+  'composer:language:langSelectorPressed': {
+    /**
+     * If the user was nudged by our language detection to update their language
+     */
+    wasNudged: boolean
   }
 
   'postMenu:openMuteWordsDialog': {
@@ -794,14 +987,25 @@ export type Events = {
   'share:press:recentDm': {}
   'share:press:embed': {}
 
+  'embed:standardSite:view': {url: string}
+  'embed:standardSite:article:press': {url: string}
+  'embed:standardSite:article:longPress': {url: string}
+  'embed:standardSite:publication:press': {url: string}
+  'embed:standardSite:publication:longPress': {url: string}
+  'embed:standardSite:publicationCta:press': {url: string}
+  'embed:standardSite:publicationCta:longPress': {url: string}
+  'embed:standardSite:subscribe:press': {url: string}
+  'embed:standardSite:subscribe:longPress': {url: string}
+  'embed:standardSite:authorHandle:press': {handle: string}
+
   'thread:click:showOtherReplies': {}
   'thread:click:hideReplyForMe': {}
   'thread:click:hideReplyForEveryone': {}
   'thread:preferences:load': {
-    [key: string]: any
+    [key: string]: unknown
   }
   'thread:preferences:update': {
-    [key: string]: any
+    [key: string]: unknown
   }
   'thread:click:headerMenuOpen': {}
   'thread:click:editOwnThreadgate': {}
@@ -813,7 +1017,7 @@ export type Events = {
   'activityPreference:changeChannels': {
     name: string
     push: boolean
-    list: boolean
+    list?: boolean
   }
   'activityPreference:changeFilter': {
     name: string
@@ -970,4 +1174,19 @@ export type Events = {
   'profile:associated:germ:click-self-info': {}
   'profile:associated:germ:self-disconnect': {}
   'profile:associated:germ:self-reconnect': {}
+
+  // Gallery carousel events
+  'post:gallery:swipe': {
+    fromImage: number
+    toImage: number
+    totalImages: number
+  }
+  'post:gallery:openLightbox': {
+    fromImage: number
+    totalImages: number
+  }
+  'post:gallery:impression': {
+    totalImages: number
+    postUri: string
+  }
 }

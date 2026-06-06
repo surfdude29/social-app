@@ -1,4 +1,4 @@
-import {useEffect, useId, useRef, useState} from 'react'
+import {useCallback, useEffect, useId, useRef, useState} from 'react'
 import {View} from 'react-native'
 import {type AppBskyEmbedVideo} from '@atproto/api'
 import {msg} from '@lingui/core/macro'
@@ -37,7 +37,7 @@ export function VideoEmbedInnerWeb({
     throw error
   }
 
-  const {hlsRef, loop} = useHLS({
+  const {hlsRef, loop, updateCuePositions} = useHLS({
     playlist: embed.playlist,
     setHasSubtitleTrack,
     setError,
@@ -90,6 +90,7 @@ export function VideoEmbedInnerWeb({
           hasSubtitleTrack={hasSubtitleTrack}
           isGif={embed.presentation === 'gif'}
           altText={embed.alt}
+          updateCuePositions={updateCuePositions}
         />
       </div>
     </View>
@@ -100,6 +101,34 @@ export class HLSUnsupportedError extends Error {
   constructor() {
     super('HLS is not supported')
   }
+}
+
+// Bluesky serves HLS as MPEG-TS with H.264 + AAC. `Hls.isSupported()` is loose
+// (true if MSE supports *any* of {H.264, AV1, VP9} OR *any* of {AAC, FLAC}),
+// so on Linux boxes missing H.264 (e.g. no ubuntu-restricted-extras, sandboxed
+// Firefox snap) it returns true and playback fails later on segment append.
+// Use Baseline 3.0 to match hls.js's own probe - it's the most universal H.264
+// profile, so if it isn't supported, no H.264 is.
+// Mirror hls.js's `getMediaSource` lookup (ManagedMediaSource on modern iOS,
+// then MediaSource, then WebKitMediaSource) so we probe the same constructor
+// it will actually use for playback.
+function canPlayBskyVideoCodecs(): boolean {
+  if (typeof self === 'undefined') return false
+  const globalSelf = self as typeof self & {
+    ManagedMediaSource?: typeof MediaSource
+    WebKitMediaSource?: typeof MediaSource
+  }
+  const mediaSource =
+    globalSelf.ManagedMediaSource ||
+    globalSelf.MediaSource ||
+    globalSelf.WebKitMediaSource
+  if (!mediaSource || typeof mediaSource.isTypeSupported !== 'function') {
+    return false
+  }
+  return (
+    mediaSource.isTypeSupported('video/mp4; codecs="avc1.42E01E"') &&
+    mediaSource.isTypeSupported('audio/mp4; codecs="mp4a.40.2"')
+  )
 }
 
 export class VideoNotFoundError extends Error {
@@ -145,6 +174,47 @@ function useHLS({
   }, [Hls, setHlsLoading])
 
   const hlsRef = useRef<HlsTypes.default | undefined>(undefined)
+  const controlsVisibleRef = useRef(false)
+
+  /**
+   * Repositions VTT subtitle cues using percentage-based line values
+   * (snapToLines=false) so that multi-line/wrapped cues grow upward
+   * instead of extending offscreen. Moves cues higher when controls
+   * are visible to avoid occlusion by the scrub bar.
+   *
+   * Called from two sites:
+   * - SUBTITLE_FRAG_PROCESSED: applies positioning to newly loaded cues
+   * - VideoControls effect: updates positioning when controls show/hide
+   */
+  const updateCuePositions = useCallback(
+    (controlsVisible?: boolean) => {
+      if (controlsVisible != null) {
+        // save controlsVisible state so that when it's called from SUBTITLE_FRAG_PROCESSED,
+        // the most recent value is used (as we won't know the control state there)
+        controlsVisibleRef.current = controlsVisible
+      }
+      // magic numbers: cue position, % from top of video
+      const line = controlsVisibleRef.current ? 70 : 85
+      const video = videoRef.current
+      if (!video) return
+      for (let i = 0; i < video.textTracks.length; i++) {
+        const track = video.textTracks[i]
+        if (track.cues) {
+          for (let j = 0; j < track.cues.length; j++) {
+            const cue = track.cues[j] as VTTCue
+            cue.snapToLines = false
+            cue.line = line
+          }
+        }
+        // toggle track mode to force the browser to re-render active cues
+        if (track.mode === 'showing') {
+          track.mode = 'hidden'
+          track.mode = 'showing'
+        }
+      }
+    },
+    [videoRef],
+  )
   const [lowQualityFragments, setLowQualityFragments] = useState<
     HlsTypes.Fragment[]
   >([])
@@ -186,7 +256,7 @@ function useHLS({
   useEffect(() => {
     if (!videoRef.current) return
     if (!Hls) return
-    if (!Hls.isSupported()) {
+    if (!Hls.isSupported() || !canPlayBskyVideoCodecs()) {
       throw new HLSUnsupportedError()
     }
 
@@ -218,6 +288,10 @@ function useHLS({
       if (data.subtitleTracks.length > 0) {
         setHasSubtitleTrack(true)
       }
+    })
+
+    hls.on(Hls.Events.SUBTITLE_FRAG_PROCESSED, () => {
+      updateCuePositions()
     })
 
     hls.on(Hls.Events.FRAG_BUFFERED, (_event, {frag}) => {
@@ -307,5 +381,6 @@ function useHLS({
   return {
     hlsRef,
     loop: !hasLowQualityFragmentAtStart,
+    updateCuePositions,
   }
 }

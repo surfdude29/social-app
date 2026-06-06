@@ -1,5 +1,4 @@
 import '#/logger/sentry/setup'
-import '#/view/icons'
 
 import {Fragment, useEffect, useState} from 'react'
 import {GestureHandlerRootView} from 'react-native-gesture-handler'
@@ -11,13 +10,11 @@ import {
 import * as ScreenOrientation from 'expo-screen-orientation'
 import * as SplashScreen from 'expo-splash-screen'
 import * as SystemUI from 'expo-system-ui'
-import {msg} from '@lingui/core/macro'
-import {useLingui} from '@lingui/react'
+import {useLingui} from '@lingui/react/macro'
 import * as Sentry from '@sentry/react-native'
 
 import {Provider as HideBottomBarBorderProvider} from '#/lib/hooks/useHideBottomBarBorder'
 import {QueryProvider} from '#/lib/react-query'
-import {s} from '#/lib/styles'
 import {ThemeProvider} from '#/lib/ThemeContext'
 import {Provider as TranslateOnDeviceProvider} from '#/lib/translation'
 import I18nProvider from '#/locale/i18nProvider'
@@ -33,7 +30,6 @@ import {Provider as EmailVerificationProvider} from '#/state/email-verification'
 import {listenSessionDropped} from '#/state/events'
 import {GlobalGestureEventsProvider} from '#/state/global-gesture-events'
 import {Provider as HomeBadgeProvider} from '#/state/home-badge'
-import {Provider as LightboxStateProvider} from '#/state/lightbox'
 import {MessagesProvider} from '#/state/messages'
 import {Provider as ModalStateProvider} from '#/state/modals'
 import {init as initPersistedState} from '#/state/persisted'
@@ -51,19 +47,20 @@ import {
 import {readLastActiveAccount} from '#/state/session/util'
 import {Provider as ShellStateProvider} from '#/state/shell'
 import {Provider as ComposerProvider} from '#/state/shell/composer'
+import {Provider as LandingProvider} from '#/state/shell/landing'
 import {Provider as LoggedOutViewProvider} from '#/state/shell/logged-out'
 import {Provider as OnboardingProvider} from '#/state/shell/onboarding'
 import {Provider as ProgressGuideProvider} from '#/state/shell/progress-guide'
 import {Provider as SelectedFeedProvider} from '#/state/shell/selected-feed'
-import {Provider as StarterPackProvider} from '#/state/shell/starter-pack'
 import {Provider as HiddenRepliesProvider} from '#/state/threadgate-hidden-replies'
 import {TestCtrls} from '#/view/com/testing/TestCtrls'
 import {Shell} from '#/view/shell'
-import {ThemeProvider as Alf} from '#/alf'
+import {atoms as a, ThemeProvider as Alf} from '#/alf'
 import {useColorModeTheme} from '#/alf/util/useColorModeTheme'
 import {Provider as ContextMenuProvider} from '#/components/ContextMenu'
-import {useStarterPackEntry} from '#/components/hooks/useStarterPackEntry'
+import {useLandingEntry} from '#/components/hooks/useLandingEntry'
 import {Provider as IntentDialogProvider} from '#/components/intents/IntentDialogs'
+import {Provider as LightboxStateProvider} from '#/components/Lightbox/state'
 import {Provider as PolicyUpdateOverlayProvider} from '#/components/PolicyUpdateOverlay'
 import {Provider as PortalProvider} from '#/components/Portal'
 import {Provider as VideoVolumeProvider} from '#/components/Post/Embed/VideoEmbed/VideoVolumeContext'
@@ -89,9 +86,9 @@ import {Splash} from '#/Splash'
 import {BottomSheetProvider} from '../modules/bottom-sheet'
 import {BackgroundNotificationPreferencesProvider} from '../modules/expo-background-notification-handler/src/BackgroundNotificationHandlerProvider'
 
-SplashScreen.preventAutoHideAsync()
+void SplashScreen.preventAutoHideAsync()
 if (IS_IOS) {
-  SystemUI.setBackgroundColorAsync('black')
+  void SystemUI.setBackgroundColorAsync('black')
 }
 if (IS_ANDROID) {
   // iOS is handled by the config plugin -sfn
@@ -105,18 +102,18 @@ if (IS_ANDROID) {
 /**
  * Begin geolocation ASAP
  */
-Geo.resolve()
-prefetchAgeAssuranceConfig()
-prefetchLiveEvents()
-prefetchAppConfig()
+void Geo.resolve()
+void prefetchAgeAssuranceConfig()
+void prefetchLiveEvents()
+void prefetchAppConfig()
 
 function InnerApp() {
   const [isReady, setIsReady] = useState(false)
   const {currentAccount} = useSession()
   const {resumeSession} = useSessionApi()
   const theme = useColorModeTheme()
-  const {_} = useLingui()
-  const hasCheckedReferrer = useStarterPackEntry()
+  const {t: l} = useLingui()
+  const hasCheckedLanding = useLandingEntry()
 
   // init
   useEffect(() => {
@@ -134,22 +131,22 @@ function InnerApp() {
       }
     }
     const account = readLastActiveAccount()
-    onLaunch(account)
+    void onLaunch(account)
   }, [resumeSession])
 
   useEffect(() => {
     return listenSessionDropped(() => {
-      Toast.show(_(msg`Sorry! Your session expired. Please sign in again.`), {
+      Toast.show(l`Sorry! Your session expired. Please sign in again.`, {
         type: 'info',
       })
     })
-  }, [_])
+  }, [l])
 
   return (
     <Alf theme={theme}>
       <ThemeProvider theme={theme}>
         <ContextMenuProvider>
-          <Splash isReady={isReady && hasCheckedReferrer}>
+          <Splash isReady={isReady && hasCheckedLanding}>
             <VideoVolumeProvider>
               <Fragment
                 // Resets the entire tree below when it changes:
@@ -176,7 +173,7 @@ function InnerApp() {
                                                     <EmailVerificationProvider>
                                                       <HideBottomBarBorderProvider>
                                                         <GestureHandlerRootView
-                                                          style={s.h100pct}>
+                                                          style={a.h_full}>
                                                           <GlobalGestureEventsProvider>
                                                             <IntentDialogProvider>
                                                               <TranslateOnDeviceProvider>
@@ -217,11 +214,11 @@ function InnerApp() {
 }
 
 function App() {
-  const [isReady, setReady] = useState(false)
+  const [isReady, setIsReady] = useState(false)
 
   useEffect(() => {
-    Promise.all([initPersistedState(), Geo.resolve(), setupDeviceId]).then(() =>
-      setReady(true),
+    void Promise.all([initPersistedState(), Geo.resolve(), setupDeviceId]).then(
+      () => setIsReady(true),
     )
   }, [])
 
@@ -237,7 +234,7 @@ function App() {
     <Geo.Provider>
       <AppConfigProvider>
         <A11yProvider>
-          <KeyboardControllerProvider>
+          <KeyboardControllerProvider preload={false}>
             <OnboardingProvider>
               <AnalyticsContext>
                 <SessionProvider>
@@ -249,12 +246,12 @@ function App() {
                             <LightboxStateProvider>
                               <PortalProvider>
                                 <BottomSheetProvider>
-                                  <StarterPackProvider>
+                                  <LandingProvider>
                                     <SafeAreaProvider
                                       initialMetrics={initialWindowMetrics}>
                                       <InnerApp />
                                     </SafeAreaProvider>
-                                  </StarterPackProvider>
+                                  </LandingProvider>
                                 </BottomSheetProvider>
                               </PortalProvider>
                             </LightboxStateProvider>

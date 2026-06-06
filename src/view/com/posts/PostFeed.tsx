@@ -12,6 +12,7 @@ import {
 } from 'react-native'
 import {
   type AppBskyActorDefs,
+  AppBskyEmbedExternal,
   AppBskyEmbedVideo,
   type AppBskyFeedDefs,
 } from '@atproto/api'
@@ -38,6 +39,7 @@ import {
   RQKEY,
   usePostFeedQuery,
 } from '#/state/queries/post-feed'
+import {truncateAndInvalidate} from '#/state/queries/util'
 import {useSession} from '#/state/session'
 import {useProgressGuide} from '#/state/shell/progress-guide'
 import {useSelectedFeed} from '#/state/shell/selected-feed'
@@ -57,6 +59,7 @@ import {
 } from '#/components/feeds/PostFeedVideoGridRow'
 import {TrendingInterstitial} from '#/components/interstitials/Trending'
 import {TrendingVideos as TrendingVideosInterstitial} from '#/components/interstitials/TrendingVideos'
+import {isStandardSiteEmbed} from '#/components/Post/Embed/StandardSiteEmbed/utils'
 import {useAnalytics} from '#/analytics'
 import {IS_IOS, IS_NATIVE, IS_WEB} from '#/env'
 import {DiscoverFeedLiveEventFeedsAndTrendingBanner} from '#/features/liveEvents/components/DiscoverFeedLiveEventFeedsAndTrendingBanner'
@@ -700,13 +703,22 @@ let PostFeed = ({
     })
     setIsPTRing(true)
     try {
-      await refetch()
+      await truncateAndInvalidate(queryClient, RQKEY(feed, feedParams))
       onHasNew?.(false)
     } catch (err) {
       logger.error('Failed to refresh posts feed', {message: err})
     }
     setIsPTRing(false)
-  }, [ax, refetch, setIsPTRing, onHasNew, feed, feedType, enabled])
+  }, [
+    ax,
+    queryClient,
+    setIsPTRing,
+    onHasNew,
+    feed,
+    feedParams,
+    feedType,
+    enabled,
+  ])
 
   const onEndReached = useCallback(async () => {
     if (isFetching || !hasNextPage || isError) return
@@ -895,6 +907,7 @@ let PostFeed = ({
 
   const seenActorWithStatusRef = useRef<Set<string>>(new Set())
   const seenPostUrisRef = useRef<Set<string>>(new Set())
+  const seenStandardSiteUrisRef = useRef<Set<string>>(new Set())
 
   // Helper to calculate position in feed (count only root posts, not interstitials or thread replies)
   const getPostPosition = useNonReactiveCallback(
@@ -963,6 +976,16 @@ let PostFeed = ({
               feed,
             })
           }
+        }
+
+        // Standard site embed view tracking
+        if (
+          AppBskyEmbedExternal.isView(post.embed) &&
+          isStandardSiteEmbed(post.embed.external) &&
+          !seenStandardSiteUrisRef.current.has(post.embed.external.uri)
+        ) {
+          seenStandardSiteUrisRef.current.add(post.embed.external.uri)
+          ax.metric('embed:standardSite:view', {url: post.embed.external.uri})
         }
       } else if (item.type === 'videoGridRow') {
         // Track each video in the grid row
