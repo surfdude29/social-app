@@ -523,7 +523,11 @@ function GalleryImage({
                   a.font_bold,
                   largeAltBadge ? a.text_xs : {fontSize: 8},
                 ]}>
-                {index + 1}/{imageCount}
+                <Trans
+                  context="gallery-badge-numbers"
+                  comment="Badge showing the current image position out of the total number of images in a gallery, e.g. 1/3.">
+                  {index + 1}/{imageCount}
+                </Trans>
               </Text>
             </View>
           ) : null}
