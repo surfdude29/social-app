@@ -34,6 +34,7 @@ import {
   RichText,
 } from '@atproto/api'
 import {useScrollEdgeEffectRef} from '@bsky.app/expo-scroll-edge-effect'
+import {Trans} from '@lingui/react/macro'
 
 import {useNonReactiveCallback} from '#/lib/hooks/useNonReactiveCallback'
 import {mergeRefs} from '#/lib/merge-refs'
@@ -568,7 +569,11 @@ export function MessagesList({
         />
       )
     } else if (item.type === 'deleted-message') {
-      return <Text>Deleted message</Text>
+      return (
+        <Text>
+          <Trans>Deleted message</Trans>
+        </Text>
+      )
     } else if (item.type === 'system-message') {
       return (
         <SystemMessageItem
