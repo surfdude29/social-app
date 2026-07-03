@@ -42,6 +42,7 @@ import {Loader} from '#/components/Loader'
 import * as ProfileCard from '#/components/ProfileCard'
 import * as Toast from '#/components/Toast'
 import {Text} from '#/components/Typography'
+import {useAnalytics} from '#/analytics'
 import type * as bsky from '#/types/bsky'
 import {InviteLinkDialog} from './components/InviteLinkDialog'
 
@@ -87,7 +88,6 @@ function JoinRequestsInner() {
           title={l`Something went wrong`}
           message={l`We couldn’t load this conversation’s join requests`}
           onRetry={() => convoState.error.retry()}
-          sideBorders={false}
         />
       </>
     )
@@ -130,6 +130,7 @@ function JoinRequestsList({
 }) {
   const t = useTheme()
   const {t: l} = useLingui()
+  const ax = useAnalytics()
   const moderationOpts = useModerationOpts()
   const bottomBarOffset = useBottomBarOffset()
   const {currentAccount} = useSession()
@@ -137,10 +138,12 @@ function JoinRequestsList({
   const queryClient = useQueryClient()
   const inviteLinkControl = Dialog.useDialogControl()
 
+  const convoId = convo.view.id
+
   const getRemainingRequestCount = () => {
     const data = queryClient.getQueryData<
       InfiniteData<ChatBskyGroupListJoinRequests.OutputSchema>
-    >(createListJoinRequestsQueryKey({convoId: convo.view.id}))
+    >(createListJoinRequestsQueryKey({convoId}))
     return data?.pages.reduce((sum, page) => sum + page.requests.length, 0) ?? 0
   }
 
@@ -173,12 +176,13 @@ function JoinRequestsList({
     ) ?? 0
 
   const {mutate: approveJoinRequest, isPending: isApprovePending} =
-    useJoinRequestMutation('approve', convo.view.id, {
+    useJoinRequestMutation('approve', convoId, {
       onSuccess: () => {
+        ax.metric('groupchat:owner:joinRequest:accept', {convoId})
         Toast.show(l`Request approved.`)
         if (getRemainingRequestCount() < 1) {
           navigation.replace('MessagesConversationSettings', {
-            conversation: convo.view.id,
+            conversation: convoId,
           })
         }
       },
@@ -205,17 +209,18 @@ function JoinRequestsList({
     })
 
   const {mutate: rejectJoinRequest, isPending: isRejectPending} =
-    useJoinRequestMutation('reject', convo.view.id, {
+    useJoinRequestMutation('reject', convoId, {
       onSuccess: () => {
-        Toast.show(l`Request ignored.`)
+        ax.metric('groupchat:owner:joinRequest:reject', {convoId})
+        Toast.show(l`Request rejected.`)
         if (getRemainingRequestCount() < 1) {
           navigation.replace('MessagesConversationSettings', {
-            conversation: convo.view.id,
+            conversation: convoId,
           })
         }
       },
       onError: error => {
-        let errorMessage = l`Failed to ignore join request`
+        let errorMessage = l`Failed to reject join request`
         if (isNetworkError(error)) {
           errorMessage = l`A network error occurred. Please check your internet connection.`
         } else if (
@@ -225,7 +230,7 @@ function JoinRequestsList({
         } else if (
           error instanceof ChatBskyGroupRejectJoinRequest.InsufficientRoleError
         ) {
-          errorMessage = l`Only admins can ignore join requests.`
+          errorMessage = l`Only admins can reject join requests.`
         }
         Toast.show(errorMessage, {type: 'error'})
       },
@@ -475,14 +480,14 @@ function RejectButton({
 
   return (
     <Button
-      label={l`Ignore join request`}
+      label={l`Reject join request`}
       size="small"
       color="secondary"
       disabled={disabled}
       onPress={onPress}>
       <ButtonText>
-        <Trans comment="Ignore a request to join a chat" context="button">
-          Ignore
+        <Trans comment="Reject a request to join a chat" context="button">
+          Reject
         </Trans>
       </ButtonText>
     </Button>
