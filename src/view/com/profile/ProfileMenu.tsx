@@ -210,7 +210,6 @@ let ProfileMenu = ({
   const onPressUnfollowAccount = useCallback(async () => {
     try {
       await queueUnfollow()
-      Toast.show(l({message: 'Account unfollowed', context: 'toast'}))
     } catch (err) {
       const e = err as Error
       if (e?.name !== 'AbortError') {

@@ -80,6 +80,7 @@ import {
   prefetchLiveEvents,
   Provider as LiveEventsProvider,
 } from '#/features/liveEvents/context'
+import {PendingUnfollowsFlusher} from '#/features/unfollowUndo'
 import * as Geo from '#/geolocation'
 import {Splash} from '#/Splash'
 import {BottomSheetProvider} from '../modules/bottom-sheet'
@@ -179,6 +180,7 @@ function InnerApp() {
                                                                 <TestCtrls />
                                                                 <Shell />
                                                                 <ToastOutlet />
+                                                                <PendingUnfollowsFlusher />
                                                               </TranslateOnDeviceProvider>
                                                             </IntentDialogProvider>
                                                           </GlobalGestureEventsProvider>

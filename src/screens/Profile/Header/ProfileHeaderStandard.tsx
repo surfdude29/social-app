@@ -268,15 +268,6 @@ export function HeaderStandardButtons({
       try {
         await queueUnfollow()
         onUnfollow?.()
-        Toast.show(
-          _(
-            msg`No longer following ${sanitizeDisplayName(
-              profile.displayName || profile.handle,
-              moderation.ui('displayName'),
-            )}`,
-          ),
-          {type: 'default'},
-        )
       } catch (err) {
         const e = err as Error
         if (e?.name !== 'AbortError') {

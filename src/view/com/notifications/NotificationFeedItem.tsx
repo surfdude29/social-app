@@ -818,13 +818,6 @@ function FollowBackButton({profile}: {profile: AppBskyActorDefs.ProfileView}) {
 
     try {
       await queueUnfollow()
-      Toast.show(
-        _(
-          msg`No longer following ${sanitizeDisplayName(
-            profile.displayName || profile.handle,
-          )}`,
-        ),
-      )
     } catch (err: any) {
       if (err?.name !== 'AbortError') {
         Toast.show(_(msg`An issue occurred, please try again.`), {

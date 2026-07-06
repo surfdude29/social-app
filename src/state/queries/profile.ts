@@ -8,8 +8,10 @@ import {
   type AtpAgent,
   AtUri,
   type ComAtprotoRepoUploadBlob,
+  moderateProfile,
   type Un$Typed,
 } from '@atproto/api'
+import {useLingui} from '@lingui/react/macro'
 import {
   type InfiniteData,
   keepPreviousData,
@@ -22,9 +24,12 @@ import {
 import {uploadBlob} from '#/lib/api'
 import {until} from '#/lib/async/until'
 import {useToggleMutationQueue} from '#/lib/hooks/useToggleMutationQueue'
+import {sanitizeDisplayName} from '#/lib/strings/display-names'
+import {logger} from '#/logger'
 import {updateProfileShadow} from '#/state/cache/profile-shadow'
 import {type Shadow} from '#/state/cache/types'
 import {type ImageMeta} from '#/state/gallery'
+import {useModerationOpts} from '#/state/preferences/moderation-opts'
 import {STALE} from '#/state/queries'
 import {resetProfilePostsQueries} from '#/state/queries/post-feed'
 import {RQKEY as PROFILE_FOLLOWS_RQKEY} from '#/state/queries/profile-follows'
@@ -35,8 +40,14 @@ import {
 import {useUpdateProfileVerificationCache} from '#/state/queries/verification/useUpdateProfileVerificationCache'
 import {useAgent, useSession} from '#/state/session'
 import * as userActionHistory from '#/state/userActionHistory'
+import * as Toast from '#/components/Toast'
 import {useAnalytics} from '#/analytics'
 import {type Metrics, toClout} from '#/analytics/metrics'
+import {
+  cancelPendingUnfollow,
+  showUnfollowUndoToast,
+  stagePendingUnfollow,
+} from '#/features/unfollowUndo'
 import type * as bsky from '#/types/bsky'
 import {
   ProgressGuideAction,
@@ -243,6 +254,66 @@ export function useProfileUpdateMutation() {
   })
 }
 
+type FollowsQueryData = InfiniteData<AppBskyGraphGetFollows.OutputSchema>
+
+/**
+ * Optimistically removes an unfollowed profile from the current account's
+ * follows cache (used e.g. for avatar displays).
+ */
+function removeProfileFromFollowsCache(
+  queryClient: QueryClient,
+  currentAccountDid: string,
+  did: string,
+) {
+  queryClient.setQueryData<FollowsQueryData>(
+    PROFILE_FOLLOWS_RQKEY(currentAccountDid),
+    old => {
+      if (!old?.pages?.[0]) return old
+      return {
+        ...old,
+        pages: old.pages.map(page => ({
+          ...page,
+          follows: page.follows.filter(f => f.did !== did),
+        })),
+      }
+    },
+  )
+}
+
+/**
+ * Optimistically prepends a followed profile to the current account's
+ * follows cache. No-op if the profile is already present.
+ */
+function prependProfileToFollowsCache(
+  queryClient: QueryClient,
+  currentAccountDid: string,
+  profile: bsky.profile.AnyProfileView,
+) {
+  queryClient.setQueryData<FollowsQueryData>(
+    PROFILE_FOLLOWS_RQKEY(currentAccountDid),
+    old => {
+      if (!old?.pages?.[0]) return old
+      const alreadyExists = old.pages[0].follows.some(
+        f => f.did === profile.did,
+      )
+      if (alreadyExists) return old
+      return {
+        ...old,
+        pages: [
+          {
+            ...old.pages[0],
+            follows: [
+              profile as AppBskyActorDefs.ProfileView,
+              ...old.pages[0].follows,
+            ],
+          },
+          ...old.pages.slice(1),
+        ],
+      }
+    },
+  )
+}
+
 export function useProfileFollowMutationQueue(
   profile: Shadow<bsky.profile.AnyProfileView>,
   logContext: Metrics['profile:follow']['logContext'],
@@ -252,6 +323,9 @@ export function useProfileFollowMutationQueue(
   const agent = useAgent()
   const queryClient = useQueryClient()
   const {currentAccount} = useSession()
+  const ax = useAnalytics()
+  const moderationOpts = useModerationOpts()
+  const {t: l} = useLingui()
   const did = profile.did
   const initialFollowingUri = profile.viewer?.following
   const followMutation = useProfileFollowMutation(
@@ -290,43 +364,11 @@ export function useProfileFollowMutationQueue(
 
       // Optimistically update profile follows cache for avatar displays
       if (currentAccount?.did) {
-        type FollowsQueryData =
-          InfiniteData<AppBskyGraphGetFollows.OutputSchema>
-        queryClient.setQueryData<FollowsQueryData>(
-          PROFILE_FOLLOWS_RQKEY(currentAccount.did),
-          old => {
-            if (!old?.pages?.[0]) return old
-            if (finalFollowingUri) {
-              // Add the followed profile to the beginning
-              const alreadyExists = old.pages[0].follows.some(
-                f => f.did === profile.did,
-              )
-              if (alreadyExists) return old
-              return {
-                ...old,
-                pages: [
-                  {
-                    ...old.pages[0],
-                    follows: [
-                      profile as AppBskyActorDefs.ProfileView,
-                      ...old.pages[0].follows,
-                    ],
-                  },
-                  ...old.pages.slice(1),
-                ],
-              }
-            } else {
-              // Remove the unfollowed profile
-              return {
-                ...old,
-                pages: old.pages.map(page => ({
-                  ...page,
-                  follows: page.follows.filter(f => f.did !== profile.did),
-                })),
-              }
-            }
-          },
-        )
+        if (finalFollowingUri) {
+          prependProfileToFollowsCache(queryClient, currentAccount.did, profile)
+        } else {
+          removeProfileFromFollowsCache(queryClient, currentAccount.did, did)
+        }
       }
 
       if (finalFollowingUri) {
@@ -346,6 +388,14 @@ export function useProfileFollowMutationQueue(
   })
 
   const queueFollow = useCallback(() => {
+    /*
+     * A buffered unfollow means the follow record still exists server-side.
+     * Cancel the staged delete (which also reverts the optimistic UI)
+     * instead of creating a duplicate follow record.
+     */
+    if (cancelPendingUnfollow(did)) {
+      return Promise.resolve(undefined)
+    }
     // optimistically update
     updateProfileShadow(queryClient, did, {
       followingUri: 'pending',
@@ -354,12 +404,92 @@ export function useProfileFollowMutationQueue(
   }, [queryClient, did, queueToggle])
 
   const queueUnfollow = useCallback(() => {
-    // optimistically update
+    const followUri = initialFollowingUri
+    if (followUri && followUri !== 'pending') {
+      /*
+       * Buffered unfollow: update the UI optimistically, stage the actual
+       * network delete behind the undo window, and show a toast with an
+       * Undo action. On undo the staged delete is discarded and the UI
+       * reverts - no request is ever made. Everything the commit needs is
+       * captured here, since by the time it runs the optimistic shadow
+       * update has already cleared `profile.viewer?.following` and the
+       * component may have unmounted.
+       */
+      const currentAccountDid = currentAccount?.did
+      updateProfileShadow(queryClient, did, {
+        followingUri: undefined,
+      })
+      if (currentAccountDid) {
+        removeProfileFromFollowsCache(queryClient, currentAccountDid, did)
+      }
+      const errorMessage = l`An issue occurred, please try again.`
+      const revert = () => {
+        updateProfileShadow(queryClient, did, {
+          followingUri: followUri,
+        })
+        if (currentAccountDid) {
+          prependProfileToFollowsCache(queryClient, currentAccountDid, profile)
+        }
+      }
+      let toastId: string | undefined
+      stagePendingUnfollow({
+        did,
+        followUri,
+        revert,
+        onDiscardToast: () => {
+          if (toastId) {
+            Toast.dismiss(toastId)
+          }
+        },
+        commit: async () => {
+          try {
+            ax.metric('profile:unfollow', {logContext})
+            await agent.deleteFollow(followUri)
+            userActionHistory.unfollow([did])
+          } catch (e) {
+            revert()
+            logger.error('Failed to commit buffered unfollow', {
+              safeMessage: e,
+            })
+            Toast.show(errorMessage, {type: 'error'})
+          }
+        },
+      })
+      toastId = showUnfollowUndoToast({
+        displayName: sanitizeDisplayName(
+          profile.displayName || profile.handle,
+          moderationOpts
+            ? moderateProfile(profile, moderationOpts).ui('displayName')
+            : undefined,
+        ),
+        onUndo: () => {
+          cancelPendingUnfollow(did)
+        },
+      })
+      return Promise.resolve(undefined)
+    }
+    /*
+     * No confirmed follow record yet (a follow is still in flight) or
+     * already unfollowed: fall through to the toggle queue, which threads
+     * the confirmed uri into the delete. No undo toast in this case.
+     */
     updateProfileShadow(queryClient, did, {
       followingUri: undefined,
     })
     return queueToggle(false)
-  }, [queryClient, did, queueToggle])
+  }, [
+    initialFollowingUri,
+    currentAccount?.did,
+    queryClient,
+    did,
+    profile,
+    moderationOpts,
+    l,
+    ax,
+    logContext,
+    agent,
+    queueToggle,
+  ])
 
   return [queueFollow, queueUnfollow] as const
 }

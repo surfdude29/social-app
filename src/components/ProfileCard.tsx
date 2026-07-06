@@ -517,12 +517,6 @@ export function FollowButtonInner({
     e.stopPropagation()
     try {
       await queueUnfollow()
-      Toast.show(
-        l`No longer following ${sanitizeDisplayName(
-          profile.displayName || profile.handle,
-          moderation.ui('displayName'),
-        )}`,
-      )
       onPressProp?.(e)
     } catch (e) {
       const err = e as Error

@@ -21,4 +21,8 @@ api.custom = () => {}
 api.loading = () => {}
 api.dismiss = () => {}
 
-export function show() {}
+export function show() {
+  return ''
+}
+
+export function dismiss() {}

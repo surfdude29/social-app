@@ -1,0 +1,93 @@
+/**
+ * Window during which a staged unfollow can be undone. The undo toast's
+ * duration is kept in sync with this value.
+ */
+export const UNFOLLOW_UNDO_DURATION = 5e3
+
+type PendingUnfollow = {
+  did: string
+  /**
+   * The follow record captured at stage time. The commit closure must use
+   * this rather than any render-derived state, since the optimistic shadow
+   * update clears `profile.viewer?.following` immediately.
+   */
+  followUri: string
+  /**
+   * Performs the real network delete plus side effects. Runs after the undo
+   * window expires (or on an early flush) and must handle its own errors.
+   */
+  commit: () => Promise<void>
+  /**
+   * Restores the optimistic UI (profile shadow and follows cache) when the
+   * pending unfollow is cancelled.
+   */
+  revert: () => void
+  /**
+   * Dismisses the undo toast. Called on any teardown (undo, flush,
+   * supersede); must be safe to call after the toast already closed.
+   */
+  onDiscardToast: () => void
+  timeout: ReturnType<typeof setTimeout>
+}
+
+const pending = new Map<string, PendingUnfollow>()
+
+/**
+ * Stages an unfollow for `entry.did`, committing it automatically once
+ * {@link UNFOLLOW_UNDO_DURATION} elapses. If an unfollow is already staged
+ * for the same did (possible if a stale refetch briefly flips the follow
+ * button back), the existing one is committed first so we never hold two
+ * commits for one did.
+ */
+export function stagePendingUnfollow(
+  entry: Omit<PendingUnfollow, 'timeout'>,
+): void {
+  commitPendingUnfollow(entry.did)
+  pending.set(entry.did, {
+    ...entry,
+    timeout: setTimeout(() => {
+      commitPendingUnfollow(entry.did)
+    }, UNFOLLOW_UNDO_DURATION),
+  })
+}
+
+/**
+ * Undoes the pending unfollow for `did`, reverting the optimistic UI without
+ * any network request. Returns true if a pending unfollow existed.
+ */
+export function cancelPendingUnfollow(did: string): boolean {
+  const entry = pending.get(did)
+  if (!entry) return false
+  pending.delete(did)
+  clearTimeout(entry.timeout)
+  entry.onDiscardToast()
+  entry.revert()
+  return true
+}
+
+/**
+ * Commits the pending unfollow for `did` immediately. No-op if none exists.
+ */
+export function commitPendingUnfollow(did: string): void {
+  const entry = pending.get(did)
+  if (!entry) return
+  pending.delete(did)
+  clearTimeout(entry.timeout)
+  entry.onDiscardToast()
+  void entry.commit()
+}
+
+/**
+ * Commits every pending unfollow. Called when the app backgrounds or the
+ * session is torn down (logout, account switch), since in-memory timers
+ * won't reliably survive either.
+ */
+export function flushAllPendingUnfollows(): void {
+  for (const did of Array.from(pending.keys())) {
+    commitPendingUnfollow(did)
+  }
+}
+
+export function hasPendingUnfollow(did: string): boolean {
+  return pending.has(did)
+}
