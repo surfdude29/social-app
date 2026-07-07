@@ -3,6 +3,7 @@ import {Trans, useLingui} from '@lingui/react/macro'
 
 import {useOnAppStateChange} from '#/lib/appState'
 import * as Toast from '#/components/Toast'
+import {IS_WEB} from '#/env'
 import {flushAllPendingUnfollows, UNFOLLOW_UNDO_DURATION} from './registry'
 
 export * from './registry'
@@ -71,6 +72,21 @@ export function PendingUnfollowsFlusher() {
   })
   useEffect(() => {
     return () => flushAllPendingUnfollows()
+  }, [])
+  useEffect(() => {
+    if (!IS_WEB) return
+    /*
+     * AppState 'background' maps to visibility on web, which doesn't fire
+     * for Cmd+W / window close while the tab is visible. Flushing on
+     * pagehide is best effort: the atproto agent doesn't expose
+     * keepalive/sendBeacon semantics, so the browser may still cancel the
+     * in-flight request on a full unload. Same accepted-risk shape as a
+     * native force-kill skipping 'background'; the UI self-heals to server
+     * truth on next load.
+     */
+    const flush = () => flushAllPendingUnfollows()
+    window.addEventListener('pagehide', flush)
+    return () => window.removeEventListener('pagehide', flush)
   }, [])
   return null
 }

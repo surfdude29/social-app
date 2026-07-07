@@ -446,6 +446,19 @@ export function useProfileFollowMutationQueue(
             ax.metric('profile:unfollow', {logContext})
             await agent.deleteFollow(followUri)
             userActionHistory.unfollow([did])
+            /*
+             * A refetch during the undo window creates fresh cache objects
+             * that still reflect the server's pre-delete state and carry no
+             * shadow (shadows are keyed by object identity), which flips the
+             * UI back to "Following". Re-stamp the confirmed delete so the
+             * UI can't stay stuck on the stale state.
+             */
+            updateProfileShadow(queryClient, did, {
+              followingUri: undefined,
+            })
+            if (currentAccountDid) {
+              removeProfileFromFollowsCache(queryClient, currentAccountDid, did)
+            }
           } catch (e) {
             revert()
             logger.error('Failed to commit buffered unfollow', {

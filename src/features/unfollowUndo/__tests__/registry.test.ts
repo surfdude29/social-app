@@ -17,10 +17,10 @@ describe('unfollowUndo registry', () => {
     jest.useRealTimers()
   })
 
-  function createEntry(did = 'did:plc:alice') {
+  function createEntry(did = 'did:plc:alice', rkey = 'abc') {
     const entry = {
       did,
-      followUri: `at://${did}/app.bsky.graph.follow/abc`,
+      followUri: `at://${did}/app.bsky.graph.follow/${rkey}`,
       commit: jest.fn(async () => {}),
       revert: jest.fn(),
       onDiscardToast: jest.fn(),
@@ -81,9 +81,28 @@ describe('unfollowUndo registry', () => {
     expect(entry.revert).not.toHaveBeenCalled()
   })
 
-  it('staging the same did twice commits the first entry', () => {
+  it('staging the same did and followUri twice discards the first entry without committing', () => {
     const first = createEntry()
     const second = createEntry()
+    stagePendingUnfollow(first)
+    stagePendingUnfollow(second)
+
+    /*
+     * The staged deletes target the same record, so committing both would
+     * delete it twice; the first entry is dropped and only its toast is
+     * dismissed.
+     */
+    expect(first.onDiscardToast).toHaveBeenCalledTimes(1)
+    expect(first.commit).not.toHaveBeenCalled()
+
+    jest.advanceTimersByTime(UNFOLLOW_UNDO_DURATION)
+    expect(first.commit).not.toHaveBeenCalled()
+    expect(second.commit).toHaveBeenCalledTimes(1)
+  })
+
+  it('staging the same did with a different followUri commits the first entry', () => {
+    const first = createEntry('did:plc:alice', 'abc')
+    const second = createEntry('did:plc:alice', 'def')
     stagePendingUnfollow(first)
     stagePendingUnfollow(second)
 
@@ -93,6 +112,20 @@ describe('unfollowUndo registry', () => {
     jest.advanceTimersByTime(UNFOLLOW_UNDO_DURATION)
     expect(first.commit).toHaveBeenCalledTimes(1)
     expect(second.commit).toHaveBeenCalledTimes(1)
+  })
+
+  it('undo still works after a same-record restage', () => {
+    const first = createEntry()
+    const second = createEntry()
+    stagePendingUnfollow(first)
+    stagePendingUnfollow(second)
+
+    expect(cancelPendingUnfollow(second.did)).toBe(true)
+    expect(second.revert).toHaveBeenCalledTimes(1)
+
+    jest.advanceTimersByTime(UNFOLLOW_UNDO_DURATION * 2)
+    expect(first.commit).not.toHaveBeenCalled()
+    expect(second.commit).not.toHaveBeenCalled()
   })
 
   it('tracks multiple dids independently', () => {

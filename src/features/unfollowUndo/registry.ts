@@ -36,13 +36,26 @@ const pending = new Map<string, PendingUnfollow>()
  * Stages an unfollow for `entry.did`, committing it automatically once
  * {@link UNFOLLOW_UNDO_DURATION} elapses. If an unfollow is already staged
  * for the same did (possible if a stale refetch briefly flips the follow
- * button back), the existing one is committed first so we never hold two
- * commits for one did.
+ * button back), it is superseded: when it targets the same follow record,
+ * the old entry is discarded without committing - the new staged commit
+ * performs the identical delete, so committing both would delete the same
+ * record twice and double-count the unfollow metric. A staged entry for a
+ * different record (shouldn't occur in practice) is committed first so it
+ * isn't lost.
  */
 export function stagePendingUnfollow(
   entry: Omit<PendingUnfollow, 'timeout'>,
 ): void {
-  commitPendingUnfollow(entry.did)
+  const existing = pending.get(entry.did)
+  if (existing) {
+    if (existing.followUri === entry.followUri) {
+      pending.delete(entry.did)
+      clearTimeout(existing.timeout)
+      existing.onDiscardToast()
+    } else {
+      commitPendingUnfollow(entry.did)
+    }
+  }
   pending.set(entry.did, {
     ...entry,
     timeout: setTimeout(() => {
