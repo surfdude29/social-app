@@ -15,7 +15,7 @@ export const KWS_SUPPORTED_LANGS = [
   {value: 'es', label: 'español'},
   {value: 'es-MX', label: 'español de México'},
   {value: 'fi', label: 'suomi'},
-  {value: 'fil', label: 'Filipino'},
+  {value: 'fil', label: 'Wikang Filipino'},
   {value: 'fr', label: 'français'},
   {value: 'hi', label: 'हिंदी'},
   {value: 'hu', label: 'magyar'},
