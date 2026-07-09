@@ -546,7 +546,12 @@ export function usePinnedFeedsInfos() {
               displayName: l({message: 'Following', context: 'feed-name'}),
             }
           }
-          if (feed.savedFeed.id === PWI_DISCOVER_FEED_STUB.savedFeed.id) {
+          /*
+           * Intentionally overrides the server-provided name of the official
+           * Discover feed (and the logged-out stub, which shares this URI),
+           * since feedgen records cannot provide localized names.
+           */
+          if (feed.uri === DISCOVER_FEED_URI) {
             return {
               ...feed,
               displayName: l({message: 'Discover', context: 'feed-name'}),
