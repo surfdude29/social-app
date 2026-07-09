@@ -1,12 +1,32 @@
 import {useEffect} from 'react'
 import {Trans, useLingui} from '@lingui/react/macro'
+import {useQueryClient} from '@tanstack/react-query'
 
 import {useOnAppStateChange} from '#/lib/appState'
+import {logger} from '#/logger'
+import {updateProfileShadow} from '#/state/cache/profile-shadow'
+import {useAgent, useSession} from '#/state/session'
+import * as userActionHistory from '#/state/userActionHistory'
 import * as Toast from '#/components/Toast'
 import {IS_WEB} from '#/env'
+import {takePersistedPendingUnfollows} from './persistence'
 import {flushAllPendingUnfollows, UNFOLLOW_UNDO_DURATION} from './registry'
 
+export * from './persistence'
 export * from './registry'
+
+/**
+ * True while the web page is being unloaded (refresh, close, navigation
+ * away). Commit closures use this to tell a fetch cancelled by the unload -
+ * where the persisted entry must survive for replay on next launch - from a
+ * real failure that should revert the UI and unpersist. Always false on
+ * native.
+ */
+let pageUnloading = false
+
+export function isPageUnloading(): boolean {
+  return pageUnloading
+}
 
 /**
  * Shows the centralized "No longer following X" toast with an Undo action.
@@ -56,9 +76,14 @@ function UnfollowUndoToast({
  * pending unfollows are flushed when the app backgrounds, and on unmount
  * (logout or account switch). Unmount cleanup runs before the session
  * provider disposes the previous agent, so the captured-agent commits still
- * authenticate.
+ * authenticate. On mount, replays any persisted unfollows whose commit never
+ * completed in a previous session.
  */
 export function PendingUnfollowsFlusher() {
+  const agent = useAgent()
+  const queryClient = useQueryClient()
+  const {currentAccount} = useSession()
+
   useOnAppStateChange(state => {
     /*
      * Flush on 'background' only, matching feed-feedback. 'inactive' fires
@@ -77,16 +102,49 @@ export function PendingUnfollowsFlusher() {
     if (!IS_WEB) return
     /*
      * AppState 'background' maps to visibility on web, which doesn't fire
-     * for Cmd+W / window close while the tab is visible. Flushing on
-     * pagehide is best effort: the atproto agent doesn't expose
-     * keepalive/sendBeacon semantics, so the browser may still cancel the
-     * in-flight request on a full unload. Same accepted-risk shape as a
-     * native force-kill skipping 'background'; the UI self-heals to server
-     * truth on next load.
+     * for Cmd+W / window close while the tab is visible, so also flush on
+     * pagehide. The browser may still cancel the in-flight request on a full
+     * unload (the atproto agent doesn't expose keepalive/sendBeacon
+     * semantics) - the pageUnloading flag keeps the persisted entry alive in
+     * that case so the unfollow is replayed on next launch. pageshow covers
+     * the page being revived from the bfcache instead of unloaded.
      */
-    const flush = () => flushAllPendingUnfollows()
-    window.addEventListener('pagehide', flush)
-    return () => window.removeEventListener('pagehide', flush)
+    const onPageHide = () => {
+      pageUnloading = true
+      flushAllPendingUnfollows()
+    }
+    const onPageShow = () => {
+      pageUnloading = false
+    }
+    window.addEventListener('pagehide', onPageHide)
+    window.addEventListener('pageshow', onPageShow)
+    return () => {
+      window.removeEventListener('pagehide', onPageHide)
+      window.removeEventListener('pageshow', onPageShow)
+    }
   }, [])
+  useEffect(() => {
+    /*
+     * Replay unfollows persisted by a previous session whose commit never
+     * completed (page refresh/close, app kill). Attempted once each and
+     * dropped: on failure the UI already reflects server truth, and the
+     * delete is idempotent server-side, so an entry whose commit actually
+     * landed before the app died is safe to fire again. No undo toast and no
+     * metric - the metric fired at original commit time.
+     */
+    const accountDid = currentAccount?.did
+    if (!accountDid) return
+    for (const {did, followUri} of takePersistedPendingUnfollows(accountDid)) {
+      agent
+        .deleteFollow(followUri)
+        .then(() => {
+          userActionHistory.unfollow([did])
+          updateProfileShadow(queryClient, did, {followingUri: undefined})
+        })
+        .catch(e => {
+          logger.error('Failed to replay persisted unfollow', {safeMessage: e})
+        })
+    }
+  }, [agent, currentAccount?.did, queryClient])
   return null
 }

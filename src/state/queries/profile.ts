@@ -45,8 +45,11 @@ import {useAnalytics} from '#/analytics'
 import {type Metrics, toClout} from '#/analytics/metrics'
 import {
   cancelPendingUnfollow,
+  isPageUnloading,
+  persistPendingUnfollow,
   showUnfollowUndoToast,
   stagePendingUnfollow,
+  unpersistPendingUnfollow,
 } from '#/features/unfollowUndo'
 import type * as bsky from '#/types/bsky'
 import {
@@ -421,15 +424,27 @@ export function useProfileFollowMutationQueue(
       })
       if (currentAccountDid) {
         removeProfileFromFollowsCache(queryClient, currentAccountDid, did)
+        /*
+         * Write-ahead record: if the commit is cancelled mid-flight (page
+         * refresh/close, app kill), the unfollow is replayed on next launch
+         * instead of being silently dropped.
+         */
+        persistPendingUnfollow(currentAccountDid, {did, followUri})
       }
       const errorMessage = l`An issue occurred, please try again.`
-      const revert = () => {
+      const restoreOptimisticUI = () => {
         updateProfileShadow(queryClient, did, {
           followingUri: followUri,
         })
         if (currentAccountDid) {
           prependProfileToFollowsCache(queryClient, currentAccountDid, profile)
         }
+      }
+      const revert = () => {
+        if (currentAccountDid) {
+          unpersistPendingUnfollow(currentAccountDid, did)
+        }
+        restoreOptimisticUI()
       }
       let toastId: string | undefined
       stagePendingUnfollow({
@@ -446,6 +461,9 @@ export function useProfileFollowMutationQueue(
             ax.metric('profile:unfollow', {logContext})
             await agent.deleteFollow(followUri)
             userActionHistory.unfollow([did])
+            if (currentAccountDid) {
+              unpersistPendingUnfollow(currentAccountDid, did)
+            }
             /*
              * A refetch during the undo window creates fresh cache objects
              * that still reflect the server's pre-delete state and carry no
@@ -460,6 +478,13 @@ export function useProfileFollowMutationQueue(
               removeProfileFromFollowsCache(queryClient, currentAccountDid, did)
             }
           } catch (e) {
+            /*
+             * A failure while the page is unloading means the browser
+             * cancelled the fetch. Keep the persisted record so the unfollow
+             * is replayed on next launch; reverting UI or toasting a dying
+             * page is pointless.
+             */
+            if (isPageUnloading()) return
             revert()
             logger.error('Failed to commit buffered unfollow', {
               safeMessage: e,

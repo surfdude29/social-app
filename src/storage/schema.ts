@@ -91,4 +91,13 @@ export type Account = {
    * Recently selected GIFs in the GIF picker. Most recent first, capped at 20.
    */
   recentGifs?: Gif[]
+
+  /**
+   * Write-ahead log for buffered unfollows (see `#/features/unfollowUndo`).
+   * An entry is written when an unfollow is staged and removed once the
+   * delete commits or the user undoes it. Entries left behind (page
+   * refresh/close or app kill cancelled the commit) are replayed on the next
+   * launch. `did` is the unfollowed profile, not the account.
+   */
+  pendingUnfollows?: {did: string; followUri: string}[]
 }
