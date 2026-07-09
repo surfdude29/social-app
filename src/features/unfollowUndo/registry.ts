@@ -92,12 +92,29 @@ export function commitPendingUnfollow(did: string): void {
 
 /**
  * Commits every pending unfollow. Called when the app backgrounds or the
- * session is torn down (logout, account switch), since in-memory timers
- * won't reliably survive either.
+ * web page is being unloaded, since in-memory timers won't reliably survive
+ * either. Requires a still-authenticated agent; use
+ * {@link discardAllPendingUnfollows} at account teardown instead.
  */
 export function flushAllPendingUnfollows(): void {
   for (const did of Array.from(pending.keys())) {
     commitPendingUnfollow(did)
+  }
+}
+
+/**
+ * Drops every pending unfollow without committing or reverting: timers are
+ * cleared and toasts dismissed, nothing else runs. Used at account teardown
+ * (logout, account switch), where the captured agent's session is about to
+ * be disposed and a commit could no longer authenticate. The persisted
+ * write-ahead records are left in place, so the unfollows are replayed when
+ * the account is next active.
+ */
+export function discardAllPendingUnfollows(): void {
+  for (const entry of Array.from(pending.values())) {
+    pending.delete(entry.did)
+    clearTimeout(entry.timeout)
+    entry.onDiscardToast()
   }
 }
 

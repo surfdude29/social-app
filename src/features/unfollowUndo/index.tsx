@@ -10,7 +10,11 @@ import * as userActionHistory from '#/state/userActionHistory'
 import * as Toast from '#/components/Toast'
 import {IS_WEB} from '#/env'
 import {takePersistedPendingUnfollows} from './persistence'
-import {flushAllPendingUnfollows, UNFOLLOW_UNDO_DURATION} from './registry'
+import {
+  discardAllPendingUnfollows,
+  flushAllPendingUnfollows,
+  UNFOLLOW_UNDO_DURATION,
+} from './registry'
 
 export * from './persistence'
 export * from './registry'
@@ -73,11 +77,15 @@ function UnfollowUndoToast({
 
 /**
  * Renders nothing. Mounted once inside the account-keyed app subtree so that
- * pending unfollows are flushed when the app backgrounds, and on unmount
- * (logout or account switch). Unmount cleanup runs before the session
- * provider disposes the previous agent, so the captured-agent commits still
- * authenticate. On mount, replays any persisted unfollows whose commit never
- * completed in a previous session.
+ * pending unfollows are flushed when the app backgrounds and discarded on
+ * unmount (logout or account switch). Unmount must discard, not commit: the
+ * session provider disposes the previous agent right after the teardown pass
+ * (session/index.tsx `prevAgent.dispose()`), and although the unmount cleanup
+ * starts first, everything past the commit's first await - including where
+ * XRPC reads the access token - runs on the microtask queue after dispose, so
+ * the delete would fail with an auth error. The persisted records survive the
+ * discard, and the mount-time replay below commits them with a fresh agent
+ * when the account is next active.
  */
 export function PendingUnfollowsFlusher() {
   const agent = useAgent()
@@ -96,7 +104,7 @@ export function PendingUnfollowsFlusher() {
     }
   })
   useEffect(() => {
-    return () => flushAllPendingUnfollows()
+    return () => discardAllPendingUnfollows()
   }, [])
   useEffect(() => {
     if (!IS_WEB) return

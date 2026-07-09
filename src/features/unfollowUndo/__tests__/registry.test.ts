@@ -1,6 +1,7 @@
 import {
   cancelPendingUnfollow,
   commitPendingUnfollow,
+  discardAllPendingUnfollows,
   flushAllPendingUnfollows,
   hasPendingUnfollow,
   stagePendingUnfollow,
@@ -69,6 +70,26 @@ describe('unfollowUndo registry', () => {
     jest.advanceTimersByTime(UNFOLLOW_UNDO_DURATION * 2)
     expect(alice.commit).toHaveBeenCalledTimes(1)
     expect(bob.commit).toHaveBeenCalledTimes(1)
+  })
+
+  it('discardAllPendingUnfollows dismisses toasts without committing or reverting', () => {
+    const alice = createEntry('did:plc:alice')
+    const bob = createEntry('did:plc:bob')
+    stagePendingUnfollow(alice)
+    stagePendingUnfollow(bob)
+
+    discardAllPendingUnfollows()
+
+    expect(alice.onDiscardToast).toHaveBeenCalledTimes(1)
+    expect(bob.onDiscardToast).toHaveBeenCalledTimes(1)
+    expect(hasPendingUnfollow(alice.did)).toBe(false)
+    expect(hasPendingUnfollow(bob.did)).toBe(false)
+
+    jest.advanceTimersByTime(UNFOLLOW_UNDO_DURATION * 2)
+    expect(alice.commit).not.toHaveBeenCalled()
+    expect(bob.commit).not.toHaveBeenCalled()
+    expect(alice.revert).not.toHaveBeenCalled()
+    expect(bob.revert).not.toHaveBeenCalled()
   })
 
   it('cancel after commit returns false and has no side effects', () => {
