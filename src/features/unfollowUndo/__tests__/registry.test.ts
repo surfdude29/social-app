@@ -191,9 +191,10 @@ describe('unfollowUndo registry', () => {
 
       const inflight = getInflightUnfollowCommit(entry.did)
       expect(inflight).toBeDefined()
+      expect(inflight?.followUri).toBe(entry.followUri)
 
       resolveCommit(true)
-      await expect(inflight).resolves.toBe(true)
+      await expect(inflight?.result).resolves.toBe(true)
       /* settled commits are cleaned up */
       expect(getInflightUnfollowCommit(entry.did)).toBeUndefined()
     })
@@ -206,7 +207,9 @@ describe('unfollowUndo registry', () => {
       stagePendingUnfollow(entry)
       commitPendingUnfollow(entry.did)
 
-      await expect(getInflightUnfollowCommit(entry.did)).resolves.toBe(false)
+      const inflight = getInflightUnfollowCommit(entry.did)
+      expect(inflight?.followUri).toBe(entry.followUri)
+      await expect(inflight?.result).resolves.toBe(false)
       expect(getInflightUnfollowCommit(entry.did)).toBeUndefined()
     })
   })

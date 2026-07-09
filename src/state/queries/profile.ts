@@ -344,6 +344,41 @@ export function useProfileFollowMutationQueue(
     initialState: initialFollowingUri,
     runMutation: async (prevFollowingUri, shouldFollow) => {
       if (shouldFollow) {
+        /*
+         * A buffered unfollow whose delete is in flight (the undo window
+         * just expired) must settle before a new follow record is created.
+         * Racing it risks the delete response arriving after the follow's:
+         * the commit's success path would then re-stamp the unfollowed
+         * state, stranding the UI on "Follow" with a live follow record -
+         * and a second tap would create a duplicate record, after which one
+         * unfollow no longer fully unfollows. Waiting here, inside the
+         * toggle queue, keeps later taps serialized behind this task and
+         * preserves the invariant that the `followingUri: 'pending'`
+         * sentinel never exists while the queue is empty.
+         */
+        const inflight = getInflightUnfollowCommit(did)
+        if (inflight) {
+          const committed = await inflight.result
+          if (!committed) {
+            /*
+             * The delete failed and its revert already restored the
+             * followed state - the user still follows the original record,
+             * so there is nothing to create. Thread that record through as
+             * the confirmed state. Callers can't tell this apart from a
+             * real follow and may show a "Following" toast; that's
+             * acceptable for this rare double failure window, since the
+             * message matches the actual state.
+             */
+            return inflight.followUri
+          }
+          /*
+           * Re-stamp: the commit's success path just stamped the unfollowed
+           * state, which would flash "Follow" while the follow request runs.
+           */
+          updateProfileShadow(queryClient, did, {
+            followingUri: 'pending',
+          })
+        }
         const {uri} = await followMutation.mutateAsync({
           did,
         })
@@ -399,43 +434,6 @@ export function useProfileFollowMutationQueue(
      */
     if (cancelPendingUnfollow(did)) {
       return Promise.resolve(undefined)
-    }
-    /*
-     * A buffered unfollow whose delete is in flight (the undo window just
-     * expired) must settle before a new follow record is created. Racing it
-     * risks the delete response arriving after the follow's: the commit's
-     * success path would then re-stamp the unfollowed state, stranding the
-     * UI on "Follow" with a live follow record - and a second tap would
-     * create a duplicate record, after which one unfollow no longer fully
-     * unfollows. The old toggle queue serialized these two mutations; this
-     * restores that guarantee for the buffered path.
-     */
-    const inflight = getInflightUnfollowCommit(did)
-    if (inflight) {
-      return (async () => {
-        updateProfileShadow(queryClient, did, {
-          followingUri: 'pending',
-        })
-        const committed = await inflight
-        if (!committed) {
-          /*
-           * The delete failed and its revert already restored the followed
-           * state - the user still follows, so there is nothing to create.
-           * Callers can't tell this apart from a real follow and may show a
-           * "Following" toast; that's acceptable for this rare double
-           * failure window, since the message matches the actual state.
-           */
-          return undefined
-        }
-        /*
-         * Re-stamp: the commit's success path just stamped the unfollowed
-         * state, which would flash "Follow" while the follow request runs.
-         */
-        updateProfileShadow(queryClient, did, {
-          followingUri: 'pending',
-        })
-        return queueToggle(true)
-      })()
     }
     // optimistically update
     updateProfileShadow(queryClient, did, {

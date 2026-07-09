@@ -35,11 +35,23 @@ type PendingUnfollow = {
 
 const pending = new Map<string, PendingUnfollow>()
 
+export type InflightUnfollowCommit = {
+  /**
+   * The follow record the in-flight delete targets.
+   */
+  followUri: string
+  /**
+   * Resolves true when the delete was confirmed, false when it failed and
+   * the optimistic UI was reverted. Never rejects.
+   */
+  result: Promise<boolean>
+}
+
 /**
  * Commits whose network delete is still in flight, keyed by subject did.
  * Entries are removed when the commit settles.
  */
-const committing = new Map<string, Promise<boolean>>()
+const committing = new Map<string, InflightUnfollowCommit>()
 
 /**
  * Stages an unfollow for `entry.did`, committing it automatically once
@@ -101,30 +113,36 @@ export function commitPendingUnfollow(did: string): void {
    * same did (possible via the restage-supersede path): a settled older
    * commit must not delete the tracking entry of a newer one.
    */
-  const promise = entry
-    .commit()
-    .catch(() => false)
-    .finally(() => {
-      if (committing.get(did) === promise) {
-        committing.delete(did)
-      }
-    })
-  committing.set(did, promise)
+  const inflight: InflightUnfollowCommit = {
+    followUri: entry.followUri,
+    result: entry
+      .commit()
+      .catch(() => false)
+      .finally(() => {
+        if (committing.get(did) === inflight) {
+          committing.delete(did)
+        }
+      }),
+  }
+  committing.set(did, inflight)
 }
 
 /**
  * Returns the in-flight commit for `did`, if its network delete has started
- * but not yet settled. Lets a follow triggered during that window wait for
- * the delete instead of racing it: the commit's success path re-stamps the
- * unfollowed state onto the profile shadow, which would clobber a follow
- * confirmed while the delete was still in flight and strand the UI on
- * "Follow" with a live follow record (inviting a duplicate record on the
- * next tap). Resolves with the commit's result: true if the delete was
- * confirmed, false if it failed and the UI was reverted.
+ * but not yet settled. Consumed inside the follow toggle queue's mutation:
+ * a follow that runs during that window must wait for the delete instead of
+ * racing it - the commit's success path re-stamps the unfollowed state onto
+ * the profile shadow, which would clobber a follow confirmed while the
+ * delete was still in flight and strand the UI on "Follow" with a live
+ * follow record (inviting a duplicate record on the next tap). Waiting
+ * inside the queue keeps taps serialized behind the follow, so the
+ * `followingUri: 'pending'` sentinel never exists without an active queue
+ * task. When the delete fails, `followUri` identifies the surviving record
+ * to thread through as the queue's confirmed state.
  */
 export function getInflightUnfollowCommit(
   did: string,
-): Promise<boolean> | undefined {
+): InflightUnfollowCommit | undefined {
   return committing.get(did)
 }
 
