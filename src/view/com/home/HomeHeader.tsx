@@ -1,4 +1,5 @@
 import {useCallback, useMemo} from 'react'
+import {useLingui} from '@lingui/react/macro'
 import {useNavigation} from '@react-navigation/native'
 
 import {type NavigationProp} from '#/lib/routes/types'
@@ -16,6 +17,7 @@ export function HomeHeader(
   },
 ) {
   const {feeds, onSelect: onSelectProp} = props
+  const {t: l} = useLingui()
   const {hasSession} = useSession()
   const navigation = useNavigation<NavigationProp>()
 
@@ -30,10 +32,16 @@ export function HomeHeader(
   const items = useMemo(() => {
     const pinnedNames = feeds.map(f => f.displayName)
     if (!hasPinnedCustom) {
-      return pinnedNames.concat('Feeds ✨')
+      return pinnedNames.concat(
+        l({
+          message: 'Feeds ✨',
+          comment:
+            'Last tab on the home screen when the user has no pinned custom feeds; links to the Feeds screen',
+        }),
+      )
     }
     return pinnedNames
-  }, [hasPinnedCustom, feeds])
+  }, [hasPinnedCustom, feeds, l])
 
   const onPressFeedsLink = useCallback(() => {
     navigation.navigate('Feeds')
