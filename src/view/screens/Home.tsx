@@ -1,7 +1,6 @@
 import {useCallback, useEffect, useLayoutEffect, useMemo, useRef} from 'react'
 import {ActivityIndicator, StyleSheet} from 'react-native'
 import {withSpring} from 'react-native-reanimated'
-import {useLingui} from '@lingui/react/macro'
 import {useFocusEffect} from '@react-navigation/native'
 
 import {PROD_DEFAULT_FEED} from '#/lib/constants'
@@ -113,7 +112,6 @@ function HomeScreenReady({
   pinnedFeedInfos: SavedFeedSourceInfo[]
 }) {
   const ax = useAnalytics()
-  const {t: l} = useLingui()
   const allFeeds = useMemo(
     () => pinnedFeedInfos.map(f => f.feedDescriptor),
     [pinnedFeedInfos],
@@ -218,10 +216,7 @@ function HomeScreenReady({
             testID="homeScreenFeedTabs"
             onPressSelected={onPressSelected}
             // @ts-ignore
-            feeds={[
-              {displayName: l({message: 'Following', context: 'feed-name'})},
-              {displayName: l({message: 'Discover', context: 'feed-name'})},
-            ]}
+            feeds={[{displayName: 'Following'}, {displayName: 'Discover'}]}
           />
         )
       }
@@ -235,7 +230,7 @@ function HomeScreenReady({
         />
       )
     },
-    [onPressSelected, pinnedFeedInfos, demoMode, l],
+    [onPressSelected, pinnedFeedInfos, demoMode],
   )
 
   const renderFollowingEmptyState = useCallback(() => {
