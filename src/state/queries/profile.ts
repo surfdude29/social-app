@@ -455,6 +455,26 @@ export function useProfileFollowMutationQueue(
        * component may have unmounted.
        */
       const currentAccountDid = currentAccount?.did
+      /*
+       * A redundant tap: the same record's delete is already on the wire
+       * (the undo window just expired and a stale refetch flipped the
+       * button back to "Following"). Re-apply the optimistic UI and let the
+       * in-flight commit's own handlers finish the job - staging again
+       * would fire a second delete for the same record and double-count the
+       * unfollow metric, and an Undo toast would be a lie since the delete
+       * can't be recalled. If the delete fails, its revert restores
+       * "Following", correctly undoing this tap too.
+       */
+      const inflight = getInflightUnfollowCommit(did)
+      if (inflight && inflight.followUri === followUri) {
+        updateProfileShadow(queryClient, did, {
+          followingUri: undefined,
+        })
+        if (currentAccountDid) {
+          removeProfileFromFollowsCache(queryClient, currentAccountDid, did)
+        }
+        return Promise.resolve(undefined)
+      }
       updateProfileShadow(queryClient, did, {
         followingUri: undefined,
       })
@@ -465,7 +485,11 @@ export function useProfileFollowMutationQueue(
          * refresh/close, app kill), the unfollow is replayed on next launch
          * instead of being silently dropped.
          */
-        persistPendingUnfollow(currentAccountDid, {did, followUri})
+        persistPendingUnfollow(currentAccountDid, {
+          did,
+          followUri,
+          stagedAt: Date.now(),
+        })
       }
       const errorMessage = l`An issue occurred, please try again.`
       const restoreOptimisticUI = () => {

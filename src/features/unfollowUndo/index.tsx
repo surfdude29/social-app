@@ -1,9 +1,10 @@
-import {useEffect} from 'react'
+import {useCallback, useEffect, useRef} from 'react'
 import {type AtpAgent} from '@atproto/api'
 import {Trans, useLingui} from '@lingui/react/macro'
 import {type QueryClient, useQueryClient} from '@tanstack/react-query'
 
 import {useOnAppStateChange} from '#/lib/appState'
+import {isNetworkError} from '#/lib/strings/errors'
 import {logger} from '#/logger'
 import {updateProfileShadow} from '#/state/cache/profile-shadow'
 import {useAgent, useSession} from '#/state/session'
@@ -11,6 +12,7 @@ import * as userActionHistory from '#/state/userActionHistory'
 import * as Toast from '#/components/Toast'
 import {IS_WEB} from '#/env'
 import {
+  partitionReplayablePendingUnfollows,
   persistPendingUnfollow,
   takePersistedPendingUnfollows,
 } from './persistence'
@@ -18,6 +20,7 @@ import {
   discardAllPendingUnfollows,
   flushAllPendingUnfollows,
   getInflightUnfollowCommit,
+  hasPendingUnfollow,
   UNFOLLOW_UNDO_DURATION,
 } from './registry'
 
@@ -83,25 +86,46 @@ function UnfollowUndoToast({
 /**
  * Fires the network delete for every persisted unfollow whose commit never
  * completed (page refresh/close, app kill, or a page frozen into the bfcache
- * mid-commit). Entries are attempted once each and dropped: on failure the
- * UI already reflects server truth, and the delete is idempotent
- * server-side, so an entry whose commit actually landed before the app died
- * is safe to fire again. No undo toast and no metric - the metric fired at
- * original commit time.
+ * mid-commit). The delete is idempotent server-side, so an entry whose
+ * commit actually landed before the app died is safe to fire again. No undo
+ * toast and no metric - the metric fired at original commit time.
+ *
+ * Not every entry fires: young entries are re-persisted untouched, since
+ * their staging context - this tab, or on web another tab sharing the
+ * storage - may still be driving them through commit or undo, and replaying
+ * would race that (worst case deleting the record out from under a live
+ * Undo toast in another tab). The owning context removes the entry from the
+ * shared store on commit or undo, which is what makes deferral safe.
+ * Entries whose delete fails with a network error (e.g. relaunched offline)
+ * are also re-persisted so the unfollow isn't silently lost; any other
+ * failure is logged and dropped so a poison entry can't retry forever.
+ *
+ * Returns the ms until the next deferred entry becomes replayable, so the
+ * caller can schedule a follow-up pass; undefined when nothing was
+ * deferred.
  */
 function replayPersistedUnfollows(
   agent: AtpAgent,
   queryClient: QueryClient,
   accountDid: string,
-) {
-  for (const entry of takePersistedPendingUnfollows(accountDid)) {
+): number | undefined {
+  const {replayable, deferred, retryDelayMs} =
+    partitionReplayablePendingUnfollows(
+      takePersistedPendingUnfollows(accountDid),
+      Date.now(),
+    )
+  for (const entry of deferred) {
+    persistPendingUnfollow(accountDid, entry)
+  }
+  for (const entry of replayable) {
     /*
-     * After a bfcache restore the original commit's fetch may still be
-     * settling; its own success/failure handlers will unpersist the record
-     * or revert the UI. Re-persist the entry and let them win rather than
-     * racing them with a second delete.
+     * Even an old entry can still be owned by this tab: after a bfcache
+     * restore the original commit's fetch may still be settling, or a retry
+     * pass may find the unfollow staged in the registry again. Their own
+     * handlers will unpersist the record or revert the UI. Re-persist and
+     * let them win rather than racing them with a second delete.
      */
-    if (getInflightUnfollowCommit(entry.did)) {
+    if (hasPendingUnfollow(entry.did) || getInflightUnfollowCommit(entry.did)) {
       persistPendingUnfollow(accountDid, entry)
       continue
     }
@@ -112,8 +136,53 @@ function replayPersistedUnfollows(
         updateProfileShadow(queryClient, entry.did, {followingUri: undefined})
       })
       .catch(e => {
-        logger.error('Failed to replay persisted unfollow', {safeMessage: e})
+        /*
+         * The pending/inflight re-check guards the rare case where the user
+         * refollowed and re-unfollowed this did while the delete was in
+         * flight: that newer stage owns the WAL slot now, and re-persisting
+         * the old entry would clobber it.
+         */
+        if (
+          isNetworkError(e) &&
+          !hasPendingUnfollow(entry.did) &&
+          !getInflightUnfollowCommit(entry.did)
+        ) {
+          persistPendingUnfollow(accountDid, entry)
+        } else {
+          logger.error('Failed to replay persisted unfollow', {safeMessage: e})
+        }
       })
+  }
+  return retryDelayMs
+}
+
+/**
+ * Runs the replay, and when it defers young entries, chains exactly one
+ * timer (held in `timeoutRef`, so the owner can cancel it) to run again once
+ * the next entry becomes old enough. This is what keeps "refresh
+ * mid-window" replays landing in the reloaded tab instead of waiting for a
+ * future cold launch that may never come.
+ */
+function replayPersistedUnfollowsWithRetry(
+  agent: AtpAgent,
+  queryClient: QueryClient,
+  accountDid: string,
+  timeoutRef: {current: ReturnType<typeof setTimeout> | undefined},
+) {
+  if (timeoutRef.current !== undefined) {
+    clearTimeout(timeoutRef.current)
+    timeoutRef.current = undefined
+  }
+  const retryDelayMs = replayPersistedUnfollows(agent, queryClient, accountDid)
+  if (retryDelayMs !== undefined) {
+    timeoutRef.current = setTimeout(() => {
+      replayPersistedUnfollowsWithRetry(
+        agent,
+        queryClient,
+        accountDid,
+        timeoutRef,
+      )
+    }, retryDelayMs)
   }
 }
 
@@ -134,6 +203,25 @@ export function PendingUnfollowsFlusher() {
   const queryClient = useQueryClient()
   const {currentAccount} = useSession()
   const accountDid = currentAccount?.did
+  const replayRetryTimeout = useRef<ReturnType<typeof setTimeout> | undefined>(
+    undefined,
+  )
+
+  /*
+   * useCallback (rather than relying on the compiler) because the effects
+   * below list this in their dependency arrays.
+   */
+  const replayWithRetry = useCallback(
+    (did: string) => {
+      replayPersistedUnfollowsWithRetry(
+        agent,
+        queryClient,
+        did,
+        replayRetryTimeout,
+      )
+    },
+    [agent, queryClient],
+  )
 
   useOnAppStateChange(state => {
     /*
@@ -174,7 +262,7 @@ export function PendingUnfollowsFlusher() {
     const onPageShow = (e: PageTransitionEvent) => {
       pageUnloading = false
       if (e.persisted && accountDid) {
-        replayPersistedUnfollows(agent, queryClient, accountDid)
+        replayWithRetry(accountDid)
       }
     }
     window.addEventListener('pagehide', onPageHide)
@@ -183,14 +271,20 @@ export function PendingUnfollowsFlusher() {
       window.removeEventListener('pagehide', onPageHide)
       window.removeEventListener('pageshow', onPageShow)
     }
-  }, [agent, queryClient, accountDid])
+  }, [accountDid, replayWithRetry])
   useEffect(() => {
     /*
      * Replay unfollows persisted by a previous session whose commit never
      * completed (page refresh/close, app kill).
      */
     if (!accountDid) return
-    replayPersistedUnfollows(agent, queryClient, accountDid)
-  }, [agent, accountDid, queryClient])
+    replayWithRetry(accountDid)
+    return () => {
+      if (replayRetryTimeout.current !== undefined) {
+        clearTimeout(replayRetryTimeout.current)
+        replayRetryTimeout.current = undefined
+      }
+    }
+  }, [accountDid, replayWithRetry])
   return null
 }

@@ -97,7 +97,9 @@ export type Account = {
    * An entry is written when an unfollow is staged and removed once the
    * delete commits or the user undoes it. Entries left behind (page
    * refresh/close or app kill cancelled the commit) are replayed on the next
-   * launch. `did` is the unfollowed profile, not the account.
+   * launch, once old enough that no live tab can still be driving them.
+   * `did` is the unfollowed profile, not the account; `stagedAt` is epoch ms
+   * (missing on entries written before the field existed).
    */
-  pendingUnfollows?: {did: string; followUri: string}[]
+  pendingUnfollows?: {did: string; followUri: string; stagedAt?: number}[]
 }

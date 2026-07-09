@@ -1,5 +1,7 @@
 import {
+  partitionReplayablePendingUnfollows,
   persistPendingUnfollow,
+  REPLAY_MIN_AGE,
   takePersistedPendingUnfollows,
   unpersistPendingUnfollow,
 } from '../persistence'
@@ -18,8 +20,8 @@ jest.mock('#/storage', () => {
 
 const ACCOUNT = 'did:plc:me'
 
-function entry(did = 'did:plc:alice', rkey = 'abc') {
-  return {did, followUri: `at://${did}/app.bsky.graph.follow/${rkey}`}
+function entry(did = 'did:plc:alice', rkey = 'abc', stagedAt = 1_000_000) {
+  return {did, followUri: `at://${did}/app.bsky.graph.follow/${rkey}`, stagedAt}
 }
 
 describe('unfollowUndo persistence', () => {
@@ -70,5 +72,65 @@ describe('unfollowUndo persistence', () => {
 
     expect(takePersistedPendingUnfollows('did:plc:other')).toEqual([])
     expect(takePersistedPendingUnfollows(ACCOUNT)).toEqual([alice])
+  })
+})
+
+describe('partitionReplayablePendingUnfollows', () => {
+  const NOW = 10_000_000
+
+  it('marks entries at or past the minimum age as replayable', () => {
+    const old = entry('did:plc:alice', 'abc', NOW - REPLAY_MIN_AGE)
+    const older = entry('did:plc:bob', 'def', NOW - REPLAY_MIN_AGE * 2)
+
+    expect(partitionReplayablePendingUnfollows([old, older], NOW)).toEqual({
+      replayable: [old, older],
+      deferred: [],
+      retryDelayMs: undefined,
+    })
+  })
+
+  it('defers young entries and reports the time until the youngest ages in', () => {
+    const justStaged = entry('did:plc:alice', 'abc', NOW)
+    const halfway = entry('did:plc:bob', 'def', NOW - REPLAY_MIN_AGE / 2)
+
+    expect(
+      partitionReplayablePendingUnfollows([justStaged, halfway], NOW),
+    ).toEqual({
+      replayable: [],
+      deferred: [justStaged, halfway],
+      retryDelayMs: REPLAY_MIN_AGE / 2,
+    })
+  })
+
+  it('splits mixed lists', () => {
+    const old = entry('did:plc:alice', 'abc', NOW - REPLAY_MIN_AGE - 1)
+    const young = entry('did:plc:bob', 'def', NOW - 1)
+
+    expect(partitionReplayablePendingUnfollows([old, young], NOW)).toEqual({
+      replayable: [old],
+      deferred: [young],
+      retryDelayMs: REPLAY_MIN_AGE - 1,
+    })
+  })
+
+  it('treats entries without stagedAt as replayable', () => {
+    const legacy = {
+      did: 'did:plc:alice',
+      followUri: 'at://did:plc:alice/app.bsky.graph.follow/abc',
+    }
+
+    expect(partitionReplayablePendingUnfollows([legacy], NOW)).toEqual({
+      replayable: [legacy],
+      deferred: [],
+      retryDelayMs: undefined,
+    })
+  })
+
+  it('handles empty input', () => {
+    expect(partitionReplayablePendingUnfollows([], NOW)).toEqual({
+      replayable: [],
+      deferred: [],
+      retryDelayMs: undefined,
+    })
   })
 })
