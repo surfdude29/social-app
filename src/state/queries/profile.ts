@@ -45,6 +45,7 @@ import {useAnalytics} from '#/analytics'
 import {type Metrics, toClout} from '#/analytics/metrics'
 import {
   cancelPendingUnfollow,
+  getInflightUnfollowCommit,
   isPageUnloading,
   persistPendingUnfollow,
   showUnfollowUndoToast,
@@ -399,6 +400,43 @@ export function useProfileFollowMutationQueue(
     if (cancelPendingUnfollow(did)) {
       return Promise.resolve(undefined)
     }
+    /*
+     * A buffered unfollow whose delete is in flight (the undo window just
+     * expired) must settle before a new follow record is created. Racing it
+     * risks the delete response arriving after the follow's: the commit's
+     * success path would then re-stamp the unfollowed state, stranding the
+     * UI on "Follow" with a live follow record - and a second tap would
+     * create a duplicate record, after which one unfollow no longer fully
+     * unfollows. The old toggle queue serialized these two mutations; this
+     * restores that guarantee for the buffered path.
+     */
+    const inflight = getInflightUnfollowCommit(did)
+    if (inflight) {
+      return (async () => {
+        updateProfileShadow(queryClient, did, {
+          followingUri: 'pending',
+        })
+        const committed = await inflight
+        if (!committed) {
+          /*
+           * The delete failed and its revert already restored the followed
+           * state - the user still follows, so there is nothing to create.
+           * Callers can't tell this apart from a real follow and may show a
+           * "Following" toast; that's acceptable for this rare double
+           * failure window, since the message matches the actual state.
+           */
+          return undefined
+        }
+        /*
+         * Re-stamp: the commit's success path just stamped the unfollowed
+         * state, which would flash "Follow" while the follow request runs.
+         */
+        updateProfileShadow(queryClient, did, {
+          followingUri: 'pending',
+        })
+        return queueToggle(true)
+      })()
+    }
     // optimistically update
     updateProfileShadow(queryClient, did, {
       followingUri: 'pending',
@@ -477,6 +515,7 @@ export function useProfileFollowMutationQueue(
             if (currentAccountDid) {
               removeProfileFromFollowsCache(queryClient, currentAccountDid, did)
             }
+            return true
           } catch (e) {
             /*
              * A failure while the page is unloading means the browser
@@ -484,12 +523,13 @@ export function useProfileFollowMutationQueue(
              * is replayed on next launch; reverting UI or toasting a dying
              * page is pointless.
              */
-            if (isPageUnloading()) return
+            if (isPageUnloading()) return true
             revert()
             logger.error('Failed to commit buffered unfollow', {
               safeMessage: e,
             })
             Toast.show(errorMessage, {type: 'error'})
+            return false
           }
         },
       })

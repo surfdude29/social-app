@@ -3,6 +3,7 @@ import {
   commitPendingUnfollow,
   discardAllPendingUnfollows,
   flushAllPendingUnfollows,
+  getInflightUnfollowCommit,
   hasPendingUnfollow,
   stagePendingUnfollow,
   UNFOLLOW_UNDO_DURATION,
@@ -22,7 +23,7 @@ describe('unfollowUndo registry', () => {
     const entry = {
       did,
       followUri: `at://${did}/app.bsky.graph.follow/${rkey}`,
-      commit: jest.fn(async () => {}),
+      commit: jest.fn(() => Promise.resolve(true)),
       revert: jest.fn(),
       onDiscardToast: jest.fn(),
     }
@@ -160,5 +161,53 @@ describe('unfollowUndo registry', () => {
     jest.advanceTimersByTime(UNFOLLOW_UNDO_DURATION)
     expect(alice.commit).not.toHaveBeenCalled()
     expect(bob.commit).toHaveBeenCalledTimes(1)
+  })
+
+  describe('getInflightUnfollowCommit', () => {
+    it('returns undefined when no commit is in flight', () => {
+      const entry = createEntry()
+      stagePendingUnfollow(entry)
+      /* staged but not yet committed */
+      expect(getInflightUnfollowCommit(entry.did)).toBeUndefined()
+
+      cancelPendingUnfollow(entry.did)
+      /* undone, so no commit ever started */
+      expect(getInflightUnfollowCommit(entry.did)).toBeUndefined()
+    })
+
+    it('exposes the commit while in flight and resolves with its result', async () => {
+      let resolveCommit!: (committed: boolean) => void
+      const entry = {
+        ...createEntry(),
+        commit: jest.fn(
+          () =>
+            new Promise<boolean>(resolve => {
+              resolveCommit = resolve
+            }),
+        ),
+      }
+      stagePendingUnfollow(entry)
+      commitPendingUnfollow(entry.did)
+
+      const inflight = getInflightUnfollowCommit(entry.did)
+      expect(inflight).toBeDefined()
+
+      resolveCommit(true)
+      await expect(inflight).resolves.toBe(true)
+      /* settled commits are cleaned up */
+      expect(getInflightUnfollowCommit(entry.did)).toBeUndefined()
+    })
+
+    it('resolves false when the commit reports failure', async () => {
+      const entry = {
+        ...createEntry(),
+        commit: jest.fn(() => Promise.resolve(false)),
+      }
+      stagePendingUnfollow(entry)
+      commitPendingUnfollow(entry.did)
+
+      await expect(getInflightUnfollowCommit(entry.did)).resolves.toBe(false)
+      expect(getInflightUnfollowCommit(entry.did)).toBeUndefined()
+    })
   })
 })
