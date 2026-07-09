@@ -46,6 +46,7 @@ import * as Toast from '#/components/Toast'
 import {Text} from '#/components/Typography'
 import {type Metrics} from '#/analytics'
 import {useActorStatus} from '#/features/liveNow'
+import {hasPendingUnfollow} from '#/features/unfollowUndo'
 import type * as bsky from '#/types/bsky'
 
 export function Default({
@@ -493,15 +494,23 @@ export function FollowButtonInner({
     e.preventDefault()
     e.stopPropagation()
     try {
+      /*
+       * When a buffered unfollow is pending, queueFollow just cancels it -
+       * no new follow record is created - so skip the "new follow" side
+       * effects. Check before the await: the cancel clears the registry.
+       */
+      const wasUndo = hasPendingUnfollow(profile.did)
       await queueFollow()
-      Toast.show(
-        l`Following ${sanitizeDisplayName(
-          profile.displayName || profile.handle,
-          moderation.ui('displayName'),
-        )}`,
-      )
       onPressProp?.(e)
-      onFollow?.()
+      if (!wasUndo) {
+        Toast.show(
+          l`Following ${sanitizeDisplayName(
+            profile.displayName || profile.handle,
+            moderation.ui('displayName'),
+          )}`,
+        )
+        onFollow?.()
+      }
     } catch (e) {
       const err = e as Error
       if (err?.name !== 'AbortError') {

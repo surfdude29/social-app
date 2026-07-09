@@ -40,6 +40,7 @@ import {useAnalytics} from '#/analytics'
 import {IS_IOS, IS_NATIVE} from '#/env'
 import {InviteFriendsDialog} from '#/features/inviteFriends'
 import {useActorStatus} from '#/features/liveNow'
+import {hasPendingUnfollow} from '#/features/unfollowUndo'
 import {GermButton} from '../components/GermButton'
 import {ProfileHeaderDisplayName} from './DisplayName'
 import {EditProfileDialog} from './EditProfileDialog'
@@ -240,16 +241,24 @@ export function HeaderStandardButtons({
     playHaptic()
     requireAuth(async () => {
       try {
+        /*
+         * When a buffered unfollow is pending, queueFollow just cancels it -
+         * no new follow record is created - so skip the "new follow" side
+         * effects. Check before the await: the cancel clears the registry.
+         */
+        const wasUndo = hasPendingUnfollow(profile.did)
         await queueFollow()
-        onFollow?.()
-        Toast.show(
-          _(
-            msg`Following ${sanitizeDisplayName(
-              profile.displayName || profile.handle,
-              moderation.ui('displayName'),
-            )}`,
-          ),
-        )
+        if (!wasUndo) {
+          onFollow?.()
+          Toast.show(
+            _(
+              msg`Following ${sanitizeDisplayName(
+                profile.displayName || profile.handle,
+                moderation.ui('displayName'),
+              )}`,
+            ),
+          )
+        }
       } catch (err) {
         const e = err as Error
         if (e?.name !== 'AbortError') {

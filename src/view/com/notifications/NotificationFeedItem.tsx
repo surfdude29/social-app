@@ -70,6 +70,7 @@ import * as Toast from '#/components/Toast'
 import {Text} from '#/components/Typography'
 import {useAnalytics} from '#/analytics'
 import {IS_WEB} from '#/env'
+import {hasPendingUnfollow} from '#/features/unfollowUndo'
 import * as bsky from '#/types/bsky'
 
 const MAX_AUTHORS = 5
@@ -779,14 +780,22 @@ function FollowBackButton({profile}: {profile: AppBskyActorDefs.ProfileView}) {
     e.stopPropagation()
 
     try {
+      /*
+       * When a buffered unfollow is pending, queueFollow just cancels it -
+       * no new follow record is created - so skip the "new follow" toast.
+       * Check before the await: the cancel clears the registry.
+       */
+      const wasUndo = hasPendingUnfollow(profile.did)
       await queueFollow()
-      Toast.show(
-        _(
-          msg`Following ${sanitizeDisplayName(
-            profile.displayName || profile.handle,
-          )}`,
-        ),
-      )
+      if (!wasUndo) {
+        Toast.show(
+          _(
+            msg`Following ${sanitizeDisplayName(
+              profile.displayName || profile.handle,
+            )}`,
+          ),
+        )
+      }
     } catch (err: any) {
       if (err?.name !== 'AbortError') {
         Toast.show(_(msg`An issue occurred, please try again.`), {
