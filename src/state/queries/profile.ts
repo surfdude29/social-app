@@ -46,6 +46,7 @@ import {type Metrics, toClout} from '#/analytics/metrics'
 import {
   cancelPendingUnfollow,
   getInflightUnfollowCommit,
+  getPersistedPendingUnfollows,
   isAccountActive,
   isPageUnloading,
   persistPendingUnfollow,
@@ -514,6 +515,23 @@ export function useProfileFollowMutationQueue(
           }
         },
         commit: async () => {
+          /*
+           * The persisted entry doubles as a cross-tab ownership token (on
+           * web the storage is shared across tabs): if it no longer matches
+           * this staging, another context resolved the unfollow - an Undo
+           * or an earlier commit in a second tab removed it, or a newer
+           * staging replaced it. Stand down instead of firing a delete an
+           * Undo may have recalled. Restore the UI only when the slot is
+           * empty; a slot held by a different followUri means a newer
+           * staging owns the relationship and drives the UI from here.
+           */
+          const slot = getPersistedPendingUnfollows(currentAccountDid).find(
+            e => e.did === did,
+          )
+          if (slot?.followUri !== followUri) {
+            if (!slot) restoreOptimisticUI()
+            return false
+          }
           try {
             ax.metric('profile:unfollow', {logContext})
             await agent.deleteFollow(followUri)

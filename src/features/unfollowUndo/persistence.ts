@@ -34,12 +34,17 @@ export const REPLAY_MIN_AGE = UNFOLLOW_UNDO_DURATION + 10e3
  * cancelled mid-flight (page refresh/close on web, app kill on native) is
  * replayed on the next launch instead of being silently dropped. Entries are
  * written at stage time and removed when the delete commits, the user undoes,
- * or the commit fails while the app is still alive.
+ * or the commit fails while the app is still alive. Entries also double as
+ * cross-tab ownership tokens for live commits: a commit only fires while its
+ * entry is still persisted, so an Undo (or an earlier commit) in one tab
+ * stands another tab's timer down for the same record.
  */
 
 /**
  * Records a staged unfollow for `accountDid`. Replaces any existing entry for
- * the same subject did (restaging supersedes the earlier stage).
+ * the same subject did (restaging supersedes the earlier stage) - which also
+ * transfers ownership: a superseded context's commit finds its entry gone at
+ * fire time and stands down.
  */
 export function persistPendingUnfollow(
   accountDid: string,
