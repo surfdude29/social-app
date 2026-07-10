@@ -4,7 +4,7 @@ import {Trans, useLingui} from '@lingui/react/macro'
 import {type QueryClient, useQueryClient} from '@tanstack/react-query'
 
 import {useOnAppStateChange} from '#/lib/appState'
-import {isNetworkError} from '#/lib/strings/errors'
+import {isNetworkError, isTransientServerError} from '#/lib/strings/errors'
 import {logger} from '#/logger'
 import {updateProfileShadow} from '#/state/cache/profile-shadow'
 import {useAgent, useSession} from '#/state/session'
@@ -124,8 +124,8 @@ const inflightReplays = new Set<string>()
  * entry must survive the app dying again while the replayed delete is in
  * flight. Success (or a definitive failure, which is logged and dropped so
  * a poison entry can't retry forever) removes the entry; a network failure
- * (e.g. relaunched offline) leaves it in place for the next
- * launch/pageshow.
+ * (e.g. relaunched offline) or a transient server failure (5xx/rate limit)
+ * leaves it in place for the next launch/pageshow.
  *
  * Not every entry fires: young entries are skipped without touching
  * storage, since their staging context - this tab, or on web another tab
@@ -175,11 +175,14 @@ function replayPersistedUnfollows(
         updateProfileShadow(queryClient, entry.did, {followingUri: undefined})
       })
       .catch(e => {
-        if (isNetworkError(e)) {
+        if (isNetworkError(e) || isTransientServerError(e)) {
           /*
-           * Keep the entry; it is retried on the next launch/pageshow.
-           * Nothing is written, so a newer unfollow staged for the same did
-           * meanwhile keeps the WAL slot undisturbed.
+           * Couldn't reach the server, or the server was momentarily
+           * unhealthy (5xx/rate limit) - both common right at relaunch and
+           * neither a verdict on the delete itself. Keep the entry; it is
+           * retried on the next launch/pageshow. Nothing is written, so a
+           * newer unfollow staged for the same did meanwhile keeps the WAL
+           * slot undisturbed.
            */
           return
         }
