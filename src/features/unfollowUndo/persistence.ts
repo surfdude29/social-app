@@ -53,16 +53,24 @@ export function persistPendingUnfollow(
 }
 
 /**
- * Removes the persisted entry for `did`, if any. Safe to call when no entry
- * exists.
+ * Removes the persisted entry matching `entry`'s did and followUri, if any.
+ * Safe to call when no such entry exists. Matching on the followUri too (and
+ * not just the did) means a settling delete for an old record can never
+ * remove the entry of a newer unfollow staged for the same did after the
+ * user refollowed - only that newer stage's own outcome may clear its slot.
+ * `stagedAt` is deliberately ignored: restaging the same record refreshes
+ * the timestamp without changing which delete the entry stands for.
  */
 export function unpersistPendingUnfollow(
   accountDid: string,
-  did: string,
+  entry: Pick<PersistedPendingUnfollow, 'did' | 'followUri'>,
 ): void {
   const existing = accountStorage.get([accountDid, 'pendingUnfollows'])
   if (!existing?.length) return
-  const next = existing.filter(e => e.did !== did)
+  const next = existing.filter(
+    e => e.did !== entry.did || e.followUri !== entry.followUri,
+  )
+  if (next.length === existing.length) return
   if (next.length) {
     accountStorage.set([accountDid, 'pendingUnfollows'], next)
   } else {
@@ -71,26 +79,27 @@ export function unpersistPendingUnfollow(
 }
 
 /**
- * Returns all persisted entries for `accountDid` and clears them. The replay
- * re-persists any entry it cannot safely fire yet (too young, still in
- * flight locally) or whose delete failed with a network error.
+ * Returns all persisted entries for `accountDid` without modifying storage.
+ * Entries are only ever removed once their outcome is known - commit/replay
+ * success, undo, or a definitive failure - via
+ * {@link unpersistPendingUnfollow}. The replay must not clear entries up
+ * front: an entry whose replayed delete is still in flight has to survive
+ * the app dying again, and on web a young entry must stay visible to the
+ * tab that staged it (storage is shared across tabs) so its undo can still
+ * find and remove it.
  */
-export function takePersistedPendingUnfollows(
+export function getPersistedPendingUnfollows(
   accountDid: string,
 ): PersistedPendingUnfollow[] {
-  const existing = accountStorage.get([accountDid, 'pendingUnfollows']) ?? []
-  if (existing.length) {
-    accountStorage.remove([accountDid, 'pendingUnfollows'])
-  }
-  return existing
+  return accountStorage.get([accountDid, 'pendingUnfollows']) ?? []
 }
 
 /**
  * Splits entries into those old enough to replay now and those that must be
- * deferred (re-persisted) because their staging context may still be driving
- * them. `retryDelayMs` is the time until the next deferred entry becomes
- * eligible, so a caller can schedule exactly one follow-up pass; undefined
- * when nothing was deferred.
+ * deferred (left in storage untouched) because their staging context may
+ * still be driving them. `retryDelayMs` is the time until the next deferred
+ * entry becomes eligible, so a caller can schedule exactly one follow-up
+ * pass; undefined when nothing was deferred.
  */
 export function partitionReplayablePendingUnfollows(
   entries: PersistedPendingUnfollow[],

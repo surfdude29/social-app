@@ -1,8 +1,9 @@
+import {account as accountStorage} from '#/storage'
 import {
+  getPersistedPendingUnfollows,
   partitionReplayablePendingUnfollows,
   persistPendingUnfollow,
   REPLAY_MIN_AGE,
-  takePersistedPendingUnfollows,
   unpersistPendingUnfollow,
 } from '../persistence'
 
@@ -14,6 +15,7 @@ jest.mock('#/storage', () => {
       set: (scopes: string[], data: unknown) =>
         store.set(scopes.join(':'), data),
       remove: (scopes: string[]) => store.delete(scopes.join(':')),
+      removeAll: () => store.clear(),
     },
   }
 })
@@ -26,52 +28,75 @@ function entry(did = 'did:plc:alice', rkey = 'abc', stagedAt = 1_000_000) {
 
 describe('unfollowUndo persistence', () => {
   afterEach(() => {
-    takePersistedPendingUnfollows(ACCOUNT)
+    accountStorage.removeAll()
   })
 
-  it('persists and takes entries, clearing them', () => {
+  it('persists and reads entries without clearing them', () => {
     const alice = entry('did:plc:alice')
     const bob = entry('did:plc:bob')
     persistPendingUnfollow(ACCOUNT, alice)
     persistPendingUnfollow(ACCOUNT, bob)
 
-    expect(takePersistedPendingUnfollows(ACCOUNT)).toEqual([alice, bob])
-    expect(takePersistedPendingUnfollows(ACCOUNT)).toEqual([])
+    /* reading is a peek: entries stay until their outcome removes them */
+    expect(getPersistedPendingUnfollows(ACCOUNT)).toEqual([alice, bob])
+    expect(getPersistedPendingUnfollows(ACCOUNT)).toEqual([alice, bob])
   })
 
   it('replaces an existing entry for the same did', () => {
     persistPendingUnfollow(ACCOUNT, entry('did:plc:alice', 'abc'))
     persistPendingUnfollow(ACCOUNT, entry('did:plc:alice', 'def'))
 
-    expect(takePersistedPendingUnfollows(ACCOUNT)).toEqual([
+    expect(getPersistedPendingUnfollows(ACCOUNT)).toEqual([
       entry('did:plc:alice', 'def'),
     ])
   })
 
-  it('unpersists a single did and leaves the rest', () => {
+  it('unpersists a matching entry and leaves the rest', () => {
     const alice = entry('did:plc:alice')
     const bob = entry('did:plc:bob')
     persistPendingUnfollow(ACCOUNT, alice)
     persistPendingUnfollow(ACCOUNT, bob)
 
-    unpersistPendingUnfollow(ACCOUNT, alice.did)
+    unpersistPendingUnfollow(ACCOUNT, alice)
 
-    expect(takePersistedPendingUnfollows(ACCOUNT)).toEqual([bob])
+    expect(getPersistedPendingUnfollows(ACCOUNT)).toEqual([bob])
+  })
+
+  it('unpersist matches on did and followUri, ignoring stagedAt', () => {
+    persistPendingUnfollow(ACCOUNT, entry('did:plc:alice', 'abc', 1_000_000))
+
+    /* a same-record restage refreshed the timestamp; still the same delete */
+    unpersistPendingUnfollow(ACCOUNT, entry('did:plc:alice', 'abc', 2_000_000))
+
+    expect(getPersistedPendingUnfollows(ACCOUNT)).toEqual([])
+  })
+
+  it('unpersist leaves an entry for the same did with a different followUri', () => {
+    const original = entry('did:plc:alice', 'abc')
+    const restaged = entry('did:plc:alice', 'def')
+    persistPendingUnfollow(ACCOUNT, original)
+    /* the user refollowed and unfollowed again: a new record owns the slot */
+    persistPendingUnfollow(ACCOUNT, restaged)
+
+    /* the old record's delete settling must not clear the newer entry */
+    unpersistPendingUnfollow(ACCOUNT, original)
+
+    expect(getPersistedPendingUnfollows(ACCOUNT)).toEqual([restaged])
   })
 
   it('unpersist is a no-op when nothing is stored', () => {
     expect(() =>
-      unpersistPendingUnfollow(ACCOUNT, 'did:plc:alice'),
+      unpersistPendingUnfollow(ACCOUNT, entry('did:plc:alice')),
     ).not.toThrow()
-    expect(takePersistedPendingUnfollows(ACCOUNT)).toEqual([])
+    expect(getPersistedPendingUnfollows(ACCOUNT)).toEqual([])
   })
 
   it('scopes entries by account', () => {
     const alice = entry('did:plc:alice')
     persistPendingUnfollow(ACCOUNT, alice)
 
-    expect(takePersistedPendingUnfollows('did:plc:other')).toEqual([])
-    expect(takePersistedPendingUnfollows(ACCOUNT)).toEqual([alice])
+    expect(getPersistedPendingUnfollows('did:plc:other')).toEqual([])
+    expect(getPersistedPendingUnfollows(ACCOUNT)).toEqual([alice])
   })
 })
 

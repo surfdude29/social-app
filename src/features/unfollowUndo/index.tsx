@@ -12,9 +12,9 @@ import * as userActionHistory from '#/state/userActionHistory'
 import * as Toast from '#/components/Toast'
 import {IS_WEB} from '#/env'
 import {
+  getPersistedPendingUnfollows,
   partitionReplayablePendingUnfollows,
-  persistPendingUnfollow,
-  takePersistedPendingUnfollows,
+  unpersistPendingUnfollow,
 } from './persistence'
 import {
   discardAllPendingUnfollows,
@@ -84,21 +84,38 @@ function UnfollowUndoToast({
 }
 
 /**
+ * Replay deletes currently on the wire from this app instance, keyed by
+ * `accountDid + ' ' + did` (a space cannot occur in a did). Because entries
+ * stay persisted until their delete settles, a retry pass or a bfcache
+ * `pageshow` replay would otherwise see a still-persisted entry and fire it
+ * a second time. Another *tab* can still double-fire an aged entry - that
+ * is fine, the delete is idempotent server-side.
+ */
+const inflightReplays = new Set<string>()
+
+/**
  * Fires the network delete for every persisted unfollow whose commit never
  * completed (page refresh/close, app kill, or a page frozen into the bfcache
  * mid-commit). The delete is idempotent server-side, so an entry whose
  * commit actually landed before the app died is safe to fire again. No undo
  * toast and no metric - the metric fired at original commit time.
  *
- * Not every entry fires: young entries are re-persisted untouched, since
- * their staging context - this tab, or on web another tab sharing the
- * storage - may still be driving them through commit or undo, and replaying
- * would race that (worst case deleting the record out from under a live
- * Undo toast in another tab). The owning context removes the entry from the
- * shared store on commit or undo, which is what makes deferral safe.
- * Entries whose delete fails with a network error (e.g. relaunched offline)
- * are also re-persisted so the unfollow isn't silently lost; any other
- * failure is logged and dropped so a poison entry can't retry forever.
+ * Entries are never removed from storage until their outcome is known: the
+ * entry must survive the app dying again while the replayed delete is in
+ * flight. Success (or a definitive failure, which is logged and dropped so
+ * a poison entry can't retry forever) removes the entry; a network failure
+ * (e.g. relaunched offline) leaves it in place for the next
+ * launch/pageshow.
+ *
+ * Not every entry fires: young entries are skipped without touching
+ * storage, since their staging context - this tab, or on web another tab
+ * sharing the storage - may still be driving them through commit or undo,
+ * and replaying would race that (worst case deleting the record out from
+ * under a live Undo toast in another tab). The owning context removes the
+ * entry from the shared store on commit or undo, which is what makes
+ * deferral safe - and is also why the deferral must not rewrite storage:
+ * removing and re-persisting would open a window in which that owner's undo
+ * finds nothing to remove and the entry is resurrected afterwards.
  *
  * Returns the ms until the next deferred entry becomes replayable, so the
  * caller can schedule a follow-up pass; undefined when nothing was
@@ -109,48 +126,45 @@ function replayPersistedUnfollows(
   queryClient: QueryClient,
   accountDid: string,
 ): number | undefined {
-  const {replayable, deferred, retryDelayMs} =
-    partitionReplayablePendingUnfollows(
-      takePersistedPendingUnfollows(accountDid),
-      Date.now(),
-    )
-  for (const entry of deferred) {
-    persistPendingUnfollow(accountDid, entry)
-  }
+  const {replayable, retryDelayMs} = partitionReplayablePendingUnfollows(
+    getPersistedPendingUnfollows(accountDid),
+    Date.now(),
+  )
   for (const entry of replayable) {
+    const replayKey = `${accountDid} ${entry.did}`
+    if (inflightReplays.has(replayKey)) continue
     /*
      * Even an old entry can still be owned by this tab: after a bfcache
      * restore the original commit's fetch may still be settling, or a retry
      * pass may find the unfollow staged in the registry again. Their own
-     * handlers will unpersist the record or revert the UI. Re-persist and
-     * let them win rather than racing them with a second delete.
+     * handlers will remove the entry or revert the UI; leave it to them
+     * rather than racing them with a second delete.
      */
     if (hasPendingUnfollow(entry.did) || getInflightUnfollowCommit(entry.did)) {
-      persistPendingUnfollow(accountDid, entry)
       continue
     }
+    inflightReplays.add(replayKey)
     agent
       .deleteFollow(entry.followUri)
       .then(() => {
+        unpersistPendingUnfollow(accountDid, entry)
         userActionHistory.unfollow([entry.did])
         updateProfileShadow(queryClient, entry.did, {followingUri: undefined})
       })
       .catch(e => {
-        /*
-         * The pending/inflight re-check guards the rare case where the user
-         * refollowed and re-unfollowed this did while the delete was in
-         * flight: that newer stage owns the WAL slot now, and re-persisting
-         * the old entry would clobber it.
-         */
-        if (
-          isNetworkError(e) &&
-          !hasPendingUnfollow(entry.did) &&
-          !getInflightUnfollowCommit(entry.did)
-        ) {
-          persistPendingUnfollow(accountDid, entry)
-        } else {
-          logger.error('Failed to replay persisted unfollow', {safeMessage: e})
+        if (isNetworkError(e)) {
+          /*
+           * Keep the entry; it is retried on the next launch/pageshow.
+           * Nothing is written, so a newer unfollow staged for the same did
+           * meanwhile keeps the WAL slot undisturbed.
+           */
+          return
         }
+        unpersistPendingUnfollow(accountDid, entry)
+        logger.error('Failed to replay persisted unfollow', {safeMessage: e})
+      })
+      .finally(() => {
+        inflightReplays.delete(replayKey)
       })
   }
   return retryDelayMs

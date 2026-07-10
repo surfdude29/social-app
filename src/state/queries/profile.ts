@@ -502,7 +502,7 @@ export function useProfileFollowMutationQueue(
       }
       const revert = () => {
         if (currentAccountDid) {
-          unpersistPendingUnfollow(currentAccountDid, did)
+          unpersistPendingUnfollow(currentAccountDid, {did, followUri})
         }
         restoreOptimisticUI()
       }
@@ -522,7 +522,7 @@ export function useProfileFollowMutationQueue(
             await agent.deleteFollow(followUri)
             userActionHistory.unfollow([did])
             if (currentAccountDid) {
-              unpersistPendingUnfollow(currentAccountDid, did)
+              unpersistPendingUnfollow(currentAccountDid, {did, followUri})
             }
             /*
              * A refetch during the undo window creates fresh cache objects
