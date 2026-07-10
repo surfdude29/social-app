@@ -125,7 +125,11 @@ const inflightReplays = new Set<string>()
  * flight. Success (or a definitive failure, which is logged and dropped so
  * a poison entry can't retry forever) removes the entry; a network failure
  * (e.g. relaunched offline) or a transient server failure (5xx/rate limit)
- * leaves it in place for the next launch/pageshow.
+ * leaves it in place for the next launch/pageshow. A failure landing after
+ * an account switch is also kept: the switch disposed the agent the delete
+ * was riding on, so the error may just be the dispose - the account's next
+ * activation replays the entry with a fresh agent and reclassifies any
+ * genuine poison then.
  *
  * Not every entry fires: young entries are skipped without touching
  * storage, since their staging context - this tab, or on web another tab
@@ -171,6 +175,13 @@ function replayPersistedUnfollows(
       .deleteFollow(entry.followUri)
       .then(() => {
         unpersistPendingUnfollow(accountDid, entry)
+        /*
+         * A delete that settles after an account switch must skip the side
+         * effects that belong to the active account: userActionHistory is
+         * shared module state, and the shadow update only touches the
+         * retired account's query client anyway.
+         */
+        if (!isAccountActive(accountDid)) return
         userActionHistory.unfollow([entry.did])
         updateProfileShadow(queryClient, entry.did, {followingUri: undefined})
       })
@@ -186,6 +197,13 @@ function replayPersistedUnfollows(
            */
           return
         }
+        /*
+         * A failure after an account switch is unreliable evidence: the
+         * switch disposed the agent this delete was riding on, so the error
+         * may just be the dispose. Keep the entry - the replay reclassifies
+         * it with a fresh agent when this account is next active.
+         */
+        if (!isAccountActive(accountDid)) return
         unpersistPendingUnfollow(accountDid, entry)
         logger.error('Failed to replay persisted unfollow', {safeMessage: e})
       })
