@@ -480,6 +480,7 @@ export function FollowButtonInner({
   ...rest
 }: FollowButtonProps) {
   const {t: l} = useLingui()
+  const {currentAccount} = useSession()
   const profile = useProfileShadow(profileUnshadowed)
   const moderation = moderateProfile(profile, moderationOpts)
   const [queueFollow, queueUnfollow] = useProfileFollowMutationQueue(
@@ -499,7 +500,7 @@ export function FollowButtonInner({
        * no new follow record is created - so skip the "new follow" side
        * effects. Check before the await: the cancel clears the registry.
        */
-      const wasUndo = hasPendingUnfollow(profile.did)
+      const wasUndo = hasPendingUnfollow(currentAccount?.did, profile.did)
       await queueFollow()
       onPressProp?.(e)
       if (!wasUndo) {

@@ -785,7 +785,7 @@ function FollowBackButton({profile}: {profile: AppBskyActorDefs.ProfileView}) {
        * no new follow record is created - so skip the "new follow" toast.
        * Check before the await: the cancel clears the registry.
        */
-      const wasUndo = hasPendingUnfollow(profile.did)
+      const wasUndo = hasPendingUnfollow(currentAccount?.did, profile.did)
       await queueFollow()
       if (!wasUndo) {
         Toast.show(

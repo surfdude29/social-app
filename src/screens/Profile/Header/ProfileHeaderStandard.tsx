@@ -246,7 +246,7 @@ export function HeaderStandardButtons({
          * no new follow record is created - so skip the "new follow" side
          * effects. Check before the await: the cancel clears the registry.
          */
-        const wasUndo = hasPendingUnfollow(profile.did)
+        const wasUndo = hasPendingUnfollow(currentAccount?.did, profile.did)
         await queueFollow()
         if (!wasUndo) {
           onFollow?.()

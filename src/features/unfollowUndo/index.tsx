@@ -41,6 +41,26 @@ export function isPageUnloading(): boolean {
 }
 
 /**
+ * The did whose account subtree is currently mounted, maintained by
+ * {@link PendingUnfollowsFlusher}. Undefined while no account is active,
+ * including the moment between unmounting one account and mounting the
+ * next.
+ */
+let activeAccountDid: string | undefined
+
+/**
+ * Whether `accountDid` is still the active account. Commit closures use
+ * this to tell a delete settling after an account switch from one settling
+ * normally: post-switch, the UI (and the global toast outlet) belong to
+ * another account, so a failure must not revert shadows, surface an error
+ * toast, or remove the persisted entry - keeping the entry lets the replay
+ * fire the delete when this account is next active.
+ */
+export function isAccountActive(accountDid: string): boolean {
+  return activeAccountDid === accountDid
+}
+
+/**
  * Shows the centralized "No longer following X" toast with an Undo action.
  * Returns the toast id so the pending-unfollow registry can dismiss it if
  * the unfollow is flushed before the toast expires.
@@ -140,7 +160,10 @@ function replayPersistedUnfollows(
      * handlers will remove the entry or revert the UI; leave it to them
      * rather than racing them with a second delete.
      */
-    if (hasPendingUnfollow(entry.did) || getInflightUnfollowCommit(entry.did)) {
+    if (
+      hasPendingUnfollow(accountDid, entry.did) ||
+      getInflightUnfollowCommit(accountDid, entry.did)
+    ) {
       continue
     }
     inflightReplays.add(replayKey)
@@ -248,6 +271,18 @@ export function PendingUnfollowsFlusher() {
       flushAllPendingUnfollows()
     }
   })
+  useEffect(() => {
+    /*
+     * Track the active account for isAccountActive(). React runs this
+     * cleanup before the next account's mount effect, so across a switch
+     * the flag is never stale - at worst briefly undefined, which reads as
+     * "not active" and errs on the safe side.
+     */
+    activeAccountDid = accountDid
+    return () => {
+      activeAccountDid = undefined
+    }
+  }, [accountDid])
   useEffect(() => {
     return () => discardAllPendingUnfollows()
   }, [])

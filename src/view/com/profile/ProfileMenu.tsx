@@ -200,7 +200,7 @@ let ProfileMenu = ({
        * no new follow record is created - so skip the "new follow" toast.
        * Check before the await: the cancel clears the registry.
        */
-      const wasUndo = hasPendingUnfollow(profile.did)
+      const wasUndo = hasPendingUnfollow(currentAccount?.did, profile.did)
       await queueFollow()
       if (!wasUndo) {
         Toast.show(l({message: 'Account followed', context: 'toast'}))
@@ -214,7 +214,7 @@ let ProfileMenu = ({
         })
       }
     }
-  }, [l, ax, queueFollow, profile.did])
+  }, [l, ax, queueFollow, currentAccount, profile.did])
 
   const onPressUnfollowAccount = useCallback(async () => {
     try {
