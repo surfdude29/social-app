@@ -485,12 +485,14 @@ export function useProfileFollowMutationQueue(
       /*
        * Write-ahead record: if the commit is cancelled mid-flight (page
        * refresh/close, app kill), the unfollow is replayed on next launch
-       * instead of being silently dropped.
+       * instead of being silently dropped. The timestamp is captured by the
+       * commit closure below, which uses it to recognize its own staging.
        */
+      const stagedAt = Date.now()
       persistPendingUnfollow(currentAccountDid, {
         did,
         followUri,
-        stagedAt: Date.now(),
+        stagedAt,
       })
       const errorMessage = l`An issue occurred, please try again.`
       const restoreOptimisticUI = () => {
@@ -518,17 +520,25 @@ export function useProfileFollowMutationQueue(
           /*
            * The persisted entry doubles as a cross-tab ownership token (on
            * web the storage is shared across tabs): if it no longer matches
-           * this staging, another context resolved the unfollow - an Undo
-           * or an earlier commit in a second tab removed it, or a newer
-           * staging replaced it. Stand down instead of firing a delete an
-           * Undo may have recalled. Restore the UI only when the slot is
-           * empty; a slot held by a different followUri means a newer
-           * staging owns the relationship and drives the UI from here.
+           * this exact staging - same record AND same stagedAt, since two
+           * tabs unfollowing the same record produce entries identical but
+           * for the timestamp - another context owns the unfollow now. An
+           * Undo or an earlier commit removed the entry, or a newer staging
+           * replaced it and the newest undo window is the live one. Stand
+           * down instead of firing a delete that undo may still recall.
+           * Restore the UI only when the slot is empty; an occupied slot
+           * means the newer staging drives the UI from here. (Two tabs
+           * staging in the same millisecond collide and both fire -
+           * harmless, the delete is idempotent.)
            */
           const slot = getPersistedPendingUnfollows(currentAccountDid).find(
             e => e.did === did,
           )
-          if (slot?.followUri !== followUri) {
+          if (
+            !slot ||
+            slot.followUri !== followUri ||
+            slot.stagedAt !== stagedAt
+          ) {
             if (!slot) restoreOptimisticUI()
             return false
           }
