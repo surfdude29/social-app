@@ -38,6 +38,19 @@ export const REPLAY_MIN_AGE = UNFOLLOW_UNDO_DURATION + 10e3
  * cross-tab ownership tokens for live commits: a commit only fires while its
  * entry is still persisted, so an Undo (or an earlier commit) in one tab
  * stands another tab's timer down for the same record.
+ *
+ * Known limitation: on web the backing store is shared localStorage, and the
+ * helpers below read-modify-write one array per account with no cross-tab
+ * locking. Two tabs mutating the same account's entries within the same few
+ * milliseconds (the synchronous get-to-set gap plus the browser's
+ * cross-process replication lag) can therefore lose one write: an entry can
+ * be dropped, degrading to the pre-buffering behavior where an interrupted
+ * unfollow is simply lost, or an entry another tab just removed can be
+ * resurrected, in which case an undone unfollow replays later - visibly,
+ * since the replay re-stamps the profile shadow. Closing the race means
+ * per-(account, did) storage keys or async cross-tab locking; both are
+ * storage-layer refactors deliberately deferred, since every writer is a
+ * user action or a network settlement and the collision odds are tiny.
  */
 
 /**
