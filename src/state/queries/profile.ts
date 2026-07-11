@@ -4,7 +4,6 @@ import {
   type AppBskyActorGetProfile,
   type AppBskyActorGetProfiles,
   type AppBskyActorProfile,
-  type AppBskyGraphGetFollows,
   type AtpAgent,
   AtUri,
   type ComAtprotoRepoUploadBlob,
@@ -13,7 +12,6 @@ import {
 } from '@atproto/api'
 import {useLingui} from '@lingui/react/macro'
 import {
-  type InfiniteData,
   keepPreviousData,
   type QueryClient,
   useMutation,
@@ -32,7 +30,10 @@ import {type ImageMeta} from '#/state/gallery'
 import {useModerationOpts} from '#/state/preferences/moderation-opts'
 import {STALE} from '#/state/queries'
 import {resetProfilePostsQueries} from '#/state/queries/post-feed'
-import {RQKEY as PROFILE_FOLLOWS_RQKEY} from '#/state/queries/profile-follows'
+import {
+  prependProfileToFollowsCache,
+  removeProfileFromFollowsCache,
+} from '#/state/queries/profile-follows'
 import {
   unstableCacheProfileView,
   useUnstableProfileViewCache,
@@ -259,72 +260,6 @@ export function useProfileUpdateMutation() {
       await updateProfileVerificationCache({profile: variables.profile})
     },
   })
-}
-
-type FollowsQueryData = InfiniteData<AppBskyGraphGetFollows.OutputSchema>
-
-/**
- * Optimistically removes an unfollowed profile from the current account's
- * follows cache (used e.g. for avatar displays).
- */
-function removeProfileFromFollowsCache(
-  queryClient: QueryClient,
-  currentAccountDid: string,
-  did: string,
-) {
-  queryClient.setQueryData<FollowsQueryData>(
-    PROFILE_FOLLOWS_RQKEY(currentAccountDid),
-    old => {
-      if (!old?.pages?.[0]) return old
-      return {
-        ...old,
-        pages: old.pages.map(page => ({
-          ...page,
-          follows: page.follows.filter(f => f.did !== did),
-        })),
-      }
-    },
-  )
-}
-
-/**
- * Optimistically prepends a followed profile to the current account's
- * follows cache. No-op if the profile is already present.
- */
-function prependProfileToFollowsCache(
-  queryClient: QueryClient,
-  currentAccountDid: string,
-  profile: bsky.profile.AnyProfileView,
-) {
-  queryClient.setQueryData<FollowsQueryData>(
-    PROFILE_FOLLOWS_RQKEY(currentAccountDid),
-    old => {
-      if (!old?.pages?.[0]) return old
-      /*
-       * Scan every page, not just the first: a refetch during the undo
-       * window restores the still-server-side follow, and it can land on
-       * any page. Prepending without looking past page one would duplicate
-       * the profile when the undo (or a commit failure) re-adds it.
-       */
-      const alreadyExists = old.pages.some(page =>
-        page.follows.some(f => f.did === profile.did),
-      )
-      if (alreadyExists) return old
-      return {
-        ...old,
-        pages: [
-          {
-            ...old.pages[0],
-            follows: [
-              profile as AppBskyActorDefs.ProfileView,
-              ...old.pages[0].follows,
-            ],
-          },
-          ...old.pages.slice(1),
-        ],
-      }
-    },
-  )
 }
 
 export function useProfileFollowMutationQueue(

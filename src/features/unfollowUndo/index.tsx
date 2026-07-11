@@ -7,6 +7,7 @@ import {useOnAppStateChange} from '#/lib/appState'
 import {isNetworkError, isTransientServerError} from '#/lib/strings/errors'
 import {logger} from '#/logger'
 import {updateProfileShadow} from '#/state/cache/profile-shadow'
+import {removeProfileFromFollowsCache} from '#/state/queries/profile-follows'
 import {useAgent, useSession} from '#/state/session'
 import * as userActionHistory from '#/state/userActionHistory'
 import * as Toast from '#/components/Toast'
@@ -184,6 +185,12 @@ function replayPersistedUnfollows(
         if (!isAccountActive(accountDid)) return
         userActionHistory.unfollow([entry.did])
         updateProfileShadow(queryClient, entry.did, {followingUri: undefined})
+        /*
+         * Mirrors the commit path: a follows list fetched while this delete
+         * was in flight still contains the profile and would keep it until
+         * the next refetch.
+         */
+        removeProfileFromFollowsCache(queryClient, accountDid, entry.did)
       })
       .catch(e => {
         if (isNetworkError(e) || isTransientServerError(e)) {
