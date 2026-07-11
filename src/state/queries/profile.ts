@@ -300,8 +300,14 @@ function prependProfileToFollowsCache(
     PROFILE_FOLLOWS_RQKEY(currentAccountDid),
     old => {
       if (!old?.pages?.[0]) return old
-      const alreadyExists = old.pages[0].follows.some(
-        f => f.did === profile.did,
+      /*
+       * Scan every page, not just the first: a refetch during the undo
+       * window restores the still-server-side follow, and it can land on
+       * any page. Prepending without looking past page one would duplicate
+       * the profile when the undo (or a commit failure) re-adds it.
+       */
+      const alreadyExists = old.pages.some(page =>
+        page.follows.some(f => f.did === profile.did),
       )
       if (alreadyExists) return old
       return {
