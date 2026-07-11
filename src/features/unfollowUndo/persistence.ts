@@ -58,23 +58,16 @@ export function persistPendingUnfollow(
 }
 
 /**
- * Removes the persisted entry matching `entry`'s did and followUri, if any.
- * Safe to call when no such entry exists. Matching on the followUri too (and
- * not just the did) means a settling delete for an old record can never
- * remove the entry of a newer unfollow staged for the same did after the
- * user refollowed - only that newer stage's own outcome may clear its slot.
- * `stagedAt` is deliberately ignored: restaging the same record refreshes
- * the timestamp without changing which delete the entry stands for.
+ * Removes entries matching `predicate` for `accountDid`, dropping the
+ * storage key when the last entry goes. Safe to call when nothing matches.
  */
-export function unpersistPendingUnfollow(
+function unpersistMatching(
   accountDid: string,
-  entry: Pick<PersistedPendingUnfollow, 'did' | 'followUri'>,
+  predicate: (e: PersistedPendingUnfollow) => boolean,
 ): void {
   const existing = accountStorage.get([accountDid, 'pendingUnfollows'])
   if (!existing?.length) return
-  const next = existing.filter(
-    e => e.did !== entry.did || e.followUri !== entry.followUri,
-  )
+  const next = existing.filter(e => !predicate(e))
   if (next.length === existing.length) return
   if (next.length) {
     accountStorage.set([accountDid, 'pendingUnfollows'], next)
@@ -84,14 +77,61 @@ export function unpersistPendingUnfollow(
 }
 
 /**
+ * Removes the persisted entry exactly matching `entry` - did, followUri AND
+ * stagedAt - if any. Safe to call when no such entry exists. This is the
+ * settlement remover: a settling delete (commit or replay, success or
+ * definitive failure) may remove only the entry it started with. Restaging
+ * the same record refreshes `stagedAt` and hands the slot to the newer
+ * staging, so an older delete settling later must leave that entry to its
+ * own outcome - clearing it would make the newer staging's commit find its
+ * slot empty and stand down, wrongly restoring "Following" for a record the
+ * settled delete may just have removed. Matching the followUri guards the
+ * refollow case the same way: after the user refollowed and unfollowed
+ * again, a new record owns the slot. For an explicit Undo, which recalls the
+ * record's staging whichever context wrote it, use
+ * {@link unpersistPendingUnfollowRecord} instead.
+ */
+export function unpersistPendingUnfollow(
+  accountDid: string,
+  entry: Pick<PersistedPendingUnfollow, 'did' | 'followUri' | 'stagedAt'>,
+): void {
+  unpersistMatching(
+    accountDid,
+    e =>
+      e.did === entry.did &&
+      e.followUri === entry.followUri &&
+      e.stagedAt === entry.stagedAt,
+  )
+}
+
+/**
+ * Removes the persisted entry for `entry`'s did and followUri regardless of
+ * which staging wrote it (`stagedAt` is ignored). This is the explicit-Undo
+ * remover: an Undo recalls the unfollow of this record no matter which
+ * context most recently restaged it - on web another tab's restage may hold
+ * the slot with a fresher timestamp, and emptying the slot is what stands
+ * every tab's commit down. Settlement paths must not use this; they remove
+ * only their own entry via {@link unpersistPendingUnfollow}.
+ */
+export function unpersistPendingUnfollowRecord(
+  accountDid: string,
+  entry: Pick<PersistedPendingUnfollow, 'did' | 'followUri'>,
+): void {
+  unpersistMatching(
+    accountDid,
+    e => e.did === entry.did && e.followUri === entry.followUri,
+  )
+}
+
+/**
  * Returns all persisted entries for `accountDid` without modifying storage.
  * Entries are only ever removed once their outcome is known - commit/replay
- * success, undo, or a definitive failure - via
- * {@link unpersistPendingUnfollow}. The replay must not clear entries up
- * front: an entry whose replayed delete is still in flight has to survive
- * the app dying again, and on web a young entry must stay visible to the
- * tab that staged it (storage is shared across tabs) so its undo can still
- * find and remove it.
+ * success or a definitive failure via {@link unpersistPendingUnfollow}, or
+ * an undo via {@link unpersistPendingUnfollowRecord}. The replay must not
+ * clear entries up front: an entry whose replayed delete is still in flight
+ * has to survive the app dying again, and on web a young entry must stay
+ * visible to the tab that staged it (storage is shared across tabs) so its
+ * undo can still find and remove it.
  */
 export function getPersistedPendingUnfollows(
   accountDid: string,

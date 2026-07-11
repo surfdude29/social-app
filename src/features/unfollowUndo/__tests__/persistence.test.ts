@@ -5,6 +5,7 @@ import {
   persistPendingUnfollow,
   REPLAY_MIN_AGE,
   unpersistPendingUnfollow,
+  unpersistPendingUnfollowRecord,
 } from '../persistence'
 
 jest.mock('#/storage', () => {
@@ -62,13 +63,63 @@ describe('unfollowUndo persistence', () => {
     expect(getPersistedPendingUnfollows(ACCOUNT)).toEqual([bob])
   })
 
-  it('unpersist matches on did and followUri, ignoring stagedAt', () => {
-    persistPendingUnfollow(ACCOUNT, entry('did:plc:alice', 'abc', 1_000_000))
+  it('unpersist requires an exact stagedAt match', () => {
+    const restaged = entry('did:plc:alice', 'abc', 2_000_000)
+    persistPendingUnfollow(ACCOUNT, restaged)
 
-    /* a same-record restage refreshed the timestamp; still the same delete */
-    unpersistPendingUnfollow(ACCOUNT, entry('did:plc:alice', 'abc', 2_000_000))
+    /*
+     * A restage refreshed the timestamp and took ownership of the slot: an
+     * older delete for the same record settling now must leave the newer
+     * staging's entry to its own outcome.
+     */
+    unpersistPendingUnfollow(ACCOUNT, entry('did:plc:alice', 'abc', 1_000_000))
+    expect(getPersistedPendingUnfollows(ACCOUNT)).toEqual([restaged])
+
+    unpersistPendingUnfollow(ACCOUNT, restaged)
+    expect(getPersistedPendingUnfollows(ACCOUNT)).toEqual([])
+  })
+
+  it('unpersist removes a legacy entry without stagedAt when passed back as read', () => {
+    const legacy = {
+      did: 'did:plc:alice',
+      followUri: 'at://did:plc:alice/app.bsky.graph.follow/abc',
+    }
+    persistPendingUnfollow(ACCOUNT, legacy)
+
+    unpersistPendingUnfollow(ACCOUNT, legacy)
 
     expect(getPersistedPendingUnfollows(ACCOUNT)).toEqual([])
+  })
+
+  it('unpersistRecord removes the entry regardless of stagedAt', () => {
+    /*
+     * The undo path: an explicit Undo recalls the record's staging even
+     * when another tab restaged it with a fresher timestamp.
+     */
+    persistPendingUnfollow(ACCOUNT, entry('did:plc:alice', 'abc', 2_000_000))
+
+    unpersistPendingUnfollowRecord(ACCOUNT, {
+      did: 'did:plc:alice',
+      followUri: 'at://did:plc:alice/app.bsky.graph.follow/abc',
+    })
+
+    expect(getPersistedPendingUnfollows(ACCOUNT)).toEqual([])
+  })
+
+  it('unpersistRecord leaves an entry for the same did with a different followUri', () => {
+    const restaged = entry('did:plc:alice', 'def')
+    persistPendingUnfollow(ACCOUNT, restaged)
+
+    /*
+     * The user refollowed and unfollowed again: undoing the old record's
+     * staging must not clear the new record's entry.
+     */
+    unpersistPendingUnfollowRecord(ACCOUNT, {
+      did: 'did:plc:alice',
+      followUri: 'at://did:plc:alice/app.bsky.graph.follow/abc',
+    })
+
+    expect(getPersistedPendingUnfollows(ACCOUNT)).toEqual([restaged])
   })
 
   it('unpersist leaves an entry for the same did with a different followUri', () => {

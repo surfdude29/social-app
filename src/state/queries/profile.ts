@@ -53,6 +53,7 @@ import {
   showUnfollowUndoToast,
   stagePendingUnfollow,
   unpersistPendingUnfollow,
+  unpersistPendingUnfollowRecord,
 } from '#/features/unfollowUndo'
 import type * as bsky from '#/types/bsky'
 import {
@@ -501,8 +502,16 @@ export function useProfileFollowMutationQueue(
         })
         prependProfileToFollowsCache(queryClient, currentAccountDid, profile)
       }
+      /*
+       * Explicit user recall (toast Undo, or tapping Follow inside the
+       * window). Removes the record's WAL entry whichever staging wrote it:
+       * another tab may have restaged the same record with a fresher
+       * stagedAt, and an Undo anywhere in the window must stand every tab's
+       * commit down. Settlement paths must not reuse this - they remove
+       * only their own entry, matched by stagedAt.
+       */
       const revert = () => {
-        unpersistPendingUnfollow(currentAccountDid, {did, followUri})
+        unpersistPendingUnfollowRecord(currentAccountDid, {did, followUri})
         restoreOptimisticUI()
       }
       let toastId: string | undefined
@@ -523,7 +532,8 @@ export function useProfileFollowMutationQueue(
            * this exact staging - same record AND same stagedAt, since two
            * tabs unfollowing the same record produce entries identical but
            * for the timestamp - another context owns the unfollow now. An
-           * Undo or an earlier commit removed the entry, or a newer staging
+           * Undo removed the entry (settlements only ever remove their own
+           * entry, so an empty slot means a recall), or a newer staging
            * replaced it and the newest undo window is the live one. Stand
            * down instead of firing a delete that undo may still recall.
            * Restore the UI only when the slot is empty; an occupied slot
@@ -545,7 +555,19 @@ export function useProfileFollowMutationQueue(
           try {
             ax.metric('profile:unfollow', {logContext})
             await agent.deleteFollow(followUri)
-            unpersistPendingUnfollow(currentAccountDid, {did, followUri})
+            /*
+             * Settle only this staging's own entry, matched by stagedAt: if
+             * another tab restaged the same record while the delete was in
+             * flight, the slot belongs to that newer staging and only its
+             * own outcome may clear it - removing it here would make its
+             * commit find the slot empty and wrongly restore "Following"
+             * for the record this delete just removed.
+             */
+            unpersistPendingUnfollow(currentAccountDid, {
+              did,
+              followUri,
+              stagedAt,
+            })
             /*
              * A delete that settles after an account switch (it started
              * just before the switch) must not leak side effects into the
@@ -578,13 +600,25 @@ export function useProfileFollowMutationQueue(
             /*
              * A failure after an account switch (e.g. the switch disposed
              * the agent under this delete): the UI and the toast outlet
-             * belong to another account now, and revert() would remove the
-             * persisted record. Keep it instead - the replay fires the
+             * belong to another account now, and unpersisting would remove
+             * the persisted record. Keep it instead - the replay fires the
              * delete when this account is next active - and surface
              * nothing here.
              */
             if (!isAccountActive(currentAccountDid)) return false
-            revert()
+            /*
+             * A definitive failure settles this staging: remove only its
+             * own entry (matched by stagedAt, like the success path) - a
+             * newer staging that took the slot mid-flight gets its own
+             * verdict from its own delete - and restore the UI, since the
+             * record still exists.
+             */
+            unpersistPendingUnfollow(currentAccountDid, {
+              did,
+              followUri,
+              stagedAt,
+            })
+            restoreOptimisticUI()
             logger.error('Failed to commit buffered unfollow', {
               safeMessage: e,
             })
