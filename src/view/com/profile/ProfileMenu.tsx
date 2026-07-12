@@ -61,6 +61,7 @@ import {GoLiveDialog} from '#/features/liveNow/components/GoLiveDialog'
 import {GoLiveDisabledDialog} from '#/features/liveNow/components/GoLiveDisabledDialog'
 import {Dot} from '#/features/nuxs/components/Dot'
 import {Gradient} from '#/features/nuxs/components/Gradient'
+import {hasPendingUnfollow} from '#/features/unfollowUndo'
 import {useDevMode} from '#/storage/hooks/dev-mode'
 
 let ProfileMenu = ({
@@ -194,8 +195,16 @@ let ProfileMenu = ({
 
   const onPressFollowAccount = useCallback(async () => {
     try {
+      /*
+       * When a buffered unfollow is pending, queueFollow just cancels it -
+       * no new follow record is created - so skip the "new follow" toast.
+       * Check before the await: the cancel clears the registry.
+       */
+      const wasUndo = hasPendingUnfollow(currentAccount?.did, profile.did)
       await queueFollow()
-      Toast.show(l({message: 'Account followed', context: 'toast'}))
+      if (!wasUndo) {
+        Toast.show(l({message: 'Account followed', context: 'toast'}))
+      }
     } catch (err) {
       const e = err as Error
       if (e?.name !== 'AbortError') {
@@ -205,12 +214,11 @@ let ProfileMenu = ({
         })
       }
     }
-  }, [l, ax, queueFollow])
+  }, [l, ax, queueFollow, currentAccount, profile.did])
 
   const onPressUnfollowAccount = useCallback(async () => {
     try {
       await queueUnfollow()
-      Toast.show(l({message: 'Account unfollowed', context: 'toast'}))
     } catch (err) {
       const e = err as Error
       if (e?.name !== 'AbortError') {

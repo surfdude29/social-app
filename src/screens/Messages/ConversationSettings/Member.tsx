@@ -21,6 +21,7 @@ import * as ProfileCard from '#/components/ProfileCard'
 import * as Prompt from '#/components/Prompt'
 import * as Toast from '#/components/Toast'
 import {Text} from '#/components/Typography'
+import {hasPendingUnfollow} from '#/features/unfollowUndo'
 import {MemberMenu} from './MemberMenu'
 import {RemoveMemberPrompt} from './prompts'
 import {StatusBadge} from './StatusBadge'
@@ -62,8 +63,16 @@ export function Member({
   const handleFollow = () => {
     requireAuth(async () => {
       try {
+        /*
+         * When a buffered unfollow is pending, queueFollow just cancels it -
+         * no new follow record is created - so skip the "new follow" toast.
+         * Check before the await: the cancel clears the registry.
+         */
+        const wasUndo = hasPendingUnfollow(currentAccount?.did, profile.did)
         await queueFollow()
-        Toast.show(l`Following ${displayName}`)
+        if (!wasUndo) {
+          Toast.show(l`Following ${displayName}`)
+        }
       } catch (err) {
         const e = err as Error
         if (e?.name !== 'AbortError') {

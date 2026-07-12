@@ -72,6 +72,7 @@ import {
   prefetchLiveEvents,
   Provider as LiveEventsProvider,
 } from '#/features/liveEvents/context'
+import {PendingUnfollowsFlusher} from '#/features/unfollowUndo'
 import * as Geo from '#/geolocation'
 import {Splash} from '#/Splash'
 import {BackgroundNotificationPreferencesProvider} from '../modules/expo-background-notification-handler/src/BackgroundNotificationHandlerProvider'
@@ -157,6 +158,7 @@ function InnerApp() {
                                                                 <HotkeysProvider>
                                                                   <Shell />
                                                                   <ToastOutlet />
+                                                                  <PendingUnfollowsFlusher />
                                                                 </HotkeysProvider>
                                                               </TranslateOnDeviceProvider>
                                                             </IntentDialogProvider>

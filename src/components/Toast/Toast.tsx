@@ -179,7 +179,6 @@ export function Action(
   }, [t, type])
 
   const onPress = (e: GestureResponderEvent) => {
-    console.log('Toast Action pressed, dismissing toast', id)
     dismiss(id)
     props.onPress?.(e)
   }

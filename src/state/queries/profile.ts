@@ -4,14 +4,14 @@ import {
   type AppBskyActorGetProfile,
   type AppBskyActorGetProfiles,
   type AppBskyActorProfile,
-  type AppBskyGraphGetFollows,
   type AtpAgent,
   AtUri,
   type ComAtprotoRepoUploadBlob,
+  moderateProfile,
   type Un$Typed,
 } from '@atproto/api'
+import {useLingui} from '@lingui/react/macro'
 import {
-  type InfiniteData,
   keepPreviousData,
   type QueryClient,
   useMutation,
@@ -22,12 +22,18 @@ import {
 import {uploadBlob} from '#/lib/api'
 import {until} from '#/lib/async/until'
 import {useToggleMutationQueue} from '#/lib/hooks/useToggleMutationQueue'
+import {sanitizeDisplayName} from '#/lib/strings/display-names'
+import {logger} from '#/logger'
 import {updateProfileShadow} from '#/state/cache/profile-shadow'
 import {type Shadow} from '#/state/cache/types'
 import {type ImageMeta} from '#/state/gallery'
+import {useModerationOpts} from '#/state/preferences/moderation-opts'
 import {STALE} from '#/state/queries'
 import {resetProfilePostsQueries} from '#/state/queries/post-feed'
-import {RQKEY as PROFILE_FOLLOWS_RQKEY} from '#/state/queries/profile-follows'
+import {
+  prependProfileToFollowsCache,
+  removeProfileFromFollowsCache,
+} from '#/state/queries/profile-follows'
 import {
   unstableCacheProfileView,
   useUnstableProfileViewCache,
@@ -35,8 +41,21 @@ import {
 import {useUpdateProfileVerificationCache} from '#/state/queries/verification/useUpdateProfileVerificationCache'
 import {useAgent, useSession} from '#/state/session'
 import * as userActionHistory from '#/state/userActionHistory'
+import * as Toast from '#/components/Toast'
 import {useAnalytics} from '#/analytics'
 import {type Metrics, toClout} from '#/analytics/metrics'
+import {
+  cancelPendingUnfollow,
+  getInflightUnfollowCommit,
+  getPersistedPendingUnfollows,
+  isAccountActive,
+  isPageUnloading,
+  persistPendingUnfollow,
+  showUnfollowUndoToast,
+  stagePendingUnfollow,
+  unpersistPendingUnfollow,
+  unpersistPendingUnfollowRecord,
+} from '#/features/unfollowUndo'
 import type * as bsky from '#/types/bsky'
 import {
   ProgressGuideAction,
@@ -252,6 +271,9 @@ export function useProfileFollowMutationQueue(
   const agent = useAgent()
   const queryClient = useQueryClient()
   const {currentAccount} = useSession()
+  const ax = useAnalytics()
+  const moderationOpts = useModerationOpts()
+  const {t: l} = useLingui()
   const did = profile.did
   const initialFollowingUri = profile.viewer?.following
   const followMutation = useProfileFollowMutation(
@@ -266,6 +288,41 @@ export function useProfileFollowMutationQueue(
     initialState: initialFollowingUri,
     runMutation: async (prevFollowingUri, shouldFollow) => {
       if (shouldFollow) {
+        /*
+         * A buffered unfollow whose delete is in flight (the undo window
+         * just expired) must settle before a new follow record is created.
+         * Racing it risks the delete response arriving after the follow's:
+         * the commit's success path would then re-stamp the unfollowed
+         * state, stranding the UI on "Follow" with a live follow record -
+         * and a second tap would create a duplicate record, after which one
+         * unfollow no longer fully unfollows. Waiting here, inside the
+         * toggle queue, keeps later taps serialized behind this task and
+         * preserves the invariant that the `followingUri: 'pending'`
+         * sentinel never exists while the queue is empty.
+         */
+        const inflight = getInflightUnfollowCommit(currentAccount?.did, did)
+        if (inflight) {
+          const committed = await inflight.result
+          if (!committed) {
+            /*
+             * The delete failed and its revert already restored the
+             * followed state - the user still follows the original record,
+             * so there is nothing to create. Thread that record through as
+             * the confirmed state. Callers can't tell this apart from a
+             * real follow and may show a "Following" toast; that's
+             * acceptable for this rare double failure window, since the
+             * message matches the actual state.
+             */
+            return inflight.followUri
+          }
+          /*
+           * Re-stamp: the commit's success path just stamped the unfollowed
+           * state, which would flash "Follow" while the follow request runs.
+           */
+          updateProfileShadow(queryClient, did, {
+            followingUri: 'pending',
+          })
+        }
         const {uri} = await followMutation.mutateAsync({
           did,
         })
@@ -290,43 +347,11 @@ export function useProfileFollowMutationQueue(
 
       // Optimistically update profile follows cache for avatar displays
       if (currentAccount?.did) {
-        type FollowsQueryData =
-          InfiniteData<AppBskyGraphGetFollows.OutputSchema>
-        queryClient.setQueryData<FollowsQueryData>(
-          PROFILE_FOLLOWS_RQKEY(currentAccount.did),
-          old => {
-            if (!old?.pages?.[0]) return old
-            if (finalFollowingUri) {
-              // Add the followed profile to the beginning
-              const alreadyExists = old.pages[0].follows.some(
-                f => f.did === profile.did,
-              )
-              if (alreadyExists) return old
-              return {
-                ...old,
-                pages: [
-                  {
-                    ...old.pages[0],
-                    follows: [
-                      profile as AppBskyActorDefs.ProfileView,
-                      ...old.pages[0].follows,
-                    ],
-                  },
-                  ...old.pages.slice(1),
-                ],
-              }
-            } else {
-              // Remove the unfollowed profile
-              return {
-                ...old,
-                pages: old.pages.map(page => ({
-                  ...page,
-                  follows: page.follows.filter(f => f.did !== profile.did),
-                })),
-              }
-            }
-          },
-        )
+        if (finalFollowingUri) {
+          prependProfileToFollowsCache(queryClient, currentAccount.did, profile)
+        } else {
+          removeProfileFromFollowsCache(queryClient, currentAccount.did, did)
+        }
       }
 
       if (finalFollowingUri) {
@@ -346,20 +371,239 @@ export function useProfileFollowMutationQueue(
   })
 
   const queueFollow = useCallback(() => {
+    /*
+     * A buffered unfollow means the follow record still exists server-side.
+     * Cancel the staged delete (which also reverts the optimistic UI)
+     * instead of creating a duplicate follow record.
+     */
+    if (cancelPendingUnfollow(currentAccount?.did, did)) {
+      return Promise.resolve(undefined)
+    }
     // optimistically update
     updateProfileShadow(queryClient, did, {
       followingUri: 'pending',
     })
     return queueToggle(true)
-  }, [queryClient, did, queueToggle])
+  }, [currentAccount?.did, queryClient, did, queueToggle])
 
   const queueUnfollow = useCallback(() => {
-    // optimistically update
+    const followUri = initialFollowingUri
+    const currentAccountDid = currentAccount?.did
+    if (followUri && followUri !== 'pending' && currentAccountDid) {
+      /*
+       * Buffered unfollow: update the UI optimistically, stage the actual
+       * network delete behind the undo window, and show a toast with an
+       * Undo action. On undo the staged delete is discarded and the UI
+       * reverts - no request is ever made. Everything the commit needs is
+       * captured here, since by the time it runs the optimistic shadow
+       * update has already cleared `profile.viewer?.following` and the
+       * component may have unmounted. The registry and the write-ahead
+       * records are account-scoped, so this path also requires a signed-in
+       * account - without one (not reachable in practice) the legacy
+       * fall-through below performs the delete immediately.
+       */
+      /*
+       * A redundant tap: the same record's delete is already on the wire
+       * (the undo window just expired and a stale refetch flipped the
+       * button back to "Following"). Re-apply the optimistic UI and let the
+       * in-flight commit's own handlers finish the job - staging again
+       * would fire a second delete for the same record and double-count the
+       * unfollow metric, and an Undo toast would be a lie since the delete
+       * can't be recalled. If the delete fails, its revert restores
+       * "Following", correctly undoing this tap too.
+       */
+      const inflight = getInflightUnfollowCommit(currentAccountDid, did)
+      if (inflight && inflight.followUri === followUri) {
+        updateProfileShadow(queryClient, did, {
+          followingUri: undefined,
+        })
+        removeProfileFromFollowsCache(queryClient, currentAccountDid, did)
+        return Promise.resolve(undefined)
+      }
+      updateProfileShadow(queryClient, did, {
+        followingUri: undefined,
+      })
+      removeProfileFromFollowsCache(queryClient, currentAccountDid, did)
+      /*
+       * Write-ahead record: if the commit is cancelled mid-flight (page
+       * refresh/close, app kill), the unfollow is replayed on next launch
+       * instead of being silently dropped. The timestamp is captured by the
+       * commit closure below, which uses it to recognize its own staging.
+       */
+      const stagedAt = Date.now()
+      persistPendingUnfollow(currentAccountDid, {
+        did,
+        followUri,
+        stagedAt,
+      })
+      const errorMessage = l`An issue occurred, please try again.`
+      const restoreOptimisticUI = () => {
+        updateProfileShadow(queryClient, did, {
+          followingUri: followUri,
+        })
+        prependProfileToFollowsCache(queryClient, currentAccountDid, profile)
+      }
+      /*
+       * Explicit user recall (toast Undo, or tapping Follow inside the
+       * window). Removes the record's WAL entry whichever staging wrote it:
+       * another tab may have restaged the same record with a fresher
+       * stagedAt, and an Undo anywhere in the window must stand every tab's
+       * commit down. Settlement paths must not reuse this - they remove
+       * only their own entry, matched by stagedAt.
+       */
+      const revert = () => {
+        unpersistPendingUnfollowRecord(currentAccountDid, {did, followUri})
+        restoreOptimisticUI()
+      }
+      let toastId: string | undefined
+      stagePendingUnfollow({
+        accountDid: currentAccountDid,
+        did,
+        followUri,
+        revert,
+        onDiscardToast: () => {
+          if (toastId) {
+            Toast.dismiss(toastId)
+          }
+        },
+        commit: async () => {
+          /*
+           * The persisted entry doubles as a cross-tab ownership token (on
+           * web the storage is shared across tabs): if it no longer matches
+           * this exact staging - same record AND same stagedAt, since two
+           * tabs unfollowing the same record produce entries identical but
+           * for the timestamp - another context owns the unfollow now. An
+           * Undo removed the entry (settlements only ever remove their own
+           * entry, so an empty slot means a recall), or a newer staging
+           * replaced it and the newest undo window is the live one. Stand
+           * down instead of firing a delete that undo may still recall.
+           * Restore the UI only when the slot is empty; an occupied slot
+           * means the newer staging drives the UI from here. (Two tabs
+           * staging in the same millisecond collide and both fire -
+           * harmless, the delete is idempotent.)
+           */
+          const slot = getPersistedPendingUnfollows(currentAccountDid).find(
+            e => e.did === did,
+          )
+          if (
+            !slot ||
+            slot.followUri !== followUri ||
+            slot.stagedAt !== stagedAt
+          ) {
+            if (!slot) restoreOptimisticUI()
+            return false
+          }
+          try {
+            ax.metric('profile:unfollow', {logContext})
+            await agent.deleteFollow(followUri)
+            /*
+             * Settle only this staging's own entry, matched by stagedAt: if
+             * another tab restaged the same record while the delete was in
+             * flight, the slot belongs to that newer staging and only its
+             * own outcome may clear it - removing it here would make its
+             * commit find the slot empty and wrongly restore "Following"
+             * for the record this delete just removed.
+             */
+            unpersistPendingUnfollow(currentAccountDid, {
+              did,
+              followUri,
+              stagedAt,
+            })
+            /*
+             * A delete that settles after an account switch (it started
+             * just before the switch) must not leak side effects into the
+             * account that is active now: userActionHistory is shared
+             * module state, and the shadow/cache re-stamps below would only
+             * touch the retired account's query client anyway.
+             */
+            if (!isAccountActive(currentAccountDid)) return true
+            userActionHistory.unfollow([did])
+            /*
+             * A refetch during the undo window creates fresh cache objects
+             * that still reflect the server's pre-delete state and carry no
+             * shadow (shadows are keyed by object identity), which flips the
+             * UI back to "Following". Re-stamp the confirmed delete so the
+             * UI can't stay stuck on the stale state.
+             */
+            updateProfileShadow(queryClient, did, {
+              followingUri: undefined,
+            })
+            removeProfileFromFollowsCache(queryClient, currentAccountDid, did)
+            return true
+          } catch (e) {
+            /*
+             * A failure while the page is unloading means the browser
+             * cancelled the fetch. Keep the persisted record so the unfollow
+             * is replayed on next launch; reverting UI or toasting a dying
+             * page is pointless.
+             */
+            if (isPageUnloading()) return true
+            /*
+             * A failure after an account switch (e.g. the switch disposed
+             * the agent under this delete): the UI and the toast outlet
+             * belong to another account now, and unpersisting would remove
+             * the persisted record. Keep it instead - the replay fires the
+             * delete when this account is next active - and surface
+             * nothing here.
+             */
+            if (!isAccountActive(currentAccountDid)) return false
+            /*
+             * A definitive failure settles this staging: remove only its
+             * own entry (matched by stagedAt, like the success path) - a
+             * newer staging that took the slot mid-flight gets its own
+             * verdict from its own delete - and restore the UI, since the
+             * record still exists.
+             */
+            unpersistPendingUnfollow(currentAccountDid, {
+              did,
+              followUri,
+              stagedAt,
+            })
+            restoreOptimisticUI()
+            logger.error('Failed to commit buffered unfollow', {
+              safeMessage: e,
+            })
+            Toast.show(errorMessage, {type: 'error'})
+            return false
+          }
+        },
+      })
+      toastId = showUnfollowUndoToast({
+        displayName: sanitizeDisplayName(
+          profile.displayName || profile.handle,
+          moderationOpts
+            ? moderateProfile(profile, moderationOpts).ui('displayName')
+            : undefined,
+        ),
+        onUndo: () => {
+          cancelPendingUnfollow(currentAccountDid, did)
+        },
+      })
+      return Promise.resolve(undefined)
+    }
+    /*
+     * No confirmed follow record yet (a follow is still in flight), already
+     * unfollowed, or no signed-in account: fall through to the toggle
+     * queue, which threads the confirmed uri into the delete. No undo toast
+     * in this case.
+     */
     updateProfileShadow(queryClient, did, {
       followingUri: undefined,
     })
     return queueToggle(false)
-  }, [queryClient, did, queueToggle])
+  }, [
+    initialFollowingUri,
+    currentAccount?.did,
+    queryClient,
+    did,
+    profile,
+    moderationOpts,
+    l,
+    ax,
+    logContext,
+    agent,
+    queueToggle,
+  ])
 
   return [queueFollow, queueUnfollow] as const
 }

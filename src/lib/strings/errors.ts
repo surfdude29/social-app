@@ -67,6 +67,24 @@ export function isNetworkError(e: unknown) {
   return false
 }
 
+/**
+ * Whether an XRPC failure is a transient server-side condition (5xx, e.g.
+ * `UpstreamFailure` or `InternalServerError`, or a 429 rate limit) rather
+ * than a definitive rejection of the request. Such a request is worth
+ * retrying: it may succeed unchanged once the upstream recovers. Note this
+ * is disjoint from {@link isNetworkError}, which matches failures where the
+ * request never got a response at all.
+ */
+export function isTransientServerError(e: unknown): boolean {
+  if (!(e instanceof XRPCError)) return false
+  /*
+   * ResponseType is a numeric enum of HTTP statuses; unknown 5xx codes are
+   * mapped into its 5xx members, so a plain numeric range check is exact.
+   */
+  const status: number = e.status
+  return status >= 500 || status === 429
+}
+
 export function isErrorMaybeAppPasswordPermissions(e: unknown) {
   if (e instanceof XRPCError && e.error === 'TokenInvalid') {
     return true

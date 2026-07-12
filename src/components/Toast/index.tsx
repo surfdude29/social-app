@@ -14,6 +14,7 @@ import {
 import {type BaseToastOptions} from '#/components/Toast/types'
 
 export {DURATION} from '#/components/Toast/const'
+export {dismiss} from '#/components/Toast/sonner'
 export {Action, Icon, Text, ToastConfigProvider} from '#/components/Toast/Toast'
 export {type ToastType} from '#/components/Toast/types'
 
@@ -39,12 +40,13 @@ export function Outer({children}: {children: React.ReactNode}) {
 export const api = sonner
 
 /**
- * Our base toast API, using the `Toast` export of this file.
+ * Our base toast API, using the `Toast` export of this file. Returns the
+ * toast's id, which can be passed to `dismiss` to close it early.
  */
 export function show(
   content: React.ReactNode,
   {type = 'default', ...options}: BaseToastOptions = {},
-) {
+): string {
   const id = nanoid()
 
   if (typeof content === 'string') {
@@ -77,4 +79,6 @@ export function show(
       `Toast can be a string or a React element, got ${typeof content}`,
     )
   }
+
+  return id
 }
