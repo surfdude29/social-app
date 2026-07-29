@@ -12,7 +12,10 @@ import {useEffect, useState} from 'react'
 import {i18n} from '@lingui/core'
 import {enUS as defaultLocale} from 'date-fns/locale/en-US'
 
-import {sanitizeAppLanguageSetting} from '#/locale/helpers'
+import {
+  resetDisplayNamesCaches,
+  sanitizeAppLanguageSetting,
+} from '#/locale/helpers'
 import {AppLanguage} from '#/locale/languages'
 import {messages as messagesAn} from '#/locale/locales/an/messages'
 import {messages as messagesAst} from '#/locale/locales/ast/messages'
@@ -482,11 +485,19 @@ export function useLocaleLanguage() {
   const [dateLocale, setDateLocale] = useState(defaultLocale)
 
   useEffect(() => {
-    void dynamicActivate(sanitizeAppLanguageSetting(appLanguage)).then(
-      locale => {
-        setDateLocale(locale ?? defaultLocale)
-      },
-    )
+    const locale = sanitizeAppLanguageSetting(appLanguage)
+
+    void dynamicActivate(locale).then(nextDateLocale => {
+      /*
+       * `dynamicActivate` activates the message catalog before awaiting the Intl locale data, so
+       * anything rendered in between built its `Intl.DisplayNames` against the fallback locale.
+       * Now that the data is registered, drop those instances and re-activate to emit a lingui
+       * change event, which re-renders every `Trans`/`useLingui` consumer with real display names.
+       */
+      resetDisplayNamesCaches()
+      i18n.activate(locale)
+      setDateLocale(nextDateLocale ?? defaultLocale)
+    })
   }, [appLanguage])
 
   return dateLocale

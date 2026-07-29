@@ -3,7 +3,10 @@ import {i18n, type Messages} from '@lingui/core'
 import {type Locale} from 'date-fns/locale'
 import {enUS as defaultLocale} from 'date-fns/locale/en-US'
 
-import {sanitizeAppLanguageSetting} from '#/locale/helpers'
+import {
+  resetDisplayNamesCaches,
+  sanitizeAppLanguageSetting,
+} from '#/locale/helpers'
 import {AppLanguage} from '#/locale/languages'
 import {useLanguagePrefs} from '#/state/preferences'
 
@@ -314,6 +317,7 @@ export function useLocaleLanguage() {
 
     document.documentElement.lang = sanitizedLanguage
     void dynamicActivate(sanitizedLanguage).then(locale => {
+      resetDisplayNamesCaches()
       setDateLocale(locale)
     })
   }, [appLanguage])
