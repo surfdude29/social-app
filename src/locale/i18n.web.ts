@@ -11,7 +11,10 @@ import {AppLanguage} from '#/locale/languages'
 import {useLanguagePrefs} from '#/state/preferences'
 
 /**
- * We do a dynamic import of just the catalog that we need
+ * We do a dynamic import of just the catalog that we need.
+ *
+ * Despite the name this only loads - the caller activates, so that a catalog superseded while it
+ * was still downloading can be discarded instead of clobbering the current language.
  */
 export async function dynamicActivate(locale: AppLanguage) {
   let messages: Messages
@@ -302,10 +305,7 @@ export async function dynamicActivate(locale: AppLanguage) {
     }
   }
 
-  i18n.load(locale, messages)
-  i18n.activate(locale)
-
-  return dateLocale
+  return {messages, dateLocale}
 }
 
 export function useLocaleLanguage() {
@@ -313,13 +313,27 @@ export function useLocaleLanguage() {
   const [dateLocale, setDateLocale] = useState(defaultLocale)
 
   useEffect(() => {
-    const sanitizedLanguage = sanitizeAppLanguageSetting(appLanguage)
+    const locale = sanitizeAppLanguageSetting(appLanguage)
+    let cancelled = false
 
-    document.documentElement.lang = sanitizedLanguage
-    void dynamicActivate(sanitizedLanguage).then(locale => {
+    void dynamicActivate(locale).then(({messages, dateLocale: nextDateLocale}) => {
+      /*
+       * A newer app language was picked while this catalog was still downloading, so this result
+       * is stale. Activating happens here rather than inside `dynamicActivate` so that everything
+       * reflecting the active language is applied together, under this guard.
+       */
+      if (cancelled) return
+
+      i18n.load(locale, messages)
+      i18n.activate(locale)
+      document.documentElement.lang = locale
       resetDisplayNamesCaches()
-      setDateLocale(locale)
+      setDateLocale(nextDateLocale)
     })
+
+    return () => {
+      cancelled = true
+    }
   }, [appLanguage])
 
   return dateLocale

@@ -486,8 +486,16 @@ export function useLocaleLanguage() {
 
   useEffect(() => {
     const locale = sanitizeAppLanguageSetting(appLanguage)
+    let cancelled = false
 
     void dynamicActivate(locale).then(nextDateLocale => {
+      /*
+       * A newer app language was picked while this one's Intl data was still loading, so this
+       * result is stale. Each locale awaits a different set of imports, so an earlier request can
+       * resolve last and would otherwise clobber the current language for good.
+       */
+      if (cancelled) return
+
       /*
        * `dynamicActivate` activates the message catalog before awaiting the Intl locale data, so
        * anything rendered in between built its `Intl.DisplayNames` against the fallback locale.
@@ -498,6 +506,10 @@ export function useLocaleLanguage() {
       i18n.activate(locale)
       setDateLocale(nextDateLocale ?? defaultLocale)
     })
+
+    return () => {
+      cancelled = true
+    }
   }, [appLanguage])
 
   return dateLocale
