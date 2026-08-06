@@ -516,7 +516,14 @@ let PostMenuItems = ({
     if (!reposterShadow) return
     try {
       await queueUnmuteReposts()
-      Toast.show(l`Reposts from ${reposterName} will be shown in feeds`)
+      Toast.show(
+        <Toast.Outer>
+          <Toast.Icon />
+          <Toast.Text emoji>
+            {l`Reposts from ${reposterName} will be shown in feeds`}
+          </Toast.Text>
+        </Toast.Outer>,
+      )
     } catch (err) {
       const e = err as Error
       if (e?.name !== 'AbortError') {
@@ -542,8 +549,8 @@ let PostMenuItems = ({
       Toast.show(
         <Toast.Outer>
           <Toast.Icon />
-          <Toast.Text>
-            <Trans>Reposts from {reposterName} will be hidden in feeds</Trans>
+          <Toast.Text emoji>
+            {l`Reposts from ${reposterName} will be hidden in feeds`}
           </Toast.Text>
           <Toast.Action
             label={l`Undo`}
@@ -817,7 +824,7 @@ let PostMenuItems = ({
                   testID="postDropdownHideRepostsBtn"
                   label={l`Hide reposts from ${reposterName}`}
                   onPress={() => void onHideReposts()}>
-                  <Menu.ItemText>
+                  <Menu.ItemText emoji>
                     {l`Hide reposts from ${reposterName}`}
                   </Menu.ItemText>
                   <Menu.ItemIcon icon={RepostStrikeIcon} position="right" />

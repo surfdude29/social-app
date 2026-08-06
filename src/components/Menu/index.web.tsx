@@ -301,11 +301,12 @@ export function Item({
   )
 }
 
-export function ItemText({children, style}: ItemTextProps) {
+export function ItemText({children, style, emoji}: ItemTextProps) {
   const t = useTheme()
   const {disabled, destructive} = useMenuItemContext()
   return (
     <Text
+      emoji={emoji}
       style={[
         a.flex_1,
         a.font_semi_bold,
