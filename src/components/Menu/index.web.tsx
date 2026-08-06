@@ -307,6 +307,7 @@ export function ItemText({children, style, emoji}: ItemTextProps) {
   return (
     <Text
       emoji={emoji}
+      numberOfLines={1}
       style={[
         a.flex_1,
         a.font_semi_bold,
