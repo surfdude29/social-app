@@ -299,6 +299,10 @@ let FeedItemInner = ({
     }
   }, [reason])
 
+  const reposter = AppBskyFeedDefs.isReasonRepost(reason)
+    ? reason.by
+    : undefined
+
   const threadgateHiddenReplies = useMergedThreadgateHiddenReplies({
     threadgateRecord,
   })
@@ -441,6 +445,7 @@ let FeedItemInner = ({
               threadgateRecord={threadgateRecord}
               onShowLess={onShowLess}
               viaRepost={viaRepost}
+              reposter={reposter}
             />
           </View>
 
