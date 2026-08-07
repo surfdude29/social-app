@@ -211,6 +211,17 @@ export function usePostAuthorShadowFilter(data?: FeedPage[]) {
   }, [authors])
 }
 
+/**
+ * Point-in-time, non-reactive read of the shadow data recorded for a profile
+ * object, or undefined if none has been written. For use outside of render,
+ * e.g. in callbacks that outlive their component.
+ */
+export function getProfileShadow(
+  profile: bsky.profile.AnyProfileView,
+): Partial<ProfileShadow> | undefined {
+  return shadows.get(profile)
+}
+
 export function updateProfileShadow(
   queryClient: QueryClient,
   did: string,
