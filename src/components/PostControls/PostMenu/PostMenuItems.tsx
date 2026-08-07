@@ -34,7 +34,6 @@ import {getPostLanguageTags} from '#/locale/helpers'
 import {logger} from '#/logger'
 import {type Shadow} from '#/state/cache/post-shadow'
 import {
-  getProfileShadow,
   useMaybeProfileShadow,
   useProfileShadow,
 } from '#/state/cache/profile-shadow'
@@ -516,12 +515,6 @@ let PostMenuItems = ({
   const onUndoHideReposts = async () => {
     if (!reposterShadow) return
     try {
-      /*
-       * The account may have been fully muted while the toast was up. The
-       * generic unmute would clear that mute too, so undo nothing - the
-       * reposts stay hidden by the stronger full mute.
-       */
-      if (reposter && getProfileShadow(reposter)?.muted) return
       await queueUnmuteReposts()
       Toast.show(
         <Toast.Outer>
