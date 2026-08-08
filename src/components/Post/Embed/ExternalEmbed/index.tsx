@@ -29,11 +29,13 @@ export const ExternalEmbed = ({
   onOpen,
   style,
   hideAlt,
+  gifOverlay,
 }: {
   link: AppBskyEmbedExternal.ViewExternal
   onOpen?: () => void
   style?: StyleProp<ViewStyle>
   hideAlt?: boolean
+  gifOverlay?: React.ReactNode
 }) => {
   const {_} = useLingui()
   const t = useTheme()
@@ -78,6 +80,7 @@ export const ExternalEmbed = ({
           altText={parsedAlt.alt}
           isPreferredAltText={parsedAlt.isPreferred}
           hideAlt={hideAlt}
+          overlay={gifOverlay}
         />
       </View>
     )

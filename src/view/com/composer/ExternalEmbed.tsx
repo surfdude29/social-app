@@ -54,23 +54,32 @@ export const ExternalEmbedGif = ({
     <View style={[a.overflow_hidden, t.atoms.border_contrast_medium]}>
       {linkInfo ? (
         <View style={{pointerEvents: 'auto'}}>
-          <ExternalEmbed link={linkInfo} hideAlt />
+          <ExternalEmbed
+            link={linkInfo}
+            hideAlt
+            gifOverlay={<ExternalEmbedRemoveBtn onRemove={onRemove} />}
+          />
         </View>
       ) : error ? (
-        <Container style={[a.align_start, a.p_md, a.gap_xs]}>
-          <Text numberOfLines={1} style={t.atoms.text_contrast_high}>
-            {gif.url}
-          </Text>
-          <Text numberOfLines={2} style={[{color: t.palette.negative_400}]}>
-            {cleanError(error)}
-          </Text>
-        </Container>
+        <>
+          <Container style={[a.align_start, a.p_md, a.gap_xs]}>
+            <Text numberOfLines={1} style={t.atoms.text_contrast_high}>
+              {gif.url}
+            </Text>
+            <Text numberOfLines={2} style={[{color: t.palette.negative_400}]}>
+              {cleanError(error)}
+            </Text>
+          </Container>
+          <ExternalEmbedRemoveBtn onRemove={onRemove} />
+        </>
       ) : (
-        <Container style={loadingStyle}>
-          <Loader size="xl" />
-        </Container>
+        <>
+          <Container style={loadingStyle}>
+            <Loader size="xl" />
+          </Container>
+          <ExternalEmbedRemoveBtn onRemove={onRemove} />
+        </>
       )}
-      <ExternalEmbedRemoveBtn onRemove={onRemove} />
     </View>
   )
 }

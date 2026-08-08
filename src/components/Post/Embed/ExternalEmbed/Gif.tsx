@@ -19,12 +19,14 @@ export function GifEmbed({
   altText,
   isPreferredAltText,
   hideAlt,
+  overlay,
 }: {
   params: EmbedPlayerParams
   thumb: string | undefined
   altText: string
   isPreferredAltText: boolean
   hideAlt?: boolean
+  overlay?: React.ReactNode
 }) {
   const t = useTheme()
   const {_} = useLingui()
@@ -96,6 +98,7 @@ export function GifEmbed({
             />
           )}
         </View>
+        {overlay}
       </View>
     </ConstrainedImage>
   )
