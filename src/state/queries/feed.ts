@@ -9,6 +9,7 @@ import {
   RichText,
 } from '@atproto/api'
 import {t} from '@lingui/core/macro'
+import {useLingui} from '@lingui/react/macro'
 import {
   type InfiniteData,
   keepPreviousData,
@@ -443,6 +444,7 @@ const createPinnedFeedInfosQueryKey = (
   )
 
 export function usePinnedFeedsInfos() {
+  const {t: l} = useLingui()
   const {hasSession} = useSession()
   const agent = useAgent()
   const {data: preferences, isLoading: isLoadingPrefs} = usePreferencesQuery()
@@ -530,6 +532,35 @@ export function usePinnedFeedsInfos() {
       }
       return result
     },
+    /*
+     * The cached data keeps the canonical English display names. Localizing
+     * them here keeps the persisted cache language-neutral and re-applies the
+     * translation when the app language changes, without a refetch.
+     */
+    select: useCallback(
+      (data: SavedFeedSourceInfo[]): SavedFeedSourceInfo[] =>
+        data.map(feed => {
+          if (feed.feedDescriptor === 'following') {
+            return {
+              ...feed,
+              displayName: l({message: 'Following', context: 'feed-name'}),
+            }
+          }
+          /*
+           * Intentionally overrides the server-provided name of the official
+           * Discover feed (and the logged-out stub, which shares this URI),
+           * since feedgen records cannot provide localized names.
+           */
+          if (feed.uri === DISCOVER_FEED_URI) {
+            return {
+              ...feed,
+              displayName: l({message: 'Discover', context: 'feed-name'}),
+            }
+          }
+          return feed
+        }),
+      [l],
+    ),
   })
 }
 
