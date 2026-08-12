@@ -21,16 +21,6 @@ export async function compressVideo(
 ): Promise<CompressedVideo> {
   const {onProgress, signal, onProbe} = opts || {}
 
-  // Probe data is purely informational - fired into telemetry to validate
-  // future smart-skip thresholds. Failures must not block the upload.
-  if (onProbe && file.mimeType !== 'image/gif') {
-    try {
-      onProbe(toProbedMetadata(await probe(file.uri)))
-    } catch (e) {
-      logger.debug('video probe failed', {safeMessage: e})
-    }
-  }
-
   if (file.mimeType === 'image/gif') {
     // let's hope they're small enough that they don't need compression!
     // this compression library doesn't support gifs
@@ -43,14 +33,34 @@ export async function compressVideo(
     }
   }
 
+  /*
+   * Feeds both telemetry and the skip decision below. Failures must not block
+   * the upload - an undefined result falls back to the size-only rule.
+   */
+  let metadata: ProbedMetadata | undefined
+  try {
+    metadata = toProbedMetadata(await probe(file.uri))
+    onProbe?.(metadata)
+  } catch (e) {
+    logger.debug('video probe failed', {safeMessage: e})
+  }
+
   // Pre-check the threshold ourselves so we can label the skip in telemetry.
   // rnc would do the same skip internally via minimumFileSizeForCompress, but
   // that path is invisible to us.
+  //
+  // HDR sources are exempt from the threshold no matter how small they are.
+  // Compressing is what tone maps them down to BT.709 (the compressor pins its
+  // compositor to 709), so passing the original PQ/HLG bytes through unchanged
+  // leaves the video looking washed out for anyone whose player treats it as
+  // SDR. The compressor's own passthrough decision only looks at mimeType and
+  // byte size, so this is the only place the probe's isHDR can be acted on.
   const isAcceptableFormat = SUPPORTED_MIME_TYPES.includes(
     file.mimeType as SupportedMimeTypes,
   )
   if (
     isAcceptableFormat &&
+    !metadata?.isHDR &&
     file.fileSize != null &&
     file.fileSize < MIN_SIZE_FOR_COMPRESSION_BYTES
   ) {
@@ -71,11 +81,10 @@ export async function compressVideo(
       frameRateCap: 30,
       mimeType: file.mimeType,
       fileSize: file.fileSize,
-      // Force a transcode for unacceptable-format files regardless of size.
-      // The compressor's default threshold would otherwise pass small
-      // unacceptable-format files through unchanged and the server would
-      // reject them. Acceptable formats are already short-circuited above so
-      // they never reach this call.
+      // Force a transcode regardless of size. Anything reaching this call
+      // needs to be re-encoded: unacceptable formats would be rejected by the
+      // server, and HDR sources would keep the colors we came here to tone
+      // map. Acceptable non-HDR formats are short-circuited above.
       passthroughBelowBytes: 0,
       passthroughGif: false,
     },
