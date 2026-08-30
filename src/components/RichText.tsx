@@ -2,6 +2,7 @@ import {useMemo} from 'react'
 import {type StyleProp, type TextStyle} from 'react-native'
 import {RichText as RichTextAPI} from '@bsky/sdk/richtext'
 
+import {detectMissedLinkFacets} from '#/lib/strings/rich-text-detection'
 import {toShortUrl} from '#/lib/strings/url-helpers'
 import {android, atoms as a, flatten, type TextStyleProp} from '#/alf'
 import {isOnlyEmoji} from '#/alf/typography'
@@ -78,6 +79,7 @@ export function RichText({
     } else {
       const rt = new RichTextAPI({text: value})
       rt.detectFacetsWithoutResolution()
+      detectMissedLinkFacets(rt)
       return rt
     }
   }, [value])

@@ -12,7 +12,10 @@ import {klipyUrlToBskyGifUrl} from '#/features/gifPicker/utils'
 import {cleanError} from '../../src/lib/strings/errors'
 import {createFullHandle, makeValidHandle} from '../../src/lib/strings/handles'
 import {enforceLen} from '../../src/lib/strings/helpers'
-import {detectLinkables} from '../../src/lib/strings/rich-text-detection'
+import {
+  detectLinkables,
+  detectMissedLinkFacets,
+} from '../../src/lib/strings/rich-text-detection'
 import {shortenLinks} from '../../src/lib/strings/rich-text-manip'
 import {
   makeRecordUri,
@@ -60,6 +63,11 @@ describe('detectLinkables', () => {
     'punctuation https://foo.com, https://bar.com/whatever; https://baz.com.',
     'parenthetical (https://foo.com)',
     'except for https://foo.com/thing_(cool)',
+    'like and subscribe: 404media.co',
+    'start 9to5mac.com end',
+    'start e-flux.com end',
+    'costs 4.99 dollars',
+    'version 1.2.3 released',
   ]
   const outputs = [
     ['no linkable'],
@@ -124,6 +132,11 @@ describe('detectLinkables', () => {
     ],
     ['parenthetical (', {link: 'https://foo.com'}, ')'],
     ['except for ', {link: 'https://foo.com/thing_(cool)'}],
+    ['like and subscribe: ', {link: '404media.co'}],
+    ['start ', {link: '9to5mac.com'}, ' end'],
+    ['start ', {link: 'e-flux.com'}, ' end'],
+    ['costs 4.99 dollars'],
+    ['version 1.2.3 released'],
   ]
   it('correctly handles a set of text inputs', () => {
     for (let i = 0; i < inputs.length; i++) {
@@ -131,6 +144,70 @@ describe('detectLinkables', () => {
       const output = detectLinkables(input)
       expect(output).toEqual(outputs[i])
     }
+  })
+})
+
+describe('detectMissedLinkFacets', () => {
+  function detect(text: string) {
+    const rt = new RichText({text})
+    rt.detectFacetsWithoutResolution()
+    detectMissedLinkFacets(rt)
+    return Array.from(rt.segments()).map(segment => ({
+      text: segment.text,
+      uri: segment.link?.uri,
+    }))
+  }
+
+  it('links a bare domain starting with a digit', () => {
+    expect(detect('like and subscribe: 404media.co')).toEqual([
+      {text: 'like and subscribe: ', uri: undefined},
+      {text: '404media.co', uri: 'https://404media.co'},
+    ])
+  })
+
+  it('links a bare domain containing a hyphen', () => {
+    expect(detect('read e-flux.com daily')).toEqual([
+      {text: 'read ', uri: undefined},
+      {text: 'e-flux.com', uri: 'https://e-flux.com'},
+      {text: ' daily', uri: undefined},
+    ])
+  })
+
+  it('keeps paths, and strips trailing punctuation', () => {
+    expect(detect('see 9to5mac.com/guides, ok?')).toEqual([
+      {text: 'see ', uri: undefined},
+      {text: '9to5mac.com/guides', uri: 'https://9to5mac.com/guides'},
+      {text: ', ok?', uri: undefined},
+    ])
+  })
+
+  it('does not duplicate facets the SDK already detected', () => {
+    expect(detect('https://404media.co and bsky.app')).toEqual([
+      {text: 'https://404media.co', uri: 'https://404media.co'},
+      {text: ' and ', uri: undefined},
+      {text: 'bsky.app', uri: 'https://bsky.app'},
+    ])
+  })
+
+  it('leaves a mention that looks like a domain alone', () => {
+    const rt = new RichText({text: 'hello @404media.co'})
+    rt.detectFacetsWithoutResolution()
+    const before = JSON.stringify(rt.facets)
+    detectMissedLinkFacets(rt)
+    expect(JSON.stringify(rt.facets)).toEqual(before)
+  })
+
+  it('does not linkify decimals or version numbers', () => {
+    expect(detect('costs 4.99, version 1.2.3')).toEqual([
+      {text: 'costs 4.99, version 1.2.3', uri: undefined},
+    ])
+  })
+
+  it('uses utf8 indices for text with multibyte characters', () => {
+    expect(detect('🦋 404media.co')).toEqual([
+      {text: '🦋 ', uri: undefined},
+      {text: '404media.co', uri: 'https://404media.co'},
+    ])
   })
 })
 

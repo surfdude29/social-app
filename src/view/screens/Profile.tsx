@@ -21,6 +21,7 @@ import {
 import {combinedDisplayName} from '#/lib/strings/display-names'
 import {cleanError} from '#/lib/strings/errors'
 import {isInvalidHandle} from '#/lib/strings/handles'
+import {detectMissedLinkFacets} from '#/lib/strings/rich-text-detection'
 import {colors} from '#/lib/styles'
 import {useProfileShadow} from '#/state/cache/profile-shadow'
 import {listenSoftReset} from '#/state/events'
@@ -632,6 +633,7 @@ function useRichText(text: string): [RichTextAPI, boolean] {
       // new each time
       const resolvedRT = new RichTextAPI({text})
       await resolvedRT.detectFacets(client)
+      detectMissedLinkFacets(resolvedRT)
       if (!ignore) {
         setResolvedRT(resolvedRT)
       }

@@ -16,6 +16,7 @@ import {
 import {DISCOVER_FEED_URI, DISCOVER_SAVED_FEED} from '#/lib/constants'
 import {sanitizeDisplayName} from '#/lib/strings/display-names'
 import {sanitizeHandle} from '#/lib/strings/handles'
+import {detectMissedLinkFacets} from '#/lib/strings/rich-text-detection'
 import {GCTIME, STALE} from '#/state/queries'
 import {RQKEY as listQueryKey} from '#/state/queries/list'
 import {usePreferencesQuery} from '#/state/queries/preferences'
@@ -103,6 +104,7 @@ export function hydrateFeedGenerator(
 
   if (!view.descriptionFacets) {
     description.detectFacetsWithoutResolution()
+    detectMissedLinkFacets(description)
   }
 
   return {
@@ -146,6 +148,7 @@ export function hydrateList(
 
   if (!view.descriptionFacets) {
     description.detectFacetsWithoutResolution()
+    detectMissedLinkFacets(description)
   }
 
   return {

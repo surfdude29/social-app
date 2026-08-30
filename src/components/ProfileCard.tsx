@@ -16,6 +16,7 @@ import {forceLTR} from '#/lib/strings/bidi'
 import {NON_BREAKING_SPACE} from '#/lib/strings/constants'
 import {sanitizeDisplayName} from '#/lib/strings/display-names'
 import {sanitizeHandle} from '#/lib/strings/handles'
+import {detectMissedLinkFacets} from '#/lib/strings/rich-text-detection'
 import {useProfileShadow} from '#/state/cache/profile-shadow'
 import {useProfileFollowMutationQueue} from '#/state/queries/profile'
 import {useSession} from '#/state/session'
@@ -400,6 +401,7 @@ export function Description({
     if (!('description' in profile)) return
     const rt = new RichTextApi({text: profile.description || ''})
     rt.detectFacetsWithoutResolution()
+    detectMissedLinkFacets(rt)
     return rt
   }, [profile])
   if (!rt) return null

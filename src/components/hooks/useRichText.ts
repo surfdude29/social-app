@@ -1,6 +1,7 @@
 import {useEffect, useState} from 'react'
 import {RichText as RichTextAPI} from '@bsky/sdk/richtext'
 
+import {detectMissedLinkFacets} from '#/lib/strings/rich-text-detection'
 import {useAppviewClient} from '#/state/session'
 
 export function useRichText(text: string): [RichTextAPI, boolean] {
@@ -25,6 +26,7 @@ export function useRichText(text: string): [RichTextAPI, boolean] {
       // new each time
       const resolvedRT = new RichTextAPI({text})
       await resolvedRT.detectFacets(client)
+      detectMissedLinkFacets(resolvedRT)
       if (!ignore) {
         setResolvedRT(resolvedRT)
       }
