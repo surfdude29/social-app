@@ -1,5 +1,5 @@
 import {View} from 'react-native'
-import {Trans} from '@lingui/react/macro'
+import {Trans, useLingui} from '@lingui/react/macro'
 
 import {usePalette} from '#/lib/hooks/usePalette'
 import {InfoCircleIcon} from '#/lib/icons'
@@ -7,6 +7,7 @@ import {TextLink} from '../util/Link'
 import {Text} from '../util/text/Text'
 
 export function DiscoverFallbackHeader() {
+  const {t: l} = useLingui()
   const pal = usePalette('default')
   return (
     <View
@@ -31,7 +32,7 @@ export function DiscoverFallbackHeader() {
             <TextLink
               type="md-medium"
               href="/profile/bsky.app/feed/whats-hot"
-              text="Discover"
+              text={l({message: 'Discover', context: 'feed-name'})}
               style={pal.link}
             />
             .
