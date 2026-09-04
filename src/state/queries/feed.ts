@@ -417,6 +417,11 @@ export type SavedFeedSourceInfo = FeedSourceInfo & {
   savedFeed: app.bsky.actor.defs.SavedFeed
 }
 
+/**
+ * The English `displayName` is deliberate: it is the fallback identity for the
+ * feed, and `getLocalizedFeedName` swaps it for a catalog string at render
+ * time, keyed off `uri`.
+ */
 const PWI_DISCOVER_FEED_STUB: SavedFeedSourceInfo = {
   type: 'feed',
   displayName: 'Discover',
@@ -523,6 +528,11 @@ export function usePinnedFeedsInfos() {
             savedFeed: pinnedItem,
           })
         } else if (pinnedItem.type === 'timeline') {
+          /*
+           * As with `PWI_DISCOVER_FEED_STUB`, the English `displayName` here is
+           * the fallback identity only - `getLocalizedFeedName` localizes it at
+           * render time, keyed off `uri`.
+           */
           result.push({
             type: 'feed',
             displayName: 'Following',

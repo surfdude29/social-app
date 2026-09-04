@@ -7,6 +7,7 @@ import * as bcp47Match from 'bcp-47-match'
 
 import {popularInterests, useInterestsDisplayNames} from '#/lib/interests'
 import {cleanError} from '#/lib/strings/errors'
+import {useGetLocalizedFeedName} from '#/lib/strings/feed-names'
 import {sanitizeHandle} from '#/lib/strings/handles'
 import {useLanguagePrefs} from '#/state/preferences/languages'
 import {useModerationOpts} from '#/state/preferences/moderation-opts'
@@ -212,6 +213,7 @@ export function Explore({
 }) {
   const ax = useAnalytics()
   const {t: l} = useLingui()
+  const getLocalizedFeedName = useGetLocalizedFeedName()
   const t = useTheme()
   const {data: preferences, error: preferencesError} = usePreferencesQuery()
   const moderationOpts = useModerationOpts()
@@ -951,7 +953,7 @@ export function Explore({
                 <ModuleHeader.FeedAvatar feed={item.feed} />
                 <View style={[a.flex_1, a.gap_2xs]}>
                   <ModuleHeader.TitleText style={[a.text_lg]}>
-                    {item.feed.displayName}
+                    {getLocalizedFeedName(item.feed)}
                   </ModuleHeader.TitleText>
                   <ModuleHeader.SubtitleText>
                     <Trans>
@@ -1037,6 +1039,7 @@ export function Explore({
       useFullExperience,
       l,
       fetchNextPageFeedPreviews,
+      getLocalizedFeedName,
     ],
   )
 

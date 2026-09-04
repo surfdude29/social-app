@@ -618,6 +618,7 @@ function SavedFeed({
 
   return savedFeed.type === 'feed' ? (
     <FeedCard.Link
+      // raw display name, so e2e selectors stay locale-independent
       testID={`saved-feed-${savedFeed.view.displayName}`}
       {...savedFeed}>
       {({hovered, pressed}) => (
@@ -625,7 +626,10 @@ function SavedFeed({
           style={[commonStyle, (hovered || pressed) && t.atoms.bg_contrast_25]}>
           <FeedCard.Header>
             <FeedCard.Avatar src={savedFeed.view.avatar} size={28} />
-            <FeedCard.TitleAndByline title={savedFeed.view.displayName} />
+            <FeedCard.TitleAndByline
+              title={savedFeed.view.displayName}
+              uri={savedFeed.view.uri}
+            />
 
             <ChevronRight size="sm" fill={t.atoms.text_contrast_low.color} />
           </FeedCard.Header>

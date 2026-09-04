@@ -10,6 +10,7 @@ import {useOpenComposer} from '#/lib/hooks/useOpenComposer'
 import {useSetTitle} from '#/lib/hooks/useSetTitle'
 import {type CommonNavigatorParams} from '#/lib/routes/types'
 import {cleanError} from '#/lib/strings/errors'
+import {useGetLocalizedFeedName} from '#/lib/strings/feed-names'
 import {makeRecordUri} from '#/lib/strings/url-helpers'
 import {listenSoftReset} from '#/state/events'
 import {FeedFeedbackProvider, useFeedFeedback} from '#/state/feed-feedback'
@@ -131,12 +132,13 @@ export function CustomFeedScreenInner({
   feedParams: FeedParams | undefined
 }) {
   const {t: l} = useLingui()
+  const getLocalizedFeedName = useGetLocalizedFeedName()
   const {hasSession} = useSession()
   const {openComposer} = useOpenComposer()
   const isScreenFocused = useIsFocused()
   const t = useTheme()
 
-  useSetTitle(feedInfo?.displayName)
+  useSetTitle(getLocalizedFeedName(feedInfo))
 
   const feed = `feedgen|${feedInfo.uri}` as FeedDescriptor
 

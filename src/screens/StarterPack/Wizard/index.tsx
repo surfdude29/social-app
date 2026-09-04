@@ -16,6 +16,7 @@ import {
   type NavigationProp,
 } from '#/lib/routes/types'
 import {sanitizeDisplayName} from '#/lib/strings/display-names'
+import {useGetLocalizedFeedName} from '#/lib/strings/feed-names'
 import {sanitizeHandle} from '#/lib/strings/handles'
 import {enforceLen} from '#/lib/strings/helpers'
 import {
@@ -409,11 +410,33 @@ function Footer({
   const [state] = useWizardState()
   const {bottom: bottomInset} = useSafeAreaInsets()
   const {currentAccount} = useSession()
+  const getLocalizedFeedName = useGetLocalizedFeedName()
   const items = state.currentStep === 'Profiles' ? state.profiles : state.feeds
 
   const minimumItems = state.currentStep === 'Profiles' ? 8 : 0
 
   const textStyles = [a.text_md]
+
+  /*
+   * Declared here rather than at module scope so it can localize the built-in
+   * feed names, which needs the active locale. Sanitize before localizing -
+   * the localized names are catalog strings, not user input.
+   */
+  const getName = (
+    item: bsky.profile.AnyProfileView | app.bsky.feed.defs.GeneratorView,
+  ) => {
+    if (typeof item.displayName === 'string') {
+      const displayName = sanitizeDisplayName(item.displayName)
+      const name =
+        'uri' in item && typeof item.uri === 'string'
+          ? getLocalizedFeedName({displayName, uri: item.uri})
+          : displayName
+      return enforceLen(name, 28, true)
+    } else if ('handle' in item && typeof item.handle === 'string') {
+      return enforceLen(sanitizeHandle(item.handle), 28, true)
+    }
+    return ''
+  }
 
   return (
     <View
@@ -623,15 +646,4 @@ function Footer({
       </View>
     </View>
   )
-}
-
-function getName(
-  item: bsky.profile.AnyProfileView | app.bsky.feed.defs.GeneratorView,
-) {
-  if (typeof item.displayName === 'string') {
-    return enforceLen(sanitizeDisplayName(item.displayName), 28, true)
-  } else if ('handle' in item && typeof item.handle === 'string') {
-    return enforceLen(sanitizeHandle(item.handle), 28, true)
-  }
-  return ''
 }

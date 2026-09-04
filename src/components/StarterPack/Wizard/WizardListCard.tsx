@@ -9,6 +9,7 @@ import {Trans, useLingui} from '@lingui/react/macro'
 
 import {DISCOVER_FEED_URI, STARTER_PACK_MAX_SIZE} from '#/lib/constants'
 import {sanitizeDisplayName} from '#/lib/strings/display-names'
+import {useGetLocalizedFeedName} from '#/lib/strings/feed-names'
 import {sanitizeHandle} from '#/lib/strings/handles'
 import {useSession} from '#/state/session'
 import {UserAvatar} from '#/view/com/util/UserAvatar'
@@ -197,6 +198,7 @@ export function WizardFeedCard({
   dispatch: (action: WizardAction) => void
   moderationOpts: ModerationOpts
 }) {
+  const getLocalizedFeedName = useGetLocalizedFeedName()
   const isDiscover = generator.uri === DISCOVER_FEED_URI
   const included = isDiscover || state.feeds.some(f => f.uri === generator.uri)
   const disabled = isDiscover || (!included && state.feeds.length >= 3)
@@ -219,7 +221,10 @@ export function WizardFeedCard({
     <WizardListCard
       type="algo"
       btnType={btnType}
-      displayName={sanitizeDisplayName(generator.displayName)}
+      displayName={getLocalizedFeedName({
+        displayName: sanitizeDisplayName(generator.displayName),
+        uri: generator.uri,
+      })}
       subtitle={`Feed by @${sanitizeHandle(generator.creator.handle)}`}
       onPress={onPress}
       avatar={generator.avatar}

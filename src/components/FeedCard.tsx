@@ -5,6 +5,7 @@ import {RichText as RichTextApi} from '@bsky/sdk/richtext'
 import {Plural, Trans, useLingui} from '@lingui/react/macro'
 import {useQueryClient} from '@tanstack/react-query'
 
+import {useGetLocalizedFeedName} from '#/lib/strings/feed-names'
 import {sanitizeHandle} from '#/lib/strings/handles'
 import {logger} from '#/logger'
 import {precacheFeedFromGeneratorView} from '#/state/queries/feed'
@@ -67,6 +68,7 @@ export function Link({
   ...props
 }: Props & Omit<LinkProps, 'to' | 'label'>) {
   const queryClient = useQueryClient()
+  const getLocalizedFeedName = useGetLocalizedFeedName()
 
   const href = useMemo(() => {
     return createProfileFeedHref({feed: view})
@@ -78,7 +80,7 @@ export function Link({
 
   return (
     <InternalLink
-      label={view.displayName}
+      label={getLocalizedFeedName(view)}
       to={href}
       style={[a.flex_col]}
       {...props}>
@@ -124,10 +126,19 @@ export function TitleAndByline({
 }: {
   title: string
   creator?: bsky.profile.AnyProfileView
+  /**
+   * Drives the live badge, and localizes `title` for the built-in Bluesky
+   * feeds, whose records carry an English display name. Pass it whenever you
+   * have it.
+   */
   uri?: string
 }) {
   const t = useTheme()
+  const getLocalizedFeedName = useGetLocalizedFeedName()
   const activeLiveEvents = useActiveLiveEventFeedUris()
+  const displayName = uri
+    ? getLocalizedFeedName({displayName: title, uri})
+    : title
   const liveColor = useMemo(
     () =>
       select(t.name, {
@@ -158,7 +169,7 @@ export function TitleAndByline({
         emoji
         style={[a.text_md, a.font_semi_bold, a.leading_snug]}
         numberOfLines={1}>
-        {title}
+        {displayName}
       </Text>
       {creator && (
         <Text

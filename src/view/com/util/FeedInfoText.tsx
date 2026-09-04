@@ -1,6 +1,7 @@
 import {type StyleProp, type TextStyle} from 'react-native'
 
 import {sanitizeDisplayName} from '#/lib/strings/display-names'
+import {useGetLocalizedFeedName} from '#/lib/strings/feed-names'
 import {useFeedSourceInfoQuery} from '#/state/queries/feed'
 import {atoms as a, platform} from '#/alf'
 import {WebOnlyInlineLinkText} from '#/components/Link'
@@ -18,10 +19,19 @@ export function FeedNameText({
   style?: StyleProp<TextStyle>
 }) {
   const {data, isError} = useFeedSourceInfoQuery({uri})
+  const getLocalizedFeedName = useGetLocalizedFeedName()
 
   let inner
   if (data || isError) {
-    const displayName = data?.displayName || uri.split('/').pop() || ''
+    const rawName = data?.displayName || uri.split('/').pop() || ''
+    /*
+     * Sanitize before localizing, never after - the localized names are
+     * catalog strings rather than user input.
+     */
+    const displayName = getLocalizedFeedName({
+      displayName: sanitizeDisplayName(rawName),
+      uri,
+    })
     inner = (
       <WebOnlyInlineLinkText
         to={href}
@@ -29,7 +39,7 @@ export function FeedNameText({
         style={style}
         numberOfLines={numberOfLines}
         emoji>
-        {sanitizeDisplayName(displayName)}
+        {displayName}
       </WebOnlyInlineLinkText>
     )
   } else {

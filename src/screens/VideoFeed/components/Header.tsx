@@ -6,6 +6,7 @@ import {useNavigation} from '@react-navigation/native'
 
 import {HITSLOP_30} from '#/lib/constants'
 import {type NavigationProp} from '#/lib/routes/types'
+import {useGetLocalizedFeedName} from '#/lib/strings/feed-names'
 import {sanitizeHandle} from '#/lib/strings/handles'
 import {useFeedSourceInfoQuery} from '#/state/queries/feed'
 import {UserAvatar} from '#/view/com/util/UserAvatar'
@@ -94,6 +95,7 @@ export function FeedHeader({
   sourceContext: Exclude<VideoFeedSourceContext, {type: 'author'}>
 }) {
   const {gtMobile} = useBreakpoints()
+  const getLocalizedFeedName = useGetLocalizedFeedName()
 
   const {
     data: info,
@@ -125,7 +127,7 @@ export function FeedHeader({
             gtMobile && a.text_lg,
           ]}
           numberOfLines={2}>
-          {info.displayName}
+          {getLocalizedFeedName(info)}
         </Text>
         <View style={[a.flex_row, {gap: 6}]}>
           <Text

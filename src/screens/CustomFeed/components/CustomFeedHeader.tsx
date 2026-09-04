@@ -7,6 +7,7 @@ import {TRENDING_HANDLE} from '#/lib/constants'
 import {useHaptics} from '#/lib/haptics'
 import {makeCustomFeedLink, makeProfileLink} from '#/lib/routes/links'
 import {shareUrl} from '#/lib/sharing'
+import {useGetLocalizedFeedName} from '#/lib/strings/feed-names'
 import {sanitizeHandle} from '#/lib/strings/handles'
 import {toShareUrl} from '#/lib/strings/url-helpers'
 import {logger} from '#/logger'
@@ -91,6 +92,7 @@ export function CustomFeedHeader({
 }) {
   const t = useTheme()
   const {t: l, i18n} = useLingui()
+  const getLocalizedFeedName = useGetLocalizedFeedName()
   const ax = useAnalytics()
   const {hasSession} = useSession()
   const {gtMobile} = useBreakpoints()
@@ -163,10 +165,10 @@ export function CustomFeedHeader({
         ])
 
         if (pinned) {
-          Toast.show(l`Pinned ${info.displayName} to Home`)
+          Toast.show(l`Pinned ${getLocalizedFeedName(info)} to Home`)
           ax.metric('feed:pin', {feedUrl: info.uri})
         } else {
-          Toast.show(l`Unpinned ${info.displayName} from Home`)
+          Toast.show(l`Unpinned ${getLocalizedFeedName(info)} from Home`)
           ax.metric('feed:unpin', {feedUrl: info.uri})
         }
       } else {
@@ -177,7 +179,7 @@ export function CustomFeedHeader({
             pinned: true,
           },
         ])
-        Toast.show(l`Pinned ${info.displayName} to Home`)
+        Toast.show(l`Pinned ${getLocalizedFeedName(info)} to Home`)
         ax.metric('feed:pin', {feedUrl: info.uri})
       }
     } catch (e) {
@@ -207,7 +209,7 @@ export function CustomFeedHeader({
                     ]}
                     numberOfLines={2}
                     emoji>
-                    {info.displayName}
+                    {getLocalizedFeedName(info)}
                   </Text>
                 </View>
                 <Button
@@ -281,7 +283,7 @@ export function CustomFeedHeader({
                           ]}
                           numberOfLines={2}
                           emoji>
-                          {info.displayName}
+                          {getLocalizedFeedName(info)}
                         </Text>
                         <View style={[a.flex_row, a.gap_2xs]}>
                           <Text
@@ -439,6 +441,7 @@ function DialogInner({
 }) {
   const t = useTheme()
   const {t: l} = useLingui()
+  const getLocalizedFeedName = useGetLocalizedFeedName()
   const ax = useAnalytics()
   const {hasSession} = useSession()
   const playHaptic = useHaptics()
@@ -502,7 +505,7 @@ function DialogInner({
             style={[a.text_2xl, a.font_bold, a.leading_tight]}
             numberOfLines={2}
             emoji>
-            {info.displayName}
+            {getLocalizedFeedName(info)}
           </Text>
           <Text
             style={[a.text_sm, a.leading_relaxed, t.atoms.text_contrast_medium]}

@@ -5,6 +5,7 @@ import {msg} from '@lingui/core/macro'
 import {useLingui} from '@lingui/react'
 import {Plural, Trans} from '@lingui/react/macro'
 
+import {useGetLocalizedFeedName} from '#/lib/strings/feed-names'
 import {sanitizeHandle} from '#/lib/strings/handles'
 import {
   type FeedSourceInfo,
@@ -96,6 +97,7 @@ export function FeedSourceCardLoaded({
 }) {
   const t = useTheme()
   const {_} = useLingui()
+  const getLocalizedFeedName = useGetLocalizedFeedName()
 
   /*
    * LOAD STATE
@@ -140,7 +142,7 @@ export function FeedSourceCardLoaded({
             emoji
             style={[a.text_sm, a.font_semi_bold, a.leading_snug]}
             numberOfLines={1}>
-            {feed.displayName}
+            {getLocalizedFeedName(feed)}
           </Text>
           <Text
             style={[a.text_sm, t.atoms.text_contrast_medium, a.leading_snug]}
@@ -180,14 +182,15 @@ export function FeedSourceCardLoaded({
   if (link) {
     return (
       <Link
+        // raw display name, so e2e selectors stay locale-independent
         testID={`feed-${feed.displayName}`}
         label={
           feed.type === 'feed'
             ? _(
-                msg`${feed.displayName}, a feed by ${sanitizeHandle(feed.creatorHandle, '@')}, liked by ${feed.likeCount || 0}`,
+                msg`${getLocalizedFeedName(feed)}, a feed by ${sanitizeHandle(feed.creatorHandle, '@')}, liked by ${feed.likeCount || 0}`,
               )
             : _(
-                msg`${feed.displayName}, a list by ${sanitizeHandle(feed.creatorHandle, '@')}`,
+                msg`${getLocalizedFeedName(feed)}, a list by ${sanitizeHandle(feed.creatorHandle, '@')}`,
               )
         }
         to={{
