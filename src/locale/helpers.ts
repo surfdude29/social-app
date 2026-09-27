@@ -34,16 +34,36 @@ export function code3ToCode2Strict(lang: string): string | undefined {
 }
 
 const displayNamesCache = new Map<string, Intl.DisplayNames>()
+const regionNamesCache = new Map<string, Intl.DisplayNames>()
+
+/**
+ * Drops every memoized `Intl.DisplayNames` instance. Call this whenever new Intl locale data is
+ * registered.
+ *
+ * On native, `Intl.DisplayNames` is polyfilled and its locale data is imported asynchronously on
+ * app language change. The polyfill resolves the locale eagerly in the constructor, so an instance
+ * built before that data lands silently falls back to English and would otherwise stay cached for
+ * the rest of the session.
+ */
+export function resetDisplayNamesCaches() {
+  displayNamesCache.clear()
+  regionNamesCache.clear()
+}
 
 function getDisplayNames(appLang: string): Intl.DisplayNames {
-  let cached = displayNamesCache.get(appLang)
+  /*
+   * Key on the sanitized language so the cache lines up with the locale we actually loaded Intl
+   * data for - callers pass the raw `appLanguage` pref, which may still hold a legacy value.
+   */
+  const locale = sanitizeAppLanguageSetting(appLang)
+  let cached = displayNamesCache.get(locale)
   if (!cached) {
-    cached = new Intl.DisplayNames([appLang], {
+    cached = new Intl.DisplayNames([locale], {
       type: 'language',
       fallback: 'none',
       languageDisplay: 'standard',
     })
-    displayNamesCache.set(appLang, cached)
+    displayNamesCache.set(locale, cached)
   }
   return cached
 }
@@ -316,16 +336,16 @@ export function regionName(countryCode: string, appLang: string): string {
   return countryCode
 }
 
-const regionNamesCache = new Map<string, Intl.DisplayNames>()
-
 function getRegionNames(appLang: string): Intl.DisplayNames {
-  let cached = regionNamesCache.get(appLang)
+  // See the note on cache keys in `getDisplayNames`
+  const locale = sanitizeAppLanguageSetting(appLang)
+  let cached = regionNamesCache.get(locale)
   if (!cached) {
-    cached = new Intl.DisplayNames([appLang], {
+    cached = new Intl.DisplayNames([locale], {
       type: 'region',
       fallback: 'none',
     })
-    regionNamesCache.set(appLang, cached)
+    regionNamesCache.set(locale, cached)
   }
   return cached
 }
