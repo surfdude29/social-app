@@ -30,12 +30,14 @@ export const ExternalEmbed = ({
   post,
   style,
   hideAlt,
+  gifOverlay,
 }: {
   link: app.bsky.embed.external.ViewExternal
   onOpen?: () => void
   post?: app.bsky.feed.defs.PostView
   style?: StyleProp<ViewStyle>
   hideAlt?: boolean
+  gifOverlay?: React.ReactNode
 }) => {
   const {_} = useLingui()
   const t = useTheme()
@@ -80,6 +82,7 @@ export const ExternalEmbed = ({
           altText={parsedAlt.alt}
           isPreferredAltText={parsedAlt.isPreferred}
           hideAlt={hideAlt}
+          overlay={gifOverlay}
         />
       </View>
     )
